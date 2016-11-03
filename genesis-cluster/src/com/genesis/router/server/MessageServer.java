@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.genesis.monitors.DragonThread;
 import com.genesis.monitors.NetworkMonitor;
+import com.genesis.queues.workers.ThreadPool;
 import com.genesis.router.container.RoutingConf;
 import com.genesis.router.server.edges.EdgeMonitor;
 import com.genesis.router.server.tasks.NoOpBalancer;
@@ -209,10 +210,19 @@ public class MessageServer {
 			Thread n = new Thread(nmon);
 			n.start();
 			
+			ThreadPool pool = new ThreadPool(8, state);
+			pool.setThreadPause(1000);
+			pool.init();
+			pool.startWorkers();
+			
 			DragonThread dT = new DragonThread();
 			//dT.init();
 			dT.setState(state);
 			new Thread(dT).start();
+			
+			
+			
+			
 		}
 
 		public void run() {
