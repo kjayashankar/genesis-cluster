@@ -4,6 +4,8 @@ option java_package = "pipe.work";
 
 import "common.proto";
 import "election.proto";
+import "pipe.proto";
+
 
 message WorkState {
    required int32 enqueued = 1;
@@ -32,6 +34,7 @@ message NodeLinks {
 message Task {  
     required int64 series_id = 1;
     required int32 seq_id = 2;
+    optional CommandMessage commandMessage = 3;
 }
 
 message Vote{
@@ -71,5 +74,6 @@ message WorkMessage {
       LeaderStatus leader = 8;
       Register register = 10;
       Vote verdict = 11;
+      bool steal = 12;
    }
 }

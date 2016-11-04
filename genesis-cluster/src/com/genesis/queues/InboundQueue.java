@@ -2,18 +2,27 @@ package com.genesis.queues;
 
 import java.util.concurrent.LinkedBlockingDeque;
 
-import com.genesis.router.server.ServerState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genesis.router.server.tasks.Rebalancer;
 
 import io.netty.channel.Channel;
 import pipe.work.Work.Task;
 
 public class InboundQueue implements Queue{
 
+	private static Logger logger = LoggerFactory.getLogger("inbound queue");
+	
 	private LinkedBlockingDeque<TaskChannel> inbound = null;
+
+	private int balanced;
+
+	Rebalancer rebalance;
 	
-	
-	public InboundQueue(){
+	public InboundQueue(Rebalancer balance){
 		inbound = new LinkedBlockingDeque<TaskChannel>();
+		this.rebalance = balance;
 	}
 	@Override
 	public void put(Task task, Channel channel) {
@@ -36,5 +45,19 @@ public class InboundQueue implements Queue{
 		return inbound.size();
 	}
 	
+	public TaskChannel rebalance() {
+		TaskChannel t = null;
+
+		try {
+			if (rebalance != null && !rebalance.allow())
+				return t;
+
+			t = inbound.take();
+			balanced++;
+		} catch (InterruptedException e) {
+			logger.error("failed to rebalance a task", e);
+		}
+		return t;
+	}
 	
 }

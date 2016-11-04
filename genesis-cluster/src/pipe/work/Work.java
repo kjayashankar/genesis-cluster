@@ -3306,6 +3306,19 @@ public final class Work {
      * <code>required int32 seq_id = 2;</code>
      */
     int getSeqId();
+
+    /**
+     * <code>optional .CommandMessage commandMessage = 3;</code>
+     */
+    boolean hasCommandMessage();
+    /**
+     * <code>optional .CommandMessage commandMessage = 3;</code>
+     */
+    routing.Pipe.CommandMessage getCommandMessage();
+    /**
+     * <code>optional .CommandMessage commandMessage = 3;</code>
+     */
+    routing.Pipe.CommandMessageOrBuilder getCommandMessageOrBuilder();
   }
   /**
    * Protobuf type {@code Task}
@@ -3372,6 +3385,19 @@ public final class Work {
             case 16: {
               bitField0_ |= 0x00000002;
               seqId_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              routing.Pipe.CommandMessage.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = commandMessage_.toBuilder();
+              }
+              commandMessage_ = input.readMessage(routing.Pipe.CommandMessage.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(commandMessage_);
+                commandMessage_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000004;
               break;
             }
           }
@@ -3444,9 +3470,31 @@ public final class Work {
       return seqId_;
     }
 
+    public static final int COMMANDMESSAGE_FIELD_NUMBER = 3;
+    private routing.Pipe.CommandMessage commandMessage_;
+    /**
+     * <code>optional .CommandMessage commandMessage = 3;</code>
+     */
+    public boolean hasCommandMessage() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .CommandMessage commandMessage = 3;</code>
+     */
+    public routing.Pipe.CommandMessage getCommandMessage() {
+      return commandMessage_;
+    }
+    /**
+     * <code>optional .CommandMessage commandMessage = 3;</code>
+     */
+    public routing.Pipe.CommandMessageOrBuilder getCommandMessageOrBuilder() {
+      return commandMessage_;
+    }
+
     private void initFields() {
       seriesId_ = 0L;
       seqId_ = 0;
+      commandMessage_ = routing.Pipe.CommandMessage.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3462,6 +3510,12 @@ public final class Work {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (hasCommandMessage()) {
+        if (!getCommandMessage().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -3474,6 +3528,9 @@ public final class Work {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(2, seqId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(3, commandMessage_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3491,6 +3548,10 @@ public final class Work {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, seqId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, commandMessage_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3606,6 +3667,7 @@ public final class Work {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getCommandMessageFieldBuilder();
         }
       }
       private static Builder create() {
@@ -3618,6 +3680,12 @@ public final class Work {
         bitField0_ = (bitField0_ & ~0x00000001);
         seqId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
+        if (commandMessageBuilder_ == null) {
+          commandMessage_ = routing.Pipe.CommandMessage.getDefaultInstance();
+        } else {
+          commandMessageBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -3654,6 +3722,14 @@ public final class Work {
           to_bitField0_ |= 0x00000002;
         }
         result.seqId_ = seqId_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (commandMessageBuilder_ == null) {
+          result.commandMessage_ = commandMessage_;
+        } else {
+          result.commandMessage_ = commandMessageBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3676,6 +3752,9 @@ public final class Work {
         if (other.hasSeqId()) {
           setSeqId(other.getSeqId());
         }
+        if (other.hasCommandMessage()) {
+          mergeCommandMessage(other.getCommandMessage());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -3688,6 +3767,12 @@ public final class Work {
         if (!hasSeqId()) {
           
           return false;
+        }
+        if (hasCommandMessage()) {
+          if (!getCommandMessage().isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -3773,6 +3858,122 @@ public final class Work {
         seqId_ = 0;
         onChanged();
         return this;
+      }
+
+      private routing.Pipe.CommandMessage commandMessage_ = routing.Pipe.CommandMessage.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          routing.Pipe.CommandMessage, routing.Pipe.CommandMessage.Builder, routing.Pipe.CommandMessageOrBuilder> commandMessageBuilder_;
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public boolean hasCommandMessage() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public routing.Pipe.CommandMessage getCommandMessage() {
+        if (commandMessageBuilder_ == null) {
+          return commandMessage_;
+        } else {
+          return commandMessageBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public Builder setCommandMessage(routing.Pipe.CommandMessage value) {
+        if (commandMessageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          commandMessage_ = value;
+          onChanged();
+        } else {
+          commandMessageBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public Builder setCommandMessage(
+          routing.Pipe.CommandMessage.Builder builderForValue) {
+        if (commandMessageBuilder_ == null) {
+          commandMessage_ = builderForValue.build();
+          onChanged();
+        } else {
+          commandMessageBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public Builder mergeCommandMessage(routing.Pipe.CommandMessage value) {
+        if (commandMessageBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              commandMessage_ != routing.Pipe.CommandMessage.getDefaultInstance()) {
+            commandMessage_ =
+              routing.Pipe.CommandMessage.newBuilder(commandMessage_).mergeFrom(value).buildPartial();
+          } else {
+            commandMessage_ = value;
+          }
+          onChanged();
+        } else {
+          commandMessageBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public Builder clearCommandMessage() {
+        if (commandMessageBuilder_ == null) {
+          commandMessage_ = routing.Pipe.CommandMessage.getDefaultInstance();
+          onChanged();
+        } else {
+          commandMessageBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public routing.Pipe.CommandMessage.Builder getCommandMessageBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getCommandMessageFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      public routing.Pipe.CommandMessageOrBuilder getCommandMessageOrBuilder() {
+        if (commandMessageBuilder_ != null) {
+          return commandMessageBuilder_.getMessageOrBuilder();
+        } else {
+          return commandMessage_;
+        }
+      }
+      /**
+       * <code>optional .CommandMessage commandMessage = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          routing.Pipe.CommandMessage, routing.Pipe.CommandMessage.Builder, routing.Pipe.CommandMessageOrBuilder> 
+          getCommandMessageFieldBuilder() {
+        if (commandMessageBuilder_ == null) {
+          commandMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              routing.Pipe.CommandMessage, routing.Pipe.CommandMessage.Builder, routing.Pipe.CommandMessageOrBuilder>(
+                  getCommandMessage(),
+                  getParentForChildren(),
+                  isClean());
+          commandMessage_ = null;
+        }
+        return commandMessageBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Task)
@@ -5125,6 +5326,15 @@ public final class Work {
      * <code>optional .Vote verdict = 11;</code>
      */
     pipe.work.Work.VoteOrBuilder getVerdictOrBuilder();
+
+    /**
+     * <code>optional bool steal = 12;</code>
+     */
+    boolean hasSteal();
+    /**
+     * <code>optional bool steal = 12;</code>
+     */
+    boolean getSteal();
   }
   /**
    * Protobuf type {@code WorkMessage}
@@ -5309,6 +5519,11 @@ public final class Work {
               payloadCase_ = 11;
               break;
             }
+            case 96: {
+              payloadCase_ = 12;
+              payload_ = input.readBool();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -5362,6 +5577,7 @@ public final class Work {
       LEADER(8),
       REGISTER(10),
       VERDICT(11),
+      STEAL(12),
       PAYLOAD_NOT_SET(0);
       private int value = 0;
       private PayloadCase(int value) {
@@ -5378,6 +5594,7 @@ public final class Work {
           case 8: return LEADER;
           case 10: return REGISTER;
           case 11: return VERDICT;
+          case 12: return STEAL;
           case 0: return PAYLOAD_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -5675,6 +5892,23 @@ public final class Work {
       return pipe.work.Work.Vote.getDefaultInstance();
     }
 
+    public static final int STEAL_FIELD_NUMBER = 12;
+    /**
+     * <code>optional bool steal = 12;</code>
+     */
+    public boolean hasSteal() {
+      return payloadCase_ == 12;
+    }
+    /**
+     * <code>optional bool steal = 12;</code>
+     */
+    public boolean getSteal() {
+      if (payloadCase_ == 12) {
+        return (java.lang.Boolean) payload_;
+      }
+      return false;
+    }
+
     private void initFields() {
       header_ = pipe.common.Common.Header.getDefaultInstance();
       secret_ = 0L;
@@ -5786,6 +6020,10 @@ public final class Work {
       if (payloadCase_ == 11) {
         output.writeMessage(11, (pipe.work.Work.Vote) payload_);
       }
+      if (payloadCase_ == 12) {
+        output.writeBool(
+            12, (boolean)((java.lang.Boolean) payload_));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -5839,6 +6077,11 @@ public final class Work {
       if (payloadCase_ == 11) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(11, (pipe.work.Work.Vote) payload_);
+      }
+      if (payloadCase_ == 12) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(
+              12, (boolean)((java.lang.Boolean) payload_));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6071,6 +6314,9 @@ public final class Work {
             result.payload_ = verdictBuilder_.build();
           }
         }
+        if (payloadCase_ == 12) {
+          result.payload_ = payload_;
+        }
         result.bitField0_ = to_bitField0_;
         result.payloadCase_ = payloadCase_;
         onBuilt();
@@ -6129,6 +6375,10 @@ public final class Work {
           }
           case VERDICT: {
             mergeVerdict(other.getVerdict());
+            break;
+          }
+          case STEAL: {
+            setSteal(other.getSteal());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -7553,6 +7803,42 @@ public final class Work {
         return verdictBuilder_;
       }
 
+      /**
+       * <code>optional bool steal = 12;</code>
+       */
+      public boolean hasSteal() {
+        return payloadCase_ == 12;
+      }
+      /**
+       * <code>optional bool steal = 12;</code>
+       */
+      public boolean getSteal() {
+        if (payloadCase_ == 12) {
+          return (java.lang.Boolean) payload_;
+        }
+        return false;
+      }
+      /**
+       * <code>optional bool steal = 12;</code>
+       */
+      public Builder setSteal(boolean value) {
+        payloadCase_ = 12;
+        payload_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool steal = 12;</code>
+       */
+      public Builder clearSteal() {
+        if (payloadCase_ == 12) {
+          payloadCase_ = 0;
+          payload_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:WorkMessage)
     }
 
@@ -7614,25 +7900,27 @@ public final class Work {
   static {
     java.lang.String[] descriptorData = {
       "\n\nwork.proto\032\014common.proto\032\016election.pro" +
-      "to\"0\n\tWorkState\022\020\n\010enqueued\030\001 \002(\005\022\021\n\tpro" +
-      "cessed\030\002 \002(\005\"&\n\tHeartbeat\022\031\n\005state\030\001 \002(\013" +
-      "2\n.WorkState\"K\n\nDragonBeat\022\035\n\tnodelinks\030" +
-      "\001 \003(\0132\n.NodeLinks\022\020\n\010checksum\030\002 \001(\005\022\014\n\004m" +
-      "ode\030\003 \002(\t\"O\n\tNodeLinks\022\026\n\007inbound\030\001 \003(\0132" +
-      "\005.Node\022\021\n\002me\030\002 \002(\0132\005.Node\022\027\n\010outbound\030\003 " +
-      "\003(\0132\005.Node\")\n\004Task\022\021\n\tseries_id\030\001 \002(\003\022\016\n" +
-      "\006seq_id\030\002 \002(\005\"G\n\004Vote\022\036\n\007verdict\030\001 \002(\0162\r" +
-      ".Vote.Verdict\"\037\n\007Verdict\022\010\n\004VOTE\020\001\022\n\n\006RE",
-      "JECT\020\002\"1\n\010Register\022\014\n\004mode\030\001 \002(\t\022\027\n\010dest" +
-      "Node\030\002 \001(\0132\005.Node\"\263\002\n\013WorkMessage\022\027\n\006hea" +
-      "der\030\001 \002(\0132\007.Header\022\016\n\006secret\030\002 \002(\003\022\027\n\003er" +
-      "r\030\003 \001(\0132\010.FailureH\000\022\016\n\004ping\030\004 \001(\010H\000\022\032\n\004b" +
-      "eat\030\005 \001(\0132\n.HeartbeatH\000\022\035\n\006dragon\030\t \001(\0132" +
-      "\013.DragonBeatH\000\022\025\n\004task\030\006 \001(\0132\005.TaskH\000\022\033\n" +
-      "\005state\030\007 \001(\0132\n.WorkStateH\000\022\037\n\006leader\030\010 \001" +
-      "(\0132\r.LeaderStatusH\000\022\035\n\010register\030\n \001(\0132\t." +
-      "RegisterH\000\022\030\n\007verdict\030\013 \001(\0132\005.VoteH\000B\t\n\007" +
-      "payloadB\r\n\tpipe.workH\001"
+      "to\032\npipe.proto\"0\n\tWorkState\022\020\n\010enqueued\030" +
+      "\001 \002(\005\022\021\n\tprocessed\030\002 \002(\005\"&\n\tHeartbeat\022\031\n" +
+      "\005state\030\001 \002(\0132\n.WorkState\"K\n\nDragonBeat\022\035" +
+      "\n\tnodelinks\030\001 \003(\0132\n.NodeLinks\022\020\n\010checksu" +
+      "m\030\002 \001(\005\022\014\n\004mode\030\003 \002(\t\"O\n\tNodeLinks\022\026\n\007in" +
+      "bound\030\001 \003(\0132\005.Node\022\021\n\002me\030\002 \002(\0132\005.Node\022\027\n" +
+      "\010outbound\030\003 \003(\0132\005.Node\"R\n\004Task\022\021\n\tseries" +
+      "_id\030\001 \002(\003\022\016\n\006seq_id\030\002 \002(\005\022\'\n\016commandMess" +
+      "age\030\003 \001(\0132\017.CommandMessage\"G\n\004Vote\022\036\n\007ve",
+      "rdict\030\001 \002(\0162\r.Vote.Verdict\"\037\n\007Verdict\022\010\n" +
+      "\004VOTE\020\001\022\n\n\006REJECT\020\002\"1\n\010Register\022\014\n\004mode\030" +
+      "\001 \002(\t\022\027\n\010destNode\030\002 \001(\0132\005.Node\"\304\002\n\013WorkM" +
+      "essage\022\027\n\006header\030\001 \002(\0132\007.Header\022\016\n\006secre" +
+      "t\030\002 \002(\003\022\027\n\003err\030\003 \001(\0132\010.FailureH\000\022\016\n\004ping" +
+      "\030\004 \001(\010H\000\022\032\n\004beat\030\005 \001(\0132\n.HeartbeatH\000\022\035\n\006" +
+      "dragon\030\t \001(\0132\013.DragonBeatH\000\022\025\n\004task\030\006 \001(" +
+      "\0132\005.TaskH\000\022\033\n\005state\030\007 \001(\0132\n.WorkStateH\000\022" +
+      "\037\n\006leader\030\010 \001(\0132\r.LeaderStatusH\000\022\035\n\010regi" +
+      "ster\030\n \001(\0132\t.RegisterH\000\022\030\n\007verdict\030\013 \001(\013",
+      "2\005.VoteH\000\022\017\n\005steal\030\014 \001(\010H\000B\t\n\007payloadB\r\n" +
+      "\tpipe.workH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -7647,6 +7935,7 @@ public final class Work {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           pipe.common.Common.getDescriptor(),
           pipe.election.Election.getDescriptor(),
+          routing.Pipe.getDescriptor(),
         }, assigner);
     internal_static_WorkState_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -7677,7 +7966,7 @@ public final class Work {
     internal_static_Task_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Task_descriptor,
-        new java.lang.String[] { "SeriesId", "SeqId", });
+        new java.lang.String[] { "SeriesId", "SeqId", "CommandMessage", });
     internal_static_Vote_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Vote_fieldAccessorTable = new
@@ -7695,9 +7984,10 @@ public final class Work {
     internal_static_WorkMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_WorkMessage_descriptor,
-        new java.lang.String[] { "Header", "Secret", "Err", "Ping", "Beat", "Dragon", "Task", "State", "Leader", "Register", "Verdict", "Payload", });
+        new java.lang.String[] { "Header", "Secret", "Err", "Ping", "Beat", "Dragon", "Task", "State", "Leader", "Register", "Verdict", "Steal", "Payload", });
     pipe.common.Common.getDescriptor();
     pipe.election.Election.getDescriptor();
+    routing.Pipe.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

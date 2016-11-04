@@ -14,7 +14,7 @@ import com.genesis.router.server.ServerState;
 import pipe.common.Common.Node;
 import pipe.work.Work.NodeLinks;
 
-public class NetworkMonitor implements Runnable{
+public class NetworkMonitor{
 
 	private static Logger logger = LoggerFactory.getLogger("network monitor");
 	private static NetworkMonitor netmon ;
@@ -92,25 +92,6 @@ public class NetworkMonitor implements Runnable{
 		return netmon;	
 	}
 	
-	public void run(){
-		while(forever) {
-			if(state != null) {
-				if(state.state == STATE.LEADER && ++waitCycle % 3 == 0 ){
-					logger.info("initiate dragon beat");
-					if(outCheckSum == -1)
-						outCheckSum = generateNewCheckSum();
-					state.getEmon().initDragonBeat(outCheckSum);
-				}
-			}
-			try{
-				Thread.sleep(4000);
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-	}
-
 	public void registerNewOutBound(Node newbie) {
 		/*List<NodeLinks> tempLinks = new ArrayList<NodeLinks>();
 		

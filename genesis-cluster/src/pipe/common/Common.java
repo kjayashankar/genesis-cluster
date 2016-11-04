@@ -13,24 +13,33 @@ public final class Common {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .Node origin = 1;</code>
+     * <code>optional int32 node_id = 3;</code>
+     */
+    boolean hasNodeId();
+    /**
+     * <code>optional int32 node_id = 3;</code>
+     */
+    int getNodeId();
+
+    /**
+     * <code>optional .Node origin = 1;</code>
      */
     boolean hasOrigin();
     /**
-     * <code>required .Node origin = 1;</code>
+     * <code>optional .Node origin = 1;</code>
      */
     pipe.common.Common.Node getOrigin();
     /**
-     * <code>required .Node origin = 1;</code>
+     * <code>optional .Node origin = 1;</code>
      */
     pipe.common.Common.NodeOrBuilder getOriginOrBuilder();
 
     /**
-     * <code>required int64 time = 2;</code>
+     * <code>optional int64 time = 2;</code>
      */
     boolean hasTime();
     /**
-     * <code>required int64 time = 2;</code>
+     * <code>optional int64 time = 2;</code>
      */
     long getTime();
 
@@ -130,7 +139,7 @@ public final class Common {
             }
             case 10: {
               pipe.common.Common.Node.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = origin_.toBuilder();
               }
               origin_ = input.readMessage(pipe.common.Common.Node.PARSER, extensionRegistry);
@@ -138,21 +147,26 @@ public final class Common {
                 subBuilder.mergeFrom(origin_);
                 origin_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000001;
+              bitField0_ |= 0x00000002;
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               time_ = input.readInt64();
               break;
             }
+            case 24: {
+              bitField0_ |= 0x00000001;
+              nodeId_ = input.readInt32();
+              break;
+            }
             case 64: {
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               destination_ = input.readInt32();
               break;
             }
             case 80: {
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               maxHops_ = input.readInt32();
               break;
             }
@@ -196,22 +210,37 @@ public final class Common {
     }
 
     private int bitField0_;
-    public static final int ORIGIN_FIELD_NUMBER = 1;
-    private pipe.common.Common.Node origin_;
+    public static final int NODE_ID_FIELD_NUMBER = 3;
+    private int nodeId_;
     /**
-     * <code>required .Node origin = 1;</code>
+     * <code>optional int32 node_id = 3;</code>
      */
-    public boolean hasOrigin() {
+    public boolean hasNodeId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .Node origin = 1;</code>
+     * <code>optional int32 node_id = 3;</code>
+     */
+    public int getNodeId() {
+      return nodeId_;
+    }
+
+    public static final int ORIGIN_FIELD_NUMBER = 1;
+    private pipe.common.Common.Node origin_;
+    /**
+     * <code>optional .Node origin = 1;</code>
+     */
+    public boolean hasOrigin() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .Node origin = 1;</code>
      */
     public pipe.common.Common.Node getOrigin() {
       return origin_;
     }
     /**
-     * <code>required .Node origin = 1;</code>
+     * <code>optional .Node origin = 1;</code>
      */
     public pipe.common.Common.NodeOrBuilder getOriginOrBuilder() {
       return origin_;
@@ -220,13 +249,13 @@ public final class Common {
     public static final int TIME_FIELD_NUMBER = 2;
     private long time_;
     /**
-     * <code>required int64 time = 2;</code>
+     * <code>optional int64 time = 2;</code>
      */
     public boolean hasTime() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required int64 time = 2;</code>
+     * <code>optional int64 time = 2;</code>
      */
     public long getTime() {
       return time_;
@@ -242,7 +271,7 @@ public final class Common {
      * </pre>
      */
     public boolean hasDestination() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
      * <code>optional int32 destination = 8;</code>
@@ -266,7 +295,7 @@ public final class Common {
      * </pre>
      */
     public boolean hasMaxHops() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
      * <code>optional int32 max_hops = 10 [default = -1];</code>
@@ -281,6 +310,7 @@ public final class Common {
     }
 
     private void initFields() {
+      nodeId_ = 0;
       origin_ = pipe.common.Common.Node.getDefaultInstance();
       time_ = 0L;
       destination_ = 0;
@@ -292,17 +322,11 @@ public final class Common {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasOrigin()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasTime()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getOrigin().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
+      if (hasOrigin()) {
+        if (!getOrigin().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       memoizedIsInitialized = 1;
       return true;
@@ -311,16 +335,19 @@ public final class Common {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeMessage(1, origin_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt64(2, time_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(8, destination_);
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(3, nodeId_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(8, destination_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeInt32(10, maxHops_);
       }
       getUnknownFields().writeTo(output);
@@ -332,19 +359,23 @@ public final class Common {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, origin_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, time_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, nodeId_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, destination_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(10, maxHops_);
       }
@@ -472,18 +503,20 @@ public final class Common {
 
       public Builder clear() {
         super.clear();
+        nodeId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
         if (originBuilder_ == null) {
           origin_ = pipe.common.Common.Node.getDefaultInstance();
         } else {
           originBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        time_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        destination_ = 0;
+        time_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
-        maxHops_ = -1;
+        destination_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
+        maxHops_ = -1;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -515,21 +548,25 @@ public final class Common {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
+        result.nodeId_ = nodeId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
         if (originBuilder_ == null) {
           result.origin_ = origin_;
         } else {
           result.origin_ = originBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.time_ = time_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.destination_ = destination_;
+        result.time_ = time_;
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
+        }
+        result.destination_ = destination_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
         }
         result.maxHops_ = maxHops_;
         result.bitField0_ = to_bitField0_;
@@ -548,6 +585,9 @@ public final class Common {
 
       public Builder mergeFrom(pipe.common.Common.Header other) {
         if (other == pipe.common.Common.Header.getDefaultInstance()) return this;
+        if (other.hasNodeId()) {
+          setNodeId(other.getNodeId());
+        }
         if (other.hasOrigin()) {
           mergeOrigin(other.getOrigin());
         }
@@ -565,17 +605,11 @@ public final class Common {
       }
 
       public final boolean isInitialized() {
-        if (!hasOrigin()) {
-          
-          return false;
-        }
-        if (!hasTime()) {
-          
-          return false;
-        }
-        if (!getOrigin().isInitialized()) {
-          
-          return false;
+        if (hasOrigin()) {
+          if (!getOrigin().isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -599,17 +633,49 @@ public final class Common {
       }
       private int bitField0_;
 
+      private int nodeId_ ;
+      /**
+       * <code>optional int32 node_id = 3;</code>
+       */
+      public boolean hasNodeId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional int32 node_id = 3;</code>
+       */
+      public int getNodeId() {
+        return nodeId_;
+      }
+      /**
+       * <code>optional int32 node_id = 3;</code>
+       */
+      public Builder setNodeId(int value) {
+        bitField0_ |= 0x00000001;
+        nodeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 node_id = 3;</code>
+       */
+      public Builder clearNodeId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        nodeId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private pipe.common.Common.Node origin_ = pipe.common.Common.Node.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           pipe.common.Common.Node, pipe.common.Common.Node.Builder, pipe.common.Common.NodeOrBuilder> originBuilder_;
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public boolean hasOrigin() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public pipe.common.Common.Node getOrigin() {
         if (originBuilder_ == null) {
@@ -619,7 +685,7 @@ public final class Common {
         }
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public Builder setOrigin(pipe.common.Common.Node value) {
         if (originBuilder_ == null) {
@@ -631,11 +697,11 @@ public final class Common {
         } else {
           originBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public Builder setOrigin(
           pipe.common.Common.Node.Builder builderForValue) {
@@ -645,15 +711,15 @@ public final class Common {
         } else {
           originBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public Builder mergeOrigin(pipe.common.Common.Node value) {
         if (originBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
               origin_ != pipe.common.Common.Node.getDefaultInstance()) {
             origin_ =
               pipe.common.Common.Node.newBuilder(origin_).mergeFrom(value).buildPartial();
@@ -664,11 +730,11 @@ public final class Common {
         } else {
           originBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public Builder clearOrigin() {
         if (originBuilder_ == null) {
@@ -677,19 +743,19 @@ public final class Common {
         } else {
           originBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public pipe.common.Common.Node.Builder getOriginBuilder() {
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         onChanged();
         return getOriginFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       public pipe.common.Common.NodeOrBuilder getOriginOrBuilder() {
         if (originBuilder_ != null) {
@@ -699,7 +765,7 @@ public final class Common {
         }
       }
       /**
-       * <code>required .Node origin = 1;</code>
+       * <code>optional .Node origin = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           pipe.common.Common.Node, pipe.common.Common.Node.Builder, pipe.common.Common.NodeOrBuilder> 
@@ -717,31 +783,31 @@ public final class Common {
 
       private long time_ ;
       /**
-       * <code>required int64 time = 2;</code>
+       * <code>optional int64 time = 2;</code>
        */
       public boolean hasTime() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required int64 time = 2;</code>
+       * <code>optional int64 time = 2;</code>
        */
       public long getTime() {
         return time_;
       }
       /**
-       * <code>required int64 time = 2;</code>
+       * <code>optional int64 time = 2;</code>
        */
       public Builder setTime(long value) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         time_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int64 time = 2;</code>
+       * <code>optional int64 time = 2;</code>
        */
       public Builder clearTime() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         time_ = 0L;
         onChanged();
         return this;
@@ -756,7 +822,7 @@ public final class Common {
        * </pre>
        */
       public boolean hasDestination() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
        * <code>optional int32 destination = 8;</code>
@@ -776,7 +842,7 @@ public final class Common {
        * </pre>
        */
       public Builder setDestination(int value) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         destination_ = value;
         onChanged();
         return this;
@@ -789,7 +855,7 @@ public final class Common {
        * </pre>
        */
       public Builder clearDestination() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         destination_ = 0;
         onChanged();
         return this;
@@ -805,7 +871,7 @@ public final class Common {
        * </pre>
        */
       public boolean hasMaxHops() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>optional int32 max_hops = 10 [default = -1];</code>
@@ -827,7 +893,7 @@ public final class Common {
        * </pre>
        */
       public Builder setMaxHops(int value) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         maxHops_ = value;
         onChanged();
         return this;
@@ -841,7 +907,7 @@ public final class Common {
        * </pre>
        */
       public Builder clearMaxHops() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         maxHops_ = -1;
         onChanged();
         return this;
@@ -2178,12 +2244,13 @@ public final class Common {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014common.proto\"X\n\006Header\022\025\n\006origin\030\001 \002(\013" +
-      "2\005.Node\022\014\n\004time\030\002 \002(\003\022\023\n\013destination\030\010 \001" +
-      "(\005\022\024\n\010max_hops\030\n \001(\005:\002-1\"6\n\007Failure\022\n\n\002i" +
-      "d\030\001 \002(\005\022\016\n\006ref_id\030\002 \001(\005\022\017\n\007message\030\003 \001(\t" +
-      "\".\n\004Node\022\n\n\002id\030\001 \002(\005\022\014\n\004host\030\002 \002(\t\022\014\n\004po" +
-      "rt\030\003 \002(\005B\017\n\013pipe.commonH\001"
+      "\n\014common.proto\"i\n\006Header\022\017\n\007node_id\030\003 \001(" +
+      "\005\022\025\n\006origin\030\001 \001(\0132\005.Node\022\014\n\004time\030\002 \001(\003\022\023" +
+      "\n\013destination\030\010 \001(\005\022\024\n\010max_hops\030\n \001(\005:\002-" +
+      "1\"6\n\007Failure\022\n\n\002id\030\001 \002(\005\022\016\n\006ref_id\030\002 \001(\005" +
+      "\022\017\n\007message\030\003 \001(\t\".\n\004Node\022\n\n\002id\030\001 \002(\005\022\014\n" +
+      "\004host\030\002 \002(\t\022\014\n\004port\030\003 \002(\005B\017\n\013pipe.common" +
+      "H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2202,7 +2269,7 @@ public final class Common {
     internal_static_Header_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Header_descriptor,
-        new java.lang.String[] { "Origin", "Time", "Destination", "MaxHops", });
+        new java.lang.String[] { "NodeId", "Origin", "Time", "Destination", "MaxHops", });
     internal_static_Failure_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Failure_fieldAccessorTable = new

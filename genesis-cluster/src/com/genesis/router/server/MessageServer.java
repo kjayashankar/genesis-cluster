@@ -25,12 +25,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.genesis.monitors.DragonThread;
+import com.genesis.monitors.Flooder;
 import com.genesis.monitors.NetworkMonitor;
+import com.genesis.monitors.QueueMonitor;
+import com.genesis.monitors.StealerThread;
 import com.genesis.queues.workers.ThreadPool;
 import com.genesis.router.container.RoutingConf;
 import com.genesis.router.server.edges.EdgeMonitor;
 import com.genesis.router.server.tasks.NoOpBalancer;
+import com.genesis.router.server.tasks.SimpleBalancer;
 import com.genesis.router.server.tasks.TaskList;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -193,12 +196,18 @@ public class MessageServer {
 			if (conf == null)
 				throw new RuntimeException("missing conf");
 
+			
 			state = new ServerState();
 			state.setConf(conf);
 			if (!conf.isInternalNode()) 
 				state.state = STATE.LEADER;
+			
+			QueueMonitor qMon = new QueueMonitor(state,new SimpleBalancer());
+			state.setQueueMonitor(qMon);
+			
 			TaskList tasks = new TaskList(new NoOpBalancer());
 			state.setTasks(tasks);
+			
 			NetworkMonitor nmon = NetworkMonitor.getInstance();
 			nmon.setState(state);
 			
@@ -207,15 +216,15 @@ public class MessageServer {
 			Thread t = new Thread(emon);
 			t.start();
 			
-			Thread n = new Thread(nmon);
-			n.start();
-			
-			ThreadPool pool = new ThreadPool(8, state);
+			ThreadPool pool = new ThreadPool(4, state);
 			pool.setThreadPause(1000);
 			pool.init();
 			pool.startWorkers();
 			
-			DragonThread dT = new DragonThread();
+			StealerThread stealer = new StealerThread(state);
+			stealer.start();
+			
+			Flooder dT = new Flooder();
 			//dT.init();
 			dT.setState(state);
 			new Thread(dT).start();

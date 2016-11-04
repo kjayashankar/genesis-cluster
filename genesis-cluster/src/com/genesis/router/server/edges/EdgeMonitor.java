@@ -36,6 +36,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import pipe.common.Common.Header;
 import pipe.common.Common.Node;
 import pipe.election.Election.LeaderStatus;
 import pipe.work.Work.NodeLinks;
@@ -53,6 +54,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private EdgeList failedOutNodes = new EdgeList();
 	private EdgeInfo thisNode;
 	private EdgeInfo leader;
+	 
 	private ElectionMonitor eMonitor = new ElectionMonitor();
 	private long dt = 2000;
 	private ServerState state;
@@ -521,5 +523,35 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	public void handleVote(WorkMessage msg) {
 		// TODO Auto-generated method stub
 		eMonitor.setVotedNum(1);
+	}
+
+	public void handleStealer() {
+		for (EdgeInfo ei : this.outboundEdges.map.values()) {
+			
+			if (ei.isActive() && ei.getChannel() != null) {
+	
+				if(shouldStealTask()){
+					logger.info("Threshold cross looking to steal work, Node id is "+state.getConf().getNodeId());
+					Header.Builder hb = Header.newBuilder();
+					hb.setNodeId(state.getConf().getNodeId());
+					hb.setDestination(-1);
+					hb.setTime(System.currentTimeMillis());
+		
+					logger.info("Steal request sent to the outbound edge");
+					WorkMessage.Builder wb = WorkMessage.newBuilder();
+					wb.setHeader(hb);
+					wb.setSteal(true);
+					wb.setSecret(1);
+					
+					ei.getChannel().writeAndFlush(wb.build());
+				}
+			}
+		}
+		
+	}
+	
+	private boolean shouldStealTask() {
+		logger.info("Should steal numEnqueued :: "+ state.getTasks().numEnqueued() + ", threshold :: "+state.getTasks().STEALING_THRESHOLD);
+		return state.getTasks().startStealing();
 	}
 }

@@ -1,0 +1,54 @@
+option java_package = "com.message";
+import "common.proto";
+
+enum Operation {
+	GET = 1;
+	POST = 2; 
+	PUT = 3;
+	DELETE = 4;
+	STEAL =5;
+}
+message RequestMessage {
+	
+	// define operation in the request message
+	optional Operation operation = 5;
+	
+	// key for chunk sent by the client
+	optional string key = 6;
+	
+	optional bytes data = 7;
+	
+	optional int32 seq_no = 8;	
+	
+	optional ChunkInfo chunkInfo = 16;
+	
+}
+message ChunkInfo {
+	required int32 no_of_chunks = 15;
+}
+message ResponseMessage {
+
+	optional Operation operation = 9;
+
+	optional bool success = 10;
+	
+	optional string key = 11;
+
+	optional int32 chunk_no = 12;
+
+	optional string status_msg = 13;
+	
+	oneof payload {
+
+		// Failure with reason 
+		Failure failure = 20;	
+		
+		// Data in case of GET action
+		bytes data = 19;
+		
+		ChunkInfo chunkInfo = 18;
+		
+		
+	}
+
+}

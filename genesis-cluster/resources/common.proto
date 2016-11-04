@@ -6,8 +6,9 @@ option java_package = "pipe.common";
  * security, authentication, and tracking information
  */
 message Header {  
-    required Node origin = 1;
-    required int64 time = 2;
+	optional int32 node_id = 3;
+    optional Node origin = 1;
+    optional int64 time = 2;
    	
     // if the message is for a specific node, this will be set
     optional int32 destination = 8;

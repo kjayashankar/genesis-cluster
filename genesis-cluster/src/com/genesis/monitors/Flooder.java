@@ -17,7 +17,7 @@ import pipe.election.Election.LeaderStatus.LeaderQuery;
 import pipe.work.Work.NodeLinks;
 import pipe.work.Work.WorkMessage;
 
-public class DragonThread implements Runnable{
+public class Flooder implements Runnable{
 
 	private static Logger logger = LoggerFactory.getLogger("Dragon mon");
 	private ServerState state;
@@ -52,10 +52,14 @@ public class DragonThread implements Runnable{
 			if(state != null) {
 				if(!initialized)
 					init();
-				if(state.state == STATE.LEADER && ++waitCycle % 3 == 1){
+				if(state.state == STATE.LEADER && ++waitCycle % 10 == 1){
 					state.getEmon().passMsg(leader);
 				}
-				if(state.state == STATE.LEADER && ++waitCycle % 3 == 2){
+				if(state.state == STATE.LEADER && ++waitCycle % 10 == 3) {
+					state.getEmon().initDragonBeat(1);
+
+				}
+				if(state.state == STATE.LEADER && ++waitCycle % 10 == 9){
 					logger.info("initiate dragon beat level 2");
 					if(nmon.nmap != null && nmon.nmap.size() > 0 ){
 						List<NodeLinks> nmapOut = nmon.nmap;

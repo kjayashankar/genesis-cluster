@@ -4,6 +4,7 @@ import com.genesis.queues.InboundQueue;
 import com.genesis.queues.OutboundQueue;
 import com.genesis.queues.Queue;
 import com.genesis.router.server.ServerState;
+import com.genesis.router.server.tasks.Rebalancer;
 
 public class QueueMonitor {
 
@@ -15,9 +16,9 @@ public class QueueMonitor {
 	
 	private ServerState state;
 	
-	public QueueMonitor(ServerState state){
+	public QueueMonitor(ServerState state, Rebalancer balancer){
 		this.state = state;
-		inboundQueue = new InboundQueue();
+		inboundQueue = new InboundQueue(balancer);
 		outboundQueue = new OutboundQueue();
 	}
 	

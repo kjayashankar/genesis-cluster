@@ -31,13 +31,22 @@ import pipe.work.Work.Task;
 public class TaskList {
 	protected static Logger logger = LoggerFactory.getLogger("work");
 
-	private LinkedBlockingDeque<Task> inbound = new LinkedBlockingDeque<Task>();
+	private LinkedBlockingDeque<Task> inbound;
+	private LinkedBlockingDeque<Task> outbound;
 	private int processed;
 	private int balanced;
 	private Rebalancer rebalance;
-
+	public final int MAX_SIZE = 4;
+	public final int STEALING_THRESHOLD = 1;
+	
+	
 	public TaskList(Rebalancer rb) {
 		rebalance = rb;
+		inbound = new LinkedBlockingDeque<Task>();
+		
+		for(int i=0; i<20;i++){
+			inbound.add(addDummyTasks());
+		}
 	}
 
 	public void addTask(Task t) {
@@ -55,11 +64,23 @@ public class TaskList {
 	public int numBalanced() {
 		return balanced;
 	}
+	
+	/**
+	 * If the thread has less no. of inbound threads it starts stealing from adjacent nodes. 
+	 * @return boolean value
+	 */
+	public boolean startStealing(){
+		//logger.info("Steal flag is :: "+ (numEnqueued() <= STEALING_THRESHOLD));
+		return numEnqueued() >= STEALING_THRESHOLD ? true: false;
+	}
 
 	/**
-	 * task taken to be given to another node
+	 * Task will be taken to be given to some other node, 
+	 * Implements sharing of resources among the cluster
+	 * it measures if the queue no. of tasks enqueued are more than 50% of the allowed size
+	 * take the task n give it to the adjacent node.
 	 * 
-	 * @return
+	 * @return Task to be assigned to the other node now
 	 */
 	public Task rebalance() {
 		Task t = null;
@@ -81,7 +102,7 @@ public class TaskList {
 	 * 
 	 * @return
 	 */
-	protected Task dequeue() {
+	public Task dequeue() {
 		Task t = null;
 		try {
 			t = inbound.take();
@@ -90,5 +111,15 @@ public class TaskList {
 			logger.error("failed to dequeue a task", e);
 		}
 		return t;
+	}
+	
+	public Task addDummyTasks(){
+		Task.Builder t = Task.newBuilder();
+		t.setSeqId(-1);
+		t.setSeriesId(-1);
+		//t.setCommandMessage(null);
+		
+		return t.buildPartial();
+		
 	}
 }
