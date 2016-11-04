@@ -1,6 +1,7 @@
 package com.genesis.monitors;
 
 import com.genesis.queues.InboundQueue;
+import com.genesis.queues.LazyQueue;
 import com.genesis.queues.OutboundQueue;
 import com.genesis.queues.Queue;
 import com.genesis.router.server.ServerState;
@@ -12,6 +13,8 @@ public class QueueMonitor {
 	
 	private Queue outboundQueue;
 	
+	private Queue lazyQueue;
+	
 	private int flag = 1;
 	
 	private ServerState state;
@@ -20,10 +23,11 @@ public class QueueMonitor {
 		this.state = state;
 		inboundQueue = new InboundQueue(balancer);
 		outboundQueue = new OutboundQueue();
+		lazyQueue = new LazyQueue();
 	}
 	
 	public Queue getQueue(){
-		if(state != null){
+		if(state != null && !idleStatus() ){
 			if(flag == 0){
 				flag++;
 				return inboundQueue;
@@ -33,10 +37,17 @@ public class QueueMonitor {
 				return outboundQueue;
 			}
 		}
+		else if( state != null) {
+			return lazyQueue;
+		}
 		//default inbound queue;
 		return inboundQueue;
 	}
 	
+	private boolean idleStatus() {
+		return false;
+	}
+
 	public void clearFlags(){
 		flag = 1;
 	}
