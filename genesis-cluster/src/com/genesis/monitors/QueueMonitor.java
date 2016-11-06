@@ -12,18 +12,24 @@ public class QueueMonitor {
 	private Queue inboundQueue;
 	
 	private Queue outboundQueue;
+	private int inQ = 0;
+	private int outq = 0;
+	
 	
 	private Queue lazyQueue;
 	
 	private int flag = 1;
 	
+	private int workerthreads = 0;
+	
 	private ServerState state;
 	
-	public QueueMonitor(ServerState state, Rebalancer balancer){
+	public QueueMonitor(int workerThreads , ServerState state, Rebalancer balancer){
 		this.state = state;
 		inboundQueue = new InboundQueue(balancer);
 		outboundQueue = new OutboundQueue();
 		lazyQueue = new LazyQueue();
+		this.workerthreads = workerThreads;
 	}
 	
 	public Queue getQueue(){
@@ -58,5 +64,9 @@ public class QueueMonitor {
 	
 	public Queue getOutboundQueue() {
 		return outboundQueue;
+	}
+	
+	public Queue getLazyQueue() {
+		return lazyQueue;
 	}
 }

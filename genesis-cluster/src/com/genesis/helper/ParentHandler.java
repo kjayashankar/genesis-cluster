@@ -25,7 +25,7 @@ public class ParentHandler implements ServerHandler{
 	
 	@Override
 	public void handleTask(WorkMessage msg, Channel channel) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -39,6 +39,9 @@ public class ParentHandler implements ServerHandler{
 	@Override
 	public void handleMessage(WorkMessage msg, Channel channel) {
 		// TODO Auto-generated method stub
+		if(msg.hasTask()){
+			handleTask(msg,channel);
+		}
 		
 	}
 

@@ -17,13 +17,14 @@ package com.genesis.router.server.edges;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.genesis.monitors.ElectionMonitor;
 import com.genesis.monitors.NetworkMonitor;
+import com.genesis.monitors.QueueMonitor;
+import com.genesis.queues.Queue;
 import com.genesis.resource.ResourceUtil;
 import com.genesis.router.container.RoutingConf.RoutingEntry;
 import com.genesis.router.server.STATE;
@@ -40,6 +41,7 @@ import pipe.common.Common.Header;
 import pipe.common.Common.Node;
 import pipe.election.Election.LeaderStatus;
 import pipe.work.Work.NodeLinks;
+import pipe.work.Work.Task;
 import pipe.work.Work.Vote.Verdict;
 import pipe.work.Work.WorkMessage;
 import pipe.work.Work.WorkState;
@@ -54,7 +56,8 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private EdgeList failedOutNodes = new EdgeList();
 	private EdgeInfo thisNode;
 	private EdgeInfo leader;
-	 
+	private QueueMonitor qMon ;
+	private Queue lazyQ = null;
 	private ElectionMonitor eMonitor = new ElectionMonitor();
 	private long dt = 2000;
 	private ServerState state;
@@ -70,6 +73,8 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		this.inboundEdges = new EdgeList();
 		this.state = state;
 		this.state.setEmon(this);
+		this.qMon = state.getQueueMonitor();
+		lazyQ = qMon.getLazyQueue();
 
 		if (state.getConf().getRouting() != null) {
 			for (RoutingEntry e : state.getConf().getRouting()) {
@@ -526,32 +531,60 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 
 	public void handleStealer() {
-		for (EdgeInfo ei : this.outboundEdges.map.values()) {
-			
-			if (ei.isActive() && ei.getChannel() != null) {
-	
-				if(shouldStealTask()){
-					logger.info("Threshold cross looking to steal work, Node id is "+state.getConf().getNodeId());
+		
+		if(shouldStealTask()){
+			logger.info("Threshold cross looking to steal work, Node id is "+state.getConf().getNodeId());
+			for (EdgeInfo ei : this.outboundEdges.map.values()) {
+				
+				if (ei.isActive() && ei.getChannel() != null) {
+		
 					Header.Builder hb = Header.newBuilder();
 					hb.setNodeId(state.getConf().getNodeId());
 					hb.setDestination(-1);
 					hb.setTime(System.currentTimeMillis());
-		
-					logger.info("Steal request sent to the outbound edge");
 					WorkMessage.Builder wb = WorkMessage.newBuilder();
 					wb.setHeader(hb);
 					wb.setSteal(true);
 					wb.setSecret(1);
-					
 					ei.getChannel().writeAndFlush(wb.build());
+					logger.info("Steal request sent to the outbound edge");
+				}
+			}
+			for(EdgeInfo ei: this.inboundEdges.map.values()) {
+				if(ei.getEnqueue() - ei.getProcessed() > 20) {
+					Header.Builder hb = Header.newBuilder();
+					hb.setNodeId(state.getConf().getNodeId());
+					hb.setDestination(-1);
+					hb.setTime(System.currentTimeMillis());
+					WorkMessage.Builder wb = WorkMessage.newBuilder();
+					wb.setHeader(hb);
+					wb.setSteal(true);
+					wb.setSecret(1);
+					ei.getChannel().writeAndFlush(wb.build());
+					logger.info("Steal request sent to the inbound edge");
 				}
 			}
 		}
-		
 	}
 	
 	private boolean shouldStealTask() {
 		logger.info("Should steal numEnqueued :: "+ state.getTasks().numEnqueued() + ", threshold :: "+state.getTasks().STEALING_THRESHOLD);
 		return state.getTasks().startStealing();
+	}
+	
+	public void sendToLazyQueue(Task t) {
+		
+		if(lazyQ == null ){
+			logger.error("lazy queue not yet initialized");
+			return ;
+		}
+		for(EdgeInfo ei : this.outboundEdges.map.values()) {
+			if(ei.getChannel() != null && ei.isActive()) {
+				lazyQ.put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),t), ei.getChannel());
+			}
+			else {
+				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());
+			}
+		}
 	}
 }

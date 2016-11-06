@@ -2,16 +2,17 @@ package com.genesis.queues;
 
 import io.netty.channel.Channel;
 import pipe.work.Work.Task;
+import pipe.work.Work.WorkMessage;
 
-public class TaskChannel {
+public class WorkChannel {
 
-	private Task task;
+	private WorkMessage work;
 	
 	private Channel channel;
 
-	public TaskChannel(Task task, Channel channel) {
+	public WorkChannel(WorkMessage work, Channel channel) {
 		// TODO Auto-generated constructor stub
-		this.task = task;
+		this.work = work;
 		this.channel = channel;
 	}
 
@@ -19,12 +20,12 @@ public class TaskChannel {
 		return channel;
 	}
 
-	public Task getTask() {
-		return task;
+	public WorkMessage getWorkMessage() {
+		return work;
 	}
 
-	public void setTask(Task task) {
-		this.task = task;
+	public void setTask(WorkMessage work) {
+		this.work = work;
 	}
 
 	public void setChannel(Channel channel) {

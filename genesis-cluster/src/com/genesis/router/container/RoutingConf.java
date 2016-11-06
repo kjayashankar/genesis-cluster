@@ -38,6 +38,7 @@ public class RoutingConf {
 	private boolean internalNode = true;
 	private int heartbeatDt = 2000;
 	private List<RoutingEntry> routing;
+	private int workerThreads ;
 
 	public HashMap<String, Integer> asHashMap() {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -57,6 +58,11 @@ public class RoutingConf {
 			routing = new ArrayList<RoutingEntry>();
 
 		routing.add(entry);
+	}
+	
+	public int getWorkerThreads() {
+		// TODO Auto-generated method stub
+		return workerThreads;
 	}
 
 	public int getNodeId() {
@@ -153,4 +159,6 @@ public class RoutingConf {
 		// TODO Auto-generated method stub
 		return "localhost";
 	}
+
+	
 }

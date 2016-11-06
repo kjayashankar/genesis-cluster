@@ -2,31 +2,32 @@ package com.genesis.queues;
 
 import java.util.concurrent.LinkedBlockingDeque;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.channel.Channel;
 import pipe.work.Work.Task;
+import pipe.work.Work.WorkMessage;
 
 public class LazyQueue implements Queue {
 
-	LinkedBlockingDeque<TaskChannel> lazy;
-	
+	LinkedBlockingDeque<WorkChannel> lazy;
+	private static Logger logger = LoggerFactory.getLogger("lazy queue");
 	public LazyQueue() {
-		lazy = new LinkedBlockingDeque<TaskChannel>();
+		lazy = new LinkedBlockingDeque<WorkChannel>();
 		
 	}
 	
 	@Override
-	public void put(Task task, Channel channel) {
-		// TODO Auto-generated method stub
-		lazy.add(e)
+	public void put(WorkMessage work, Channel channel) {
+		lazy.add(new WorkChannel(work, channel));
 	}
 
 	@Override
-	public TaskChannel get() {
-		// TODO Auto-generated method stub
+	public WorkChannel get() {
 		try {
 			return lazy.take();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -34,20 +35,29 @@ public class LazyQueue implements Queue {
 
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
 		return lazy.size();
 	}
 	
-	public void put(Task t){
-		put(t,null);
-	}
 	
-	public Task getTask(){
-		TaskChannel tc= get();
+	public WorkMessage getTask(){
+		WorkChannel tc= get();
 		if(tc != null ){
-			return tc.getTask();
+			return tc.getWorkMessage();
 		}
 		return null;
+	}
+	
+	public boolean process(){
+		if(lazy.size() == 0) {
+			logger.info("lazy queue size is 0, process other tasks ?");
+			return false;
+		}
+		WorkChannel t = get();
+		WorkMessage work = t.getWorkMessage();
+		Channel channel = t.getChannel();
+		if(channel.isActive() && channel.isOpen())
+			channel.writeAndFlush(work);
+		return true;
 	}
 
 }

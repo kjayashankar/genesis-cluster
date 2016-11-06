@@ -13,6 +13,7 @@ import pipe.work.Work.DragonBeat;
 import pipe.work.Work.Heartbeat;
 import pipe.work.Work.NodeLinks;
 import pipe.work.Work.Register;
+import pipe.work.Work.Task;
 import pipe.work.Work.Vote;
 import pipe.work.Work.Vote.Verdict;
 import pipe.work.Work.WorkMessage;
@@ -202,4 +203,27 @@ public class ResourceUtil {
 		
 		return wm.build();		
 	}
+
+	public static WorkMessage wrapIntoWorkMessage(EdgeInfo ei, int destID, Task t) {
+		Node.Builder nb = Node.newBuilder();
+		nb.setId(ei.getRef());
+		nb.setHost(ei.getHost());
+		nb.setPort(ei.getPort());
+		
+		Header.Builder hb = Header.newBuilder();
+		hb.setOrigin(nb);
+		hb.setDestination(destID);
+		hb.setTime(System.currentTimeMillis());
+		
+		WorkMessage.Builder wb = WorkMessage.newBuilder();
+		
+		wb.setSecret(1001);
+		wb.setHeader(hb);
+		
+		wb.setTask(t);
+		return wb.build();
+		
+	}
+	
+	
 }

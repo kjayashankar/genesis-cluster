@@ -199,19 +199,20 @@ public class MessageServer {
 			
 			state = new ServerState();
 			state.setConf(conf);
-			if (!conf.isInternalNode()) 
-				state.state = STATE.LEADER;
-			
-			QueueMonitor qMon = new QueueMonitor(state,new SimpleBalancer());
-			state.setQueueMonitor(qMon);
 			
 			TaskList tasks = new TaskList(new NoOpBalancer());
 			state.setTasks(tasks);
 			
 			NetworkMonitor nmon = NetworkMonitor.getInstance();
 			nmon.setState(state);
-			
 			state.setNetworkmon(nmon);
+			
+			if (!conf.isInternalNode()) 
+				state.state = STATE.LEADER;
+			
+			QueueMonitor qMon = new QueueMonitor(conf.getWorkerThreads(),state,new SimpleBalancer());
+			state.setQueueMonitor(qMon);
+			
 			EdgeMonitor emon = new EdgeMonitor(state);
 			Thread t = new Thread(emon);
 			t.start();
@@ -225,13 +226,8 @@ public class MessageServer {
 			stealer.start();
 			
 			Flooder dT = new Flooder();
-			//dT.init();
 			dT.setState(state);
 			new Thread(dT).start();
-			
-			
-			
-			
 		}
 
 		public void run() {
