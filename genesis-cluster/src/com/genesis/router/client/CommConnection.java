@@ -15,18 +15,22 @@
  */
 package com.genesis.router.client;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.genesis.router.server.CommandInit;
+import com.genesis.router.container.RoutingConf;
+import com.genesis.router.server.MessageServer.JsonUtil;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -97,8 +101,7 @@ public class CommConnection {
 	 * 
 	 * @param req
 	 *            The request
-	 * @exception An
-	 *                exception is raised if the message cannot be enqueued.
+	 * @exception An exception is raised if the message cannot be enqueued.
 	 */
 	public void enqueue(CommandMessage req) throws Exception {
 		// enqueue message
@@ -139,22 +142,27 @@ public class CommConnection {
 	 */
 	public void addListener(CommListener listener) {
 		CommHandler handler = connect().pipeline().get(CommHandler.class);
-		if (handler != null)
+		logger.info("definitely here");
+		if (handler != null){
+			logger.info("Is it coming here");
 			handler.addListener(listener);
+			
+		}
 	}
+	
 
 	private void init() {
-		System.out.println("--> initializing connection to " + host + ":" + port);
-
+		logger.info("--> initializing connection to " + host + ":" + port);
 		// the queue to support client-side surging
 		outbound = new LinkedBlockingDeque<CommandMessage>();
-
+		
 		group = new NioEventLoopGroup();
 		try {
-			CommandInit si = new CommandInit(null, false);
+//			GlobalCommandChannelInitializer si = new GlobalCommandChannelInitializer(conf,false);
+			CommInit si = new CommInit(false);
 			Bootstrap b = new Bootstrap();
 			b.group(group).channel(NioSocketChannel.class).handler(si);
-			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 100000);
 			b.option(ChannelOption.TCP_NODELAY, true);
 			b.option(ChannelOption.SO_KEEPALIVE, true);
 
@@ -163,12 +171,14 @@ public class CommConnection {
 
 			// want to monitor the connection to the server s.t. if we loose the
 			// connection, we can try to re-establish it.
-			ClientClosedListener ccl = new ClientClosedListener(this);
-			channel.channel().closeFuture().addListener(ccl);
+			//ClientClosedListener ccl = new ClientClosedListener(this);
+			channel.channel().closeFuture();
 
-			System.out.println(channel.channel().localAddress() + " -> open: " + channel.channel().isOpen()
-					+ ", write: " + channel.channel().isWritable() + ", reg: " + channel.channel().isRegistered());
-
+			logger.info(channel.channel().remoteAddress() + " -> open: "
+					+channel.channel().isActive() + ", isActive"
+				+ channel.channel().isOpen() + ", write: "
+				+ channel.channel().isWritable() + ", reg: "
+				+ channel.channel().isRegistered());
 		} catch (Throwable ex) {
 			logger.error("failed to initialize the client connection", ex);
 			ex.printStackTrace();
@@ -178,6 +188,36 @@ public class CommConnection {
 		worker = new CommWorker(this);
 		worker.setDaemon(true);
 		worker.start();
+	}
+	private RoutingConf init(File cfg) {
+		RoutingConf conf=null;
+		if (!cfg.exists())
+			throw new RuntimeException(cfg.getAbsolutePath() + " not found");
+		// resource initialization - how message are processed
+		BufferedInputStream br = null;
+		try {
+			byte[] raw = new byte[(int) cfg.length()];
+			br = new BufferedInputStream(new FileInputStream(cfg));
+			br.read(raw);
+			conf = JsonUtil.decode(new String(raw), RoutingConf.class);
+			System.out.println(conf.getNodeId());
+			if (!verifyConf(conf))
+				throw new RuntimeException("verification of configuration failed");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return conf;
+	}
+	private boolean verifyConf(RoutingConf conf) {
+		return (conf != null);
 	}
 
 	/**
@@ -196,7 +236,7 @@ public class CommConnection {
 		else
 			throw new RuntimeException("Not able to establish connection to server");
 	}
-
+	
 	/**
 	 * usage:
 	 * 
@@ -207,20 +247,5 @@ public class CommConnection {
 	 * @author gash
 	 * 
 	 */
-	public static class ClientClosedListener implements ChannelFutureListener {
-		CommConnection cc;
-
-		public ClientClosedListener(CommConnection cc) {
-			this.cc = cc;
-		}
-
-		@Override
-		public void operationComplete(ChannelFuture future) throws Exception {
-			// we lost the connection or have shutdown.
-			System.out.println("--> client lost connection to the server");
-			System.out.flush();
-
-			// @TODO if lost, try to re-establish the connection
-		}
-	}
+	
 }

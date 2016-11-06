@@ -17,6 +17,7 @@ package com.genesis.router.client;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +35,20 @@ import routing.Pipe.CommandMessage;
  * @author gash
  * 
  */
-public class CommHandler extends SimpleChannelInboundHandler<CommandMessage> {
+public class CommHandler extends SimpleChannelInboundHandler<CommandMessage> implements Runnable {
 	protected static Logger logger = LoggerFactory.getLogger("connect");
 	protected ConcurrentMap<String, CommListener> listeners = new ConcurrentHashMap<String, CommListener>();
+	LinkedBlockingDeque<CommandMessage> recievdMsgQueue;
 	//private volatile Channel channel;
+	
+	@Override
+	public void run(){
+		
+		
+	}
 
 	public CommHandler() {
+		
 	}
 
 	/**

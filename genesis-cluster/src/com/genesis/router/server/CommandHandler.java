@@ -18,12 +18,17 @@ package com.genesis.router.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.monitors.QueueMonitor;
+import com.genesis.queues.Queue;
+import com.genesis.resource.ResourceUtil;
 import com.genesis.router.container.RoutingConf;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import pipe.common.Common.Failure;
+import pipe.work.Work.Task;
+import pipe.work.Work.WorkMessage;
 import routing.Pipe.CommandMessage;
 
 /**
@@ -35,12 +40,16 @@ import routing.Pipe.CommandMessage;
  * 
  */
 public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> {
-	protected static Logger logger = LoggerFactory.getLogger("cmd");
-	protected RoutingConf conf;
+	protected static Logger logger = LoggerFactory.getLogger("CommandHandler");
+	//protected RoutingConf conf;
+	protected ServerState state;
+	private Queue inboundQueue;
+	//private QueueManager queues;
 
-	public CommandHandler(RoutingConf conf) {
-		if (conf != null) {
-			this.conf = conf;
+	public CommandHandler(ServerState state) {
+		if (state != null) {
+			this.state = state;
+			inboundQueue = state.getQueueMonitor().getInboundQueue();
 		}
 	}
 
@@ -58,6 +67,21 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			return;
 		}
 
+		if(msg.hasReqMsg()){
+			//create a task of it and submit to the inbound along with the channel
+			Task.Builder myTask = Task.newBuilder();
+			myTask.setCommandMessage(msg);
+			myTask.setSeqId(myTask.getSeqId());
+			myTask.setSeriesId(myTask.getSeriesId());
+
+			WorkMessage workMessage = ResourceUtil.buildWorkMessageFromTask(myTask.build(), state);
+			inboundQueue.put(workMessage, channel);
+			
+			logger.info("Client Message added to the Inbound Queue.");
+		}
+		
+		
+		/*
 		PrintUtil.printCommand(msg);
 
 		try {
@@ -72,7 +96,7 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 		} catch (Exception e) {
 			// TODO add logging
 			Failure.Builder eb = Failure.newBuilder();
-			eb.setId(conf.getNodeId());
+			eb.setId(state.getConf().getNodeId());
 			eb.setRefId(msg.getHeader().getOrigin().getId());
 			eb.setMessage(e.getMessage());
 			CommandMessage.Builder rb = CommandMessage.newBuilder(msg);
@@ -80,7 +104,7 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			channel.write(rb.build());
 		}
 
-		System.out.flush();
+		System.out.flush();*/
 	}
 
 	/**

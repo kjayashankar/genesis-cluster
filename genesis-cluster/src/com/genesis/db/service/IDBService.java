@@ -4,20 +4,15 @@ import java.util.*;
 
 public interface IDBService {
 
-	String put(String key, int chunkID, byte[] value);
+	String post(String key, int chunkID, byte[] value);
 	
-	/**
-	 * create the mapping keys and return in response message
-	 * @param value
-	 * @return
-	 */
-	String store(byte[] value);
+	String post(byte[] value);
 	
 	public Map<Integer, byte[]> get(String key);
 	
-	public boolean update(String key, int chunkID, byte[] value);
+	public boolean put(String key, int chunkID, byte[] value);
 	
-	public Map<Integer, byte[]> delete(String key);
+	public boolean delete(String key);
 	
 	public boolean containsKey(String key);
 	

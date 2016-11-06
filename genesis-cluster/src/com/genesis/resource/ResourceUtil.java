@@ -10,6 +10,7 @@ import com.message.ClientMessage.ChunkInfo;
 import com.message.ClientMessage.RequestMessage;
 import com.message.ClientMessage.ResponseMessage;
 
+import pipe.common.Common;
 import pipe.common.Common.Failure;
 import pipe.common.Common.Header;
 import pipe.common.Common.Node;
@@ -235,7 +236,7 @@ public class ResourceUtil {
 	}
 	
 
-	public CommandMessage createResponseCommandMessage(CommandMessage commandMessage, byte[] data, int seqNo, ServerState state){
+	public static CommandMessage createResponseCommandMessage(CommandMessage commandMessage, byte[] data, int seqNo, ServerState state){
 		
 		//logger.info("creating command message");
 		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
@@ -269,7 +270,7 @@ public class ResourceUtil {
 	}
 	
 	
-	public CommandMessage createResponseFailureMessage(CommandMessage commandMessage, ServerState state){
+	public static CommandMessage createResponseFailureMessage(CommandMessage commandMessage, ServerState state){
 		//logger.info("Creating failure message ");
 		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
 		
@@ -290,7 +291,7 @@ public class ResourceUtil {
 		return resCmdMessage.build();
 	}
 	
-	private Header.Builder buildHeader(CommandMessage commandMessage, ServerState state) {
+	private static Header.Builder buildHeader(CommandMessage commandMessage, ServerState state) {
 		
 		Header.Builder hb = Header.newBuilder();
 		hb.setNodeId(state.getConf().getNodeId());
@@ -298,6 +299,34 @@ public class ResourceUtil {
 		hb.setDestination(commandMessage.getHeader().getNodeId());
 		return hb;
 	}
+	
+	/**
+	 * Constructs WorkMessage from Task
+	 * @param task
+	 * @param state
+	 * @return
+	 */
+	
+	public static WorkMessage buildWorkMessageFromTask(Task task, ServerState state) {
+		
+		WorkMessage.Builder wb = WorkMessage.newBuilder();
+		wb.setHeader(buildHeader(task.getCommandMessage(), state));
+		wb.setSecret(1); //dummy value
+		wb.setTask(task);
+		return wb.build();
+	}
+	
+	public static WorkMessage buildWorkMessageFromCommandMsg(CommandMessage commandMessage, ServerState state){
+		
+		Task.Builder myTask = Task.newBuilder();
+		myTask.setCommandMessage(commandMessage);
+		myTask.setSeqId(myTask.getSeqId());
+		myTask.setSeriesId(myTask.getSeriesId());
+		
+		return buildWorkMessageFromTask(myTask.build(), state);
+		
+	}
+	
 	
 	
 	public static WorkMessage enquireLeader(EdgeInfo ei, int ref) {

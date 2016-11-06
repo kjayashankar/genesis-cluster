@@ -34,8 +34,8 @@ public class MessageApp {
 			System.exit(1);
 		}
 
-		String log4jConfPath = "/home/jay/study/sjsu/enterprise application development/lab3/resources/log4j.properties";
-		PropertyConfigurator.configure(log4jConfPath);
+		//String log4jConfPath = "/home/jay/study/sjsu/enterprise application development/lab3/resources/log4j.properties";
+		//PropertyConfigurator.configure(log4jConfPath);
 		
 		
 		File cf = new File(args[0]);

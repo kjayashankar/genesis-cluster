@@ -1,9 +1,13 @@
 package com.genesis.queues;
 
+import java.net.SocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.genesis.router.server.ServerState;
 
 import io.netty.channel.Channel;
 import pipe.work.Work.Task;
@@ -13,8 +17,13 @@ public class OutboundQueue implements Queue{
 
 	private static Logger logger = LoggerFactory.getLogger("outboud queue");
 	private LinkedBlockingDeque<WorkChannel> outbound;
+	private ServerState state; 
+	private ConcurrentHashMap<String, SocketAddress> keySocketMappings;
+	private ConcurrentHashMap<SocketAddress, Channel> addressChannelMappings;
+
 	
-	public OutboundQueue() {
+	public OutboundQueue(ServerState state) {
+		this.state = state;
 		outbound = new LinkedBlockingDeque<WorkChannel>();
 	}
 
@@ -55,8 +64,39 @@ public class OutboundQueue implements Queue{
 		WorkChannel t = get();
 		WorkMessage work = t.getWorkMessage();
 		Channel channel = t.getChannel();
-		if(channel.isActive() && channel.isOpen())
-			channel.writeAndFlush(work);
+		
+		keySocketMappings = state.getKeySocketMappings();
+		addressChannelMappings = state.getAddressChannelMappings();
+		
+		logger.info("addressChannelMappings values"+addressChannelMappings);
+		logger.info("");
+		
+		
+		logger.info("Writing response back to the client");
+		logger.info("channel state : "+ channel.isActive() + ", Channel is open"+ channel.isOpen());
+		if(channel.isActive() && channel.isOpen()){
+			logger.info("Message Key :: "+work.getTask().getCommandMessage());
+			channel.writeAndFlush(work.getTask().getCommandMessage());
+		}
+			/*if (keySocketMappings.containsKey(work.getTask().getCommandMessage().getResMsg().getKey())) {
+				SocketAddress addr = keySocketMappings.get(work.getTask().getCommandMessage().getResMsg().getKey());
+				
+				if (addressChannelMappings.containsKey(addr)) {
+					//if(discardDuplicate(work.getTask().getCommandMessage())!=null){
+						//outboundQueue.put(returnWork, channel);
+						//outboundQueue.put(workMessage, channel);
+					//}
+						
+					channel.writeAndFlush(work.getTask().getCommandMessage());
+				} else {
+					
+					keySocketMappings.remove(work.getTask().getCommandMessage().getResMsg().getKey());
+				}
+			} else {
+				logger.info("No Client is waiting for the response....");
+			}
+		}*/
+			
 		return true;
 	}
 

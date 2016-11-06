@@ -53,7 +53,7 @@ public class MessageServer {
 
 	protected RoutingConf conf;
 	protected boolean background = false;
-
+	private static ServerState state;
 	/**
 	 * initialize the server with a configuration of it's resources
 	 * 
@@ -63,14 +63,44 @@ public class MessageServer {
 		init(cfg);
 	}
 
+	/**
+	 * Initializes state as it will be needed in both worker and command threads
+	 */
+	
+	public void initServer(){
+		//Initializing values in the init method
+				state = new ServerState();
+				state.setConf(conf);
+				
+				TaskList tasks = new TaskList(new NoOpBalancer());
+				state.setTasks(tasks);
+				
+				NetworkMonitor nmon = NetworkMonitor.getInstance();
+				nmon.setState(state);
+				state.setNetworkmon(nmon);
+				
+				if (!conf.isInternalNode()) 
+					state.state = STATE.LEADER;
+				
+				QueueMonitor qMon = new QueueMonitor(conf.getWorkerThreads(),state,new SimpleBalancer());
+				state.setQueueMonitor(qMon);
+	}
+	
 	public MessageServer(RoutingConf conf) {
 		this.conf = conf;
+		
+		
+		
 	}
 
 	public void release() {
 	}
 
 	public void startServer() {
+		
+		//Initializing the server's state ...
+		initServer();
+		
 		StartWorkCommunication comm = new StartWorkCommunication(conf);
 		logger.info("Work starting");
 
@@ -159,7 +189,7 @@ public class MessageServer {
 				// b.option(ChannelOption.MESSAGE_SIZE_ESTIMATOR);
 
 				boolean compressComm = false;
-				b.childHandler(new CommandInit(conf, compressComm));
+				b.childHandler(new CommandInit(state, compressComm));
 
 				// Start the server.
 				logger.info("Starting command server (" + conf.getNodeId() + "), listening on port = "
@@ -190,44 +220,35 @@ public class MessageServer {
 	 *            The port to listen to
 	 */
 	private static class StartWorkCommunication implements Runnable {
-		ServerState state;
+		
 
 		public StartWorkCommunication(RoutingConf conf) {
 			if (conf == null)
 				throw new RuntimeException("missing conf");
 
 			
-			state = new ServerState();
-			state.setConf(conf);
+			ThreadPool pool = new ThreadPool(4, state);
+			pool.setThreadPause(1000);
+			pool.init();
+			pool.startWorkers();
 			
-			TaskList tasks = new TaskList(new NoOpBalancer());
-			state.setTasks(tasks);
-			
-			NetworkMonitor nmon = NetworkMonitor.getInstance();
-			nmon.setState(state);
-			state.setNetworkmon(nmon);
-			
-			if (!conf.isInternalNode()) 
-				state.state = STATE.LEADER;
-			
-			QueueMonitor qMon = new QueueMonitor(conf.getWorkerThreads(),state,new SimpleBalancer());
-			state.setQueueMonitor(qMon);
-			
+			/*
 			EdgeMonitor emon = new EdgeMonitor(state);
 			Thread t = new Thread(emon);
 			t.start();
 			
-			/*ThreadPool pool = new ThreadPool(4, state);
+			ThreadPool pool = new ThreadPool(4, state);
 			pool.setThreadPause(1000);
 			pool.init();
 			pool.startWorkers();
 			
 			StealerThread stealer = new StealerThread(state);
-			stealer.start();*/
+			stealer.start();
 			
 			Flooder dT = new Flooder();
 			dT.setState(state);
-			new Thread(dT).start();
+			new Thread(dT).start();*/
+			
 		}
 
 		public void run() {

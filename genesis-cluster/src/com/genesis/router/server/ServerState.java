@@ -1,11 +1,16 @@
 package com.genesis.router.server;
 
+import java.net.SocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.genesis.monitors.LoadMonitor;
 import com.genesis.monitors.NetworkMonitor;
 import com.genesis.monitors.QueueMonitor;
 import com.genesis.router.container.RoutingConf;
 import com.genesis.router.server.edges.EdgeMonitor;
 import com.genesis.router.server.tasks.TaskList;
+
+import io.netty.channel.Channel;
 
 
 public class ServerState {
@@ -15,9 +20,20 @@ public class ServerState {
 	private LoadMonitor loadmon;
 	private NetworkMonitor networkmon;
 	private QueueMonitor queueMonitor;
+	private ConcurrentHashMap<String, SocketAddress> keySocketMappings = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<SocketAddress, Channel> addressChannelMappings = new ConcurrentHashMap<>();
 	
 	public STATE state = STATE.ORPHAN; 
 	
+	public ConcurrentHashMap<String, SocketAddress> getKeySocketMappings(){
+		
+		if(keySocketMappings!=null){
+			return keySocketMappings;
+		}else{
+			return new ConcurrentHashMap<>();
+		}
+		
+	}
 	public LoadMonitor getLoadmon() {
 		return loadmon;
 	}
@@ -64,6 +80,14 @@ public class ServerState {
 
 	public void setTasks(TaskList tasks) {
 		this.tasks = tasks;
+	}
+	public ConcurrentHashMap<SocketAddress, Channel> getAddressChannelMappings() {
+		if(addressChannelMappings!=null){
+			return addressChannelMappings;
+		}else{
+			return new ConcurrentHashMap<>();
+		}
+		
 	}
 
 }

@@ -12,16 +12,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.codehaus.jackson.impl.Utf8Generator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.genesis.db.service.IDBService;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Jedis; 
+import redis.clients.jedis.JedisPool; 
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 
 public class RedisDBServiceImpl implements IDBService {
 	
+	protected static Logger logger = LoggerFactory.getLogger("Redis DB Service");
 	Jedis redis;
 	static JedisPool pool;
 	
@@ -91,6 +96,12 @@ public class RedisDBServiceImpl implements IDBService {
 				for (byte[] bci : byteChunkIds) {
 					chunkDataMap.put((Integer) deserialize(bci), redis.hget(parsedKey, bci));
 				}
+				
+				//Map<Integer, byte[]> keyMap = get(key);
+				logger.info("KeyMap is :: ");
+				for (Map.Entry<Integer, byte[]> entry: chunkDataMap.entrySet()){
+					logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -127,7 +138,7 @@ public class RedisDBServiceImpl implements IDBService {
 	 * 
 	 */
 	@Override
-	public boolean update(String key, int chunkID, byte[] value) {
+	public boolean put(String key, int chunkID, byte[] value) {
 		// TODO Auto-generated method stub
 		boolean done = false;
 		try {
@@ -137,7 +148,17 @@ public class RedisDBServiceImpl implements IDBService {
 				if (redis.hexists(parsedKey, parseChunkId)) {
 					redis.hset(parsedKey, parseChunkId, value);
 					done = true;
+					
+					Map<Integer, byte[]> keyMap = get(key);
+					logger.info("Updated Values are :: ");
+					for (Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
+						logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
+					}
 				}
+				//display the updated contents of the map now
+				
+				
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -159,34 +180,44 @@ public class RedisDBServiceImpl implements IDBService {
 	
 
 	@Override
-	public String put(String key, int chunkID, byte[] value) {
+	public String post(String key, int chunkID, byte[] value) {
 		// TODO Auto-generated method stub
 		if (key == null || value == null) {
 			return null;
 		}
 		try {
 			redis.hset(serialize(key), serialize(chunkID), value);
+			
+			//Display stored values in the map
+			Map<Integer, byte[]> keyMap = get(key);
+			logger.info("Stored Values in the Map :: ");
+			for (Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
+				logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
+			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return key;
 	}
 
-	@Override
-	public String store(byte[] value) {
+
+	public String post(byte[] value) {
 		// TODO Auto-generated method stub
 		if (value == null) {
 			return null;
 		}
 		String uuid = UUID.randomUUID().toString();
-		String key = put(uuid, 1, value);
+		String key = post(uuid, 1, value);
 		return key;
 	}
 
 
 	@Override
-	public Map<Integer, byte[]> delete(String key) {
+	public boolean delete(String key) {
 		// TODO Auto-generated method stub
+		
+		boolean isDeleted = false;
 		Map<Integer, byte[]> removedMap = new HashMap<Integer, byte[]>();
 		try {
 			if (containsKey(key)) {
@@ -195,6 +226,9 @@ public class RedisDBServiceImpl implements IDBService {
 				for (byte[] bs : byteSequencIds) {
 					removedMap.put((Integer) deserialize(bs), redis.hget(serializedKey, bs));
 					redis.hdel(serializedKey, bs);
+					isDeleted = true;
+					
+					logger.info("Key is deleted:: "+key);
 				}
 			}
 		} catch (IOException e) {
@@ -202,7 +236,7 @@ public class RedisDBServiceImpl implements IDBService {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return removedMap;
+		return isDeleted;
 	}
 
 	
@@ -211,6 +245,7 @@ public class RedisDBServiceImpl implements IDBService {
 	public String getDatabaseType() {
 		// TODO Auto-generated method stub
 		return "Redis Database";
+
 	}
 
 }

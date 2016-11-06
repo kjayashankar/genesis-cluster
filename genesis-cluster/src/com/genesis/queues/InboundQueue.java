@@ -5,11 +5,13 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.helper.TaskHandler;
 import com.genesis.router.server.ServerState;
 import com.genesis.router.server.tasks.Rebalancer;
 
 import io.netty.channel.Channel;
 import pipe.work.Work.WorkMessage;
+import routing.Pipe.CommandMessage;
 
 public class InboundQueue implements Queue{
 
@@ -18,12 +20,14 @@ public class InboundQueue implements Queue{
 	private int balanced;
 	private ServerState state;
 	Rebalancer rebalance ;
+	private TaskHandler clientReqHandler;
 	private static Logger logger = LoggerFactory.getLogger("inbound queue");
 	
 	public InboundQueue(ServerState state,Rebalancer newBalancer) {
 		this.state = state;
 		this.rebalance = newBalancer;
 		inbound = new LinkedBlockingDeque<WorkChannel>();
+		
 		
 	}
 	
@@ -62,15 +66,25 @@ public class InboundQueue implements Queue{
 			return false;
 		}
 		
+		clientReqHandler = new TaskHandler(state);
+		
 		WorkChannel t = get();
 		WorkMessage work = t.getWorkMessage();
-		/*Task task
-		Channel channel = t.getChannel();
-		if(channel.isActive() && channel.isOpen())
-			channel.writeAndFlush(work);
-		state
-		return true;*/
+		
+		//Perform the processing for client request here
+		logger.info("Initiating processing for message");
+		handleClientOperation(work, t.getChannel());
+		
 		return true;
+	}
+	
+	/**
+	 * Invokes the handler to perform client requested operation
+	 * @return 
+	 */
+	public void handleClientOperation(WorkMessage workMessage, Channel channel){
+		clientReqHandler.handleTask(workMessage, channel);
+		
 	}
 	
 	public WorkChannel rebalance() {
