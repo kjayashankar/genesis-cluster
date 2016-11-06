@@ -27,18 +27,10 @@ public final class Pipe {
 
     /**
      * <code>optional bool ping = 3;</code>
-     *
-     * <pre>
-     * a client (external) sanity check for testing
-     * </pre>
      */
     boolean hasPing();
     /**
      * <code>optional bool ping = 3;</code>
-     *
-     * <pre>
-     * a client (external) sanity check for testing
-     * </pre>
      */
     boolean getPing();
 
@@ -68,6 +60,32 @@ public final class Pipe {
      * <code>optional .Failure err = 5;</code>
      */
     pipe.common.Common.FailureOrBuilder getErrOrBuilder();
+
+    /**
+     * <code>optional .RequestMessage reqMsg = 6;</code>
+     */
+    boolean hasReqMsg();
+    /**
+     * <code>optional .RequestMessage reqMsg = 6;</code>
+     */
+    com.message.ClientMessage.RequestMessage getReqMsg();
+    /**
+     * <code>optional .RequestMessage reqMsg = 6;</code>
+     */
+    com.message.ClientMessage.RequestMessageOrBuilder getReqMsgOrBuilder();
+
+    /**
+     * <code>optional .ResponseMessage resMsg = 7;</code>
+     */
+    boolean hasResMsg();
+    /**
+     * <code>optional .ResponseMessage resMsg = 7;</code>
+     */
+    com.message.ClientMessage.ResponseMessage getResMsg();
+    /**
+     * <code>optional .ResponseMessage resMsg = 7;</code>
+     */
+    com.message.ClientMessage.ResponseMessageOrBuilder getResMsgOrBuilder();
   }
   /**
    * Protobuf type {@code CommandMessage}
@@ -158,6 +176,32 @@ public final class Pipe {
               payloadCase_ = 5;
               break;
             }
+            case 50: {
+              com.message.ClientMessage.RequestMessage.Builder subBuilder = null;
+              if (payloadCase_ == 6) {
+                subBuilder = ((com.message.ClientMessage.RequestMessage) payload_).toBuilder();
+              }
+              payload_ = input.readMessage(com.message.ClientMessage.RequestMessage.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((com.message.ClientMessage.RequestMessage) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 6;
+              break;
+            }
+            case 58: {
+              com.message.ClientMessage.ResponseMessage.Builder subBuilder = null;
+              if (payloadCase_ == 7) {
+                subBuilder = ((com.message.ClientMessage.ResponseMessage) payload_).toBuilder();
+              }
+              payload_ = input.readMessage(com.message.ClientMessage.ResponseMessage.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((com.message.ClientMessage.ResponseMessage) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 7;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -205,6 +249,8 @@ public final class Pipe {
       PING(3),
       MESSAGE(4),
       ERR(5),
+      REQMSG(6),
+      RESMSG(7),
       PAYLOAD_NOT_SET(0);
       private int value = 0;
       private PayloadCase(int value) {
@@ -215,6 +261,8 @@ public final class Pipe {
           case 3: return PING;
           case 4: return MESSAGE;
           case 5: return ERR;
+          case 6: return REQMSG;
+          case 7: return RESMSG;
           case 0: return PAYLOAD_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -255,20 +303,12 @@ public final class Pipe {
     public static final int PING_FIELD_NUMBER = 3;
     /**
      * <code>optional bool ping = 3;</code>
-     *
-     * <pre>
-     * a client (external) sanity check for testing
-     * </pre>
      */
     public boolean hasPing() {
       return payloadCase_ == 3;
     }
     /**
      * <code>optional bool ping = 3;</code>
-     *
-     * <pre>
-     * a client (external) sanity check for testing
-     * </pre>
      */
     public boolean getPing() {
       if (payloadCase_ == 3) {
@@ -352,6 +392,58 @@ public final class Pipe {
       return pipe.common.Common.Failure.getDefaultInstance();
     }
 
+    public static final int REQMSG_FIELD_NUMBER = 6;
+    /**
+     * <code>optional .RequestMessage reqMsg = 6;</code>
+     */
+    public boolean hasReqMsg() {
+      return payloadCase_ == 6;
+    }
+    /**
+     * <code>optional .RequestMessage reqMsg = 6;</code>
+     */
+    public com.message.ClientMessage.RequestMessage getReqMsg() {
+      if (payloadCase_ == 6) {
+         return (com.message.ClientMessage.RequestMessage) payload_;
+      }
+      return com.message.ClientMessage.RequestMessage.getDefaultInstance();
+    }
+    /**
+     * <code>optional .RequestMessage reqMsg = 6;</code>
+     */
+    public com.message.ClientMessage.RequestMessageOrBuilder getReqMsgOrBuilder() {
+      if (payloadCase_ == 6) {
+         return (com.message.ClientMessage.RequestMessage) payload_;
+      }
+      return com.message.ClientMessage.RequestMessage.getDefaultInstance();
+    }
+
+    public static final int RESMSG_FIELD_NUMBER = 7;
+    /**
+     * <code>optional .ResponseMessage resMsg = 7;</code>
+     */
+    public boolean hasResMsg() {
+      return payloadCase_ == 7;
+    }
+    /**
+     * <code>optional .ResponseMessage resMsg = 7;</code>
+     */
+    public com.message.ClientMessage.ResponseMessage getResMsg() {
+      if (payloadCase_ == 7) {
+         return (com.message.ClientMessage.ResponseMessage) payload_;
+      }
+      return com.message.ClientMessage.ResponseMessage.getDefaultInstance();
+    }
+    /**
+     * <code>optional .ResponseMessage resMsg = 7;</code>
+     */
+    public com.message.ClientMessage.ResponseMessageOrBuilder getResMsgOrBuilder() {
+      if (payloadCase_ == 7) {
+         return (com.message.ClientMessage.ResponseMessage) payload_;
+      }
+      return com.message.ClientMessage.ResponseMessage.getDefaultInstance();
+    }
+
     private void initFields() {
       header_ = pipe.common.Common.Header.getDefaultInstance();
     }
@@ -375,6 +467,18 @@ public final class Pipe {
           return false;
         }
       }
+      if (hasReqMsg()) {
+        if (!getReqMsg().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasResMsg()) {
+        if (!getResMsg().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -394,6 +498,12 @@ public final class Pipe {
       }
       if (payloadCase_ == 5) {
         output.writeMessage(5, (pipe.common.Common.Failure) payload_);
+      }
+      if (payloadCase_ == 6) {
+        output.writeMessage(6, (com.message.ClientMessage.RequestMessage) payload_);
+      }
+      if (payloadCase_ == 7) {
+        output.writeMessage(7, (com.message.ClientMessage.ResponseMessage) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -420,6 +530,14 @@ public final class Pipe {
       if (payloadCase_ == 5) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, (pipe.common.Common.Failure) payload_);
+      }
+      if (payloadCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, (com.message.ClientMessage.RequestMessage) payload_);
+      }
+      if (payloadCase_ == 7) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, (com.message.ClientMessage.ResponseMessage) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -596,6 +714,20 @@ public final class Pipe {
             result.payload_ = errBuilder_.build();
           }
         }
+        if (payloadCase_ == 6) {
+          if (reqMsgBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = reqMsgBuilder_.build();
+          }
+        }
+        if (payloadCase_ == 7) {
+          if (resMsgBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = resMsgBuilder_.build();
+          }
+        }
         result.bitField0_ = to_bitField0_;
         result.payloadCase_ = payloadCase_;
         onBuilt();
@@ -631,6 +763,14 @@ public final class Pipe {
             mergeErr(other.getErr());
             break;
           }
+          case REQMSG: {
+            mergeReqMsg(other.getReqMsg());
+            break;
+          }
+          case RESMSG: {
+            mergeResMsg(other.getResMsg());
+            break;
+          }
           case PAYLOAD_NOT_SET: {
             break;
           }
@@ -650,6 +790,18 @@ public final class Pipe {
         }
         if (hasErr()) {
           if (!getErr().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasReqMsg()) {
+          if (!getReqMsg().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasResMsg()) {
+          if (!getResMsg().isInitialized()) {
             
             return false;
           }
@@ -809,20 +961,12 @@ public final class Pipe {
 
       /**
        * <code>optional bool ping = 3;</code>
-       *
-       * <pre>
-       * a client (external) sanity check for testing
-       * </pre>
        */
       public boolean hasPing() {
         return payloadCase_ == 3;
       }
       /**
        * <code>optional bool ping = 3;</code>
-       *
-       * <pre>
-       * a client (external) sanity check for testing
-       * </pre>
        */
       public boolean getPing() {
         if (payloadCase_ == 3) {
@@ -832,10 +976,6 @@ public final class Pipe {
       }
       /**
        * <code>optional bool ping = 3;</code>
-       *
-       * <pre>
-       * a client (external) sanity check for testing
-       * </pre>
        */
       public Builder setPing(boolean value) {
         payloadCase_ = 3;
@@ -845,10 +985,6 @@ public final class Pipe {
       }
       /**
        * <code>optional bool ping = 3;</code>
-       *
-       * <pre>
-       * a client (external) sanity check for testing
-       * </pre>
        */
       public Builder clearPing() {
         if (payloadCase_ == 3) {
@@ -1081,6 +1217,276 @@ public final class Pipe {
         return errBuilder_;
       }
 
+      private com.google.protobuf.SingleFieldBuilder<
+          com.message.ClientMessage.RequestMessage, com.message.ClientMessage.RequestMessage.Builder, com.message.ClientMessage.RequestMessageOrBuilder> reqMsgBuilder_;
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public boolean hasReqMsg() {
+        return payloadCase_ == 6;
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public com.message.ClientMessage.RequestMessage getReqMsg() {
+        if (reqMsgBuilder_ == null) {
+          if (payloadCase_ == 6) {
+            return (com.message.ClientMessage.RequestMessage) payload_;
+          }
+          return com.message.ClientMessage.RequestMessage.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 6) {
+            return reqMsgBuilder_.getMessage();
+          }
+          return com.message.ClientMessage.RequestMessage.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public Builder setReqMsg(com.message.ClientMessage.RequestMessage value) {
+        if (reqMsgBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          reqMsgBuilder_.setMessage(value);
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public Builder setReqMsg(
+          com.message.ClientMessage.RequestMessage.Builder builderForValue) {
+        if (reqMsgBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          reqMsgBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public Builder mergeReqMsg(com.message.ClientMessage.RequestMessage value) {
+        if (reqMsgBuilder_ == null) {
+          if (payloadCase_ == 6 &&
+              payload_ != com.message.ClientMessage.RequestMessage.getDefaultInstance()) {
+            payload_ = com.message.ClientMessage.RequestMessage.newBuilder((com.message.ClientMessage.RequestMessage) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 6) {
+            reqMsgBuilder_.mergeFrom(value);
+          }
+          reqMsgBuilder_.setMessage(value);
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public Builder clearReqMsg() {
+        if (reqMsgBuilder_ == null) {
+          if (payloadCase_ == 6) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 6) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          reqMsgBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public com.message.ClientMessage.RequestMessage.Builder getReqMsgBuilder() {
+        return getReqMsgFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      public com.message.ClientMessage.RequestMessageOrBuilder getReqMsgOrBuilder() {
+        if ((payloadCase_ == 6) && (reqMsgBuilder_ != null)) {
+          return reqMsgBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 6) {
+            return (com.message.ClientMessage.RequestMessage) payload_;
+          }
+          return com.message.ClientMessage.RequestMessage.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .RequestMessage reqMsg = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.message.ClientMessage.RequestMessage, com.message.ClientMessage.RequestMessage.Builder, com.message.ClientMessage.RequestMessageOrBuilder> 
+          getReqMsgFieldBuilder() {
+        if (reqMsgBuilder_ == null) {
+          if (!(payloadCase_ == 6)) {
+            payload_ = com.message.ClientMessage.RequestMessage.getDefaultInstance();
+          }
+          reqMsgBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.message.ClientMessage.RequestMessage, com.message.ClientMessage.RequestMessage.Builder, com.message.ClientMessage.RequestMessageOrBuilder>(
+                  (com.message.ClientMessage.RequestMessage) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 6;
+        return reqMsgBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilder<
+          com.message.ClientMessage.ResponseMessage, com.message.ClientMessage.ResponseMessage.Builder, com.message.ClientMessage.ResponseMessageOrBuilder> resMsgBuilder_;
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public boolean hasResMsg() {
+        return payloadCase_ == 7;
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public com.message.ClientMessage.ResponseMessage getResMsg() {
+        if (resMsgBuilder_ == null) {
+          if (payloadCase_ == 7) {
+            return (com.message.ClientMessage.ResponseMessage) payload_;
+          }
+          return com.message.ClientMessage.ResponseMessage.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 7) {
+            return resMsgBuilder_.getMessage();
+          }
+          return com.message.ClientMessage.ResponseMessage.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public Builder setResMsg(com.message.ClientMessage.ResponseMessage value) {
+        if (resMsgBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          resMsgBuilder_.setMessage(value);
+        }
+        payloadCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public Builder setResMsg(
+          com.message.ClientMessage.ResponseMessage.Builder builderForValue) {
+        if (resMsgBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          resMsgBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public Builder mergeResMsg(com.message.ClientMessage.ResponseMessage value) {
+        if (resMsgBuilder_ == null) {
+          if (payloadCase_ == 7 &&
+              payload_ != com.message.ClientMessage.ResponseMessage.getDefaultInstance()) {
+            payload_ = com.message.ClientMessage.ResponseMessage.newBuilder((com.message.ClientMessage.ResponseMessage) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 7) {
+            resMsgBuilder_.mergeFrom(value);
+          }
+          resMsgBuilder_.setMessage(value);
+        }
+        payloadCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public Builder clearResMsg() {
+        if (resMsgBuilder_ == null) {
+          if (payloadCase_ == 7) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 7) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          resMsgBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public com.message.ClientMessage.ResponseMessage.Builder getResMsgBuilder() {
+        return getResMsgFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      public com.message.ClientMessage.ResponseMessageOrBuilder getResMsgOrBuilder() {
+        if ((payloadCase_ == 7) && (resMsgBuilder_ != null)) {
+          return resMsgBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 7) {
+            return (com.message.ClientMessage.ResponseMessage) payload_;
+          }
+          return com.message.ClientMessage.ResponseMessage.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .ResponseMessage resMsg = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.message.ClientMessage.ResponseMessage, com.message.ClientMessage.ResponseMessage.Builder, com.message.ClientMessage.ResponseMessageOrBuilder> 
+          getResMsgFieldBuilder() {
+        if (resMsgBuilder_ == null) {
+          if (!(payloadCase_ == 7)) {
+            payload_ = com.message.ClientMessage.ResponseMessage.getDefaultInstance();
+          }
+          resMsgBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.message.ClientMessage.ResponseMessage, com.message.ClientMessage.ResponseMessage.Builder, com.message.ClientMessage.ResponseMessageOrBuilder>(
+                  (com.message.ClientMessage.ResponseMessage) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 7;
+        return resMsgBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:CommandMessage)
     }
 
@@ -1106,10 +1512,13 @@ public final class Pipe {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\npipe.proto\032\014common.proto\"p\n\016CommandMes" +
-      "sage\022\027\n\006header\030\001 \002(\0132\007.Header\022\016\n\004ping\030\003 " +
-      "\001(\010H\000\022\021\n\007message\030\004 \001(\tH\000\022\027\n\003err\030\005 \001(\0132\010." +
-      "FailureH\000B\t\n\007payloadB\013\n\007routingH\001"
+      "\n\npipe.proto\032\014common.proto\032\023clientMessag" +
+      "e.proto\"\267\001\n\016CommandMessage\022\027\n\006header\030\001 \002" +
+      "(\0132\007.Header\022\016\n\004ping\030\003 \001(\010H\000\022\021\n\007message\030\004" +
+      " \001(\tH\000\022\027\n\003err\030\005 \001(\0132\010.FailureH\000\022!\n\006reqMs" +
+      "g\030\006 \001(\0132\017.RequestMessageH\000\022\"\n\006resMsg\030\007 \001" +
+      "(\0132\020.ResponseMessageH\000B\t\n\007payloadB\013\n\007rou" +
+      "tingH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1123,14 +1532,16 @@ public final class Pipe {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           pipe.common.Common.getDescriptor(),
+          com.message.ClientMessage.getDescriptor(),
         }, assigner);
     internal_static_CommandMessage_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_CommandMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_CommandMessage_descriptor,
-        new java.lang.String[] { "Header", "Ping", "Message", "Err", "Payload", });
+        new java.lang.String[] { "Header", "Ping", "Message", "Err", "ReqMsg", "ResMsg", "Payload", });
     pipe.common.Common.getDescriptor();
+    com.message.ClientMessage.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

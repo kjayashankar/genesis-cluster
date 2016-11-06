@@ -15,6 +15,8 @@
  */
 package com.genesis.router.app;
 
+import java.io.File;
+
 import com.genesis.router.client.CommConnection;
 import com.genesis.router.client.CommListener;
 import com.genesis.router.client.MessageClient;
@@ -69,9 +71,15 @@ public class DemoApp implements CommListener {
 	public static void main(String[] args) {
 		String host = "127.0.0.1";
 		int port = 4568;
+		
+		if (args.length == 0) {
+			System.out.println("usage: server <config file>");
+			System.exit(1);
+		}
 
+		File cf = new File(args[0]);
 		try {
-			MessageClient mc = new MessageClient(host, port);
+			MessageClient mc = new MessageClient(host, port, cf);
 			DemoApp da = new DemoApp(mc);
 
 			// do stuff w/ the connection
