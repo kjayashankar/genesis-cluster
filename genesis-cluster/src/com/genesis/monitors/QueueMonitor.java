@@ -28,7 +28,7 @@ public class QueueMonitor {
 		this.state = state;
 		inboundQueue = new InboundQueue(state,balancer);
 		outboundQueue = new OutboundQueue(state);
-		lazyQueue = new LazyQueue();
+		lazyQueue = new LazyQueue(state);
 		this.workerthreads = workerThreads;
 	}
 	

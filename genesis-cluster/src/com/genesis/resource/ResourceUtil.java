@@ -403,19 +403,21 @@ public class ResourceUtil {
 		return wb.build();
 	}
 
-	public static Channel getChannel(EdgeInfo ei) {
+	public static Channel getChannel(ServerState state, EdgeInfo ei) {
 		if(ei.getChannel() != null && ei.isActive())
 			return ei.getChannel();
-		return createTemporaryChannel(ei);
+		return createTemporaryChannel(state,ei);
 	}
-	private static Channel createTemporaryChannel(EdgeInfo ei) {
+	private static Channel createTemporaryChannel(ServerState state, EdgeInfo ei) {
 		
 		// used a closed channel handler
 		
 		logger.info("trying to connect to node " + ei.getRef());
 		EventLoopGroup group = new NioEventLoopGroup();
 
+		WorkInit si = new WorkInit(state, false);
 		Bootstrap b = new Bootstrap();
+		
 
 		b.group(group).channel(NioSocketChannel.class).handler(si);
 		b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
