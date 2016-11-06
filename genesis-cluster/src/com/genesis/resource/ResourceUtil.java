@@ -346,6 +346,7 @@ public class ResourceUtil {
 		leaderNode.setPort(leader.getPort());
 		
 		Register.Builder register = Register.newBuilder();
+		register.setMode("RegisterRespnse");
 		register.setLeader(leaderNode.build());
 		
 		wb.setRegister(register);

@@ -45,6 +45,7 @@ public class EdgeList {
 			logger.error("Node id : "+ref);
 			logger.error("host : " + host);
 			logger.error("port no : "+port);
+			return null;
 			//throw new RuntimeException("Invalid node info");
 		}
 

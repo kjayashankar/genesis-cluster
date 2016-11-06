@@ -40,6 +40,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import pipe.common.Common.Header;
 import pipe.common.Common.Node;
 import pipe.election.Election.LeaderStatus;
+import pipe.election.Election.LeaderStatus.LeaderQuery;
 import pipe.work.Work.NodeLinks;
 import pipe.work.Work.Task;
 import pipe.work.Work.Vote.Verdict;
@@ -88,7 +89,9 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 
 	public EdgeInfo createInboundIfNew(int ref, String host, int port) {
+		if(ref != 0)
 		return inboundEdges.createIfNew(ref, host, port);
+		return null;
 	}
 
 	public void updateHeartBeat(Node node,long heartBeat,WorkState wstate){
@@ -182,6 +185,8 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 							candidateRetry = 0;
 							state.state = STATE.LEADER;
 							leader = thisNode;
+							claimLeadership();
+							
 						}
 						if(candidateRetry > 3){
 							candidateRetry = 0;
@@ -203,7 +208,29 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		}
 	}
 	
+	private void claimLeadership() {
+		WorkMessage.Builder leaderB = WorkMessage.newBuilder();
+		LeaderStatus.Builder status = LeaderStatus.newBuilder();
+		status.setAction(LeaderQuery.THELEADERIS);
+		leaderB.setLeader(status.build());
+		Header.Builder header = Header.newBuilder();
+		Node.Builder origin = Node.newBuilder();
+		origin.setId(state.getConf().getNodeId());
+		origin.setHost(state.getConf().getMyHost());
+		origin.setPort(state.getConf().getWorkPort());
+		header.setOrigin(origin.build());
+		header.setTime(System.currentTimeMillis());
+		leaderB.setHeader(header);
+		leaderB.setSecret(1002);
+		passMsg(leaderB.build());
+		
+	}
+
 	private void checkLeaderStatus() {
+		if(leader != null && "ALIVE".equalsIgnoreCase(leader.status)){
+			leaderStatus = 0;
+			return;
+		}
 		if(leader != null){
 			if("UNKNOWN".equalsIgnoreCase(leader.status)){
 				logger.info("leader status is unknown , i'm going to wait for 4 more ticks");
@@ -325,7 +352,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private void registerNewOutbound(List<Node> outboundList) {
 		// TODO Auto-generated method stub
 		for(Node node : outboundList)
-			if(node.getId() != thisNode.getRef())
+			if(node.getId() != thisNode.getRef() && node.getId() != 0)
 				this.outboundEdges.createIfNew(node.getId(), node.getHost() , node.getPort());
 	}
 	

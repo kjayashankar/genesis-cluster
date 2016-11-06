@@ -46,7 +46,12 @@ public class OrphanHandler extends ParentHandler {
 
 	private void handleRegister(WorkMessage msg, Channel channel) {
 		logger.info("registered node!");
-		
+		if(msg.getRegister() != null ){
+			if(msg.getRegister().hasLeader()){
+				state.getEmon().setLeader(
+						ResourceUtil.nodeToEdge(msg.getRegister().getLeader()));
+			}
+		}
 		
 	}
 
