@@ -55,6 +55,7 @@ message Vote{
 message Register {
 	required string mode = 1;
 	optional Node destNode = 2;
+	optional Node leader = 3;
 }
 
 // These are messages to keep the network running (not to perform work)

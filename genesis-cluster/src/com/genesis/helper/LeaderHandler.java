@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.genesis.monitors.NetworkMonitor;
+import com.genesis.router.server.STATE;
 import com.genesis.router.server.ServerState;
+import com.genesis.router.server.edges.EdgeInfo;
 
 import io.netty.channel.Channel;
 import pipe.common.Common.Node;
@@ -47,12 +49,43 @@ public class LeaderHandler extends ParentHandler {
 		else if(msg.hasRegister()){
 			handleRegister(msg,channel);
 		}
+		else if(msg.hasLeader()){
+			handleLeader(msg, channel);
+		}
 	}
 	
 	public void handleRegister(WorkMessage msg, Channel channel) {
 		Node newbie = msg.getHeader().getOrigin();
 		NetworkMonitor nmon = NetworkMonitor.getInstance();
 		nmon.registerNewOutBound(newbie);
+		WorkMessage wm = state.getEmon().helpFindLeaderNode(msg);
+		if(wm != null)
+			channel.writeAndFlush(wm);
+	}
+	protected void handleLeader(WorkMessage msg, Channel channel) {
+		// TODO Auto-generated method stub
+		switch(msg.getLeader().getAction()){
+			
+			case WHOISTHELEADER: {
+				switch(msg.getLeader().getState()){
+					case LEADERDEAD: {
+						if(state.state != STATE.CANDIDATE && state.state != STATE.VOTED){
+							state.state = STATE.VOTED;
+							
+							state.getEmon().handleElectionMessage(msg);
+						}
+						break;
+					}
+					default:{
+						// probably a new node, help it to find leader
+						//WorkMessage workMessage = state.getEmon().helpFindLeaderNode(msg);
+						//if(workMessage != null)
+						//	channel.writeAndFlush(workMessage);
+					}
+				
+				}
+			}
+		}
 	}
 
 

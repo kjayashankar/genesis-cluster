@@ -112,7 +112,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			try {
 				switch(state.state){
 					case ORPHAN :{
-						askWhoIsLeader();
+						//askWhoIsLeader();
 						checkLeaderStatus();
 						if(this.inboundEdges.map != null && this.inboundEdges.map.size() > 0) {
 							logger.info("inbound edge formed, changing status");
@@ -148,19 +148,13 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						pushHeartBeat();
 						if(failedOutNodes.map != null && failedOutNodes.map.size() > 0)
 							reportOutNodeFailure();						
-						if(leader != null && "DEAD".equalsIgnoreCase(leader.status)){
-							candidateRetry = 0;
-							LeaderStatus lStatus= eMonitor.init(thisNode);
-							prepareAndPassElection(lStatus);
-							state.state = STATE.CANDIDATE;					
-						}
 						if(failedInNodes.map != null && failedInNodes.map.size() > 0)
 							reportInNodeFailure();
 						currentStats();
 						break;
 					}
 					case VOTED:{
-						checkLeaderStatus();
+						//checkLeaderStatus();
 						candidateRetry = 0;
 						checkInbound();
 						pushHeartBeat();
@@ -471,6 +465,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 
 	public void setLeader(EdgeInfo e){
 		this.leader = e;
+		this.leader.status = "ALIVE";
 		state.state = STATE.FOLLOWER;
 	}
 	
@@ -670,7 +665,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 
 	public WorkMessage helpFindLeaderNode(WorkMessage msg) {
 		if(leader != null){
-			return ResourceUtil.buildWhoIsLeaderResponseNode(leader, msg.getHeader().getOrigin().getId());
+			return ResourceUtil.buildRegisterNewbieResponse(leader, msg.getHeader().getOrigin().getId());
 		}
 		return null;
 	}

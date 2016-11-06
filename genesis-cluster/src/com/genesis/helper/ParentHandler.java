@@ -82,41 +82,7 @@ public class ParentHandler implements ServerHandler{
 		state.getEmon().passOnDragon("L1",links,nmon.getOutCheckSum());
 	}
 	
-	protected void handleLeader(WorkMessage msg, Channel channel) {
-		// TODO Auto-generated method stub
-		switch(msg.getLeader().getAction()){
-			case THELEADERIS: {
-			
-				Node origin = msg.getHeader().getOrigin();
-				EdgeInfo leader = new EdgeInfo(origin.getId(),origin.getHost(),origin.getPort());
-				leader.status = "ALIVE";
-				state.getEmon().setLeader(leader);
-				state.getEmon().passMsg(msg);
-				logger.info("leader received, updated leader : "+leader.getRef());
-				state.state = STATE.FOLLOWER;
-				break;
-			}
-			case WHOISTHELEADER: {
-				switch(msg.getLeader().getState()){
-					case LEADERDEAD: {
-						if(state.state != STATE.VOTED){
-							state.state = STATE.VOTED;
-							
-							state.getEmon().handleElectionMessage(msg);
-						}
-						break;
-					}
-					default:{
-						// probably a new node, help it to find leader
-						WorkMessage workMessage = state.getEmon().helpFindLeaderNode(msg);
-					}
-				
-					
-				break;
-			}
-		}
-	}
-	}
+	
 	
 	
 }

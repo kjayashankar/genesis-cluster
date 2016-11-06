@@ -323,7 +323,7 @@ public class ResourceUtil {
 		return wb.build();
 	}
 
-	public static WorkMessage buildWhoIsLeaderResponseNode(EdgeInfo leader, int ref) {
+	public static WorkMessage buildRegisterNewbieResponse(EdgeInfo leader, int ref) {
 		
 		Node.Builder nb = Node.newBuilder();
 		nb.setId(leader.getRef());
@@ -340,11 +340,15 @@ public class ResourceUtil {
 		wb.setSecret(1001);
 		wb.setHeader(hb);
 		
-		LeaderStatus.Builder status = LeaderStatus.newBuilder();
-		status.setAction(LeaderQuery.THELEADERIS);
-		status.setState(LeaderState.LEADERALIVE);
+		Node.Builder leaderNode = Node.newBuilder();
+		leaderNode.setId(leader.getRef());
+		leaderNode.setHost(leader.getHost());
+		leaderNode.setPort(leader.getPort());
 		
-		wb.setLeader(status);
+		Register.Builder register = Register.newBuilder();
+		register.setLeader(leaderNode.build());
+		
+		wb.setRegister(register);
 		return wb.build();
 	}
 	
