@@ -34,8 +34,11 @@ public class OrphanHandler extends ParentHandler {
 	public void handleMessage(WorkMessage msg, Channel channel) {
 		if(msg.hasBeat())
 			handleBeat(msg, channel);
-		if(msg.hasRegister())
+		else if(msg.hasRegister())
 			handleRegister(msg,channel);
+		else if(msg.hasLeader()){
+			handleLeader(msg, channel);
+		}
 	}
 
 	private void handleRegister(WorkMessage msg, Channel channel) {

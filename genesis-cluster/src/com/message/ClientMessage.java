@@ -1125,31 +1125,31 @@ public final class ClientMessage {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 no_of_chunks = 15;</code>
+     * <code>required int32 no_of_chunks = 15;</code>
      */
     boolean hasNoOfChunks();
     /**
-     * <code>optional int32 no_of_chunks = 15;</code>
+     * <code>required int32 no_of_chunks = 15;</code>
      */
     int getNoOfChunks();
 
     /**
-     * <code>optional int64 time = 21;</code>
-     */
-    boolean hasTime();
-    /**
-     * <code>optional int64 time = 21;</code>
-     */
-    long getTime();
-
-    /**
-     * <code>required int32 seq_size = 19;</code>
+     * <code>optional int32 seq_size = 2;</code>
      */
     boolean hasSeqSize();
     /**
-     * <code>required int32 seq_size = 19;</code>
+     * <code>optional int32 seq_size = 2;</code>
      */
     int getSeqSize();
+
+    /**
+     * <code>optional int64 time = 3;</code>
+     */
+    boolean hasTime();
+    /**
+     * <code>optional int64 time = 3;</code>
+     */
+    long getTime();
   }
   /**
    * Protobuf type {@code ChunkInfo}
@@ -1203,19 +1203,19 @@ public final class ClientMessage {
               }
               break;
             }
-            case 120: {
-              bitField0_ |= 0x00000001;
-              noOfChunks_ = input.readInt32();
-              break;
-            }
-            case 152: {
-              bitField0_ |= 0x00000004;
+            case 16: {
+              bitField0_ |= 0x00000002;
               seqSize_ = input.readInt32();
               break;
             }
-            case 168: {
-              bitField0_ |= 0x00000002;
+            case 24: {
+              bitField0_ |= 0x00000004;
               time_ = input.readInt64();
+              break;
+            }
+            case 120: {
+              bitField0_ |= 0x00000001;
+              noOfChunks_ = input.readInt32();
               break;
             }
           }
@@ -1261,52 +1261,52 @@ public final class ClientMessage {
     public static final int NO_OF_CHUNKS_FIELD_NUMBER = 15;
     private int noOfChunks_;
     /**
-     * <code>optional int32 no_of_chunks = 15;</code>
+     * <code>required int32 no_of_chunks = 15;</code>
      */
     public boolean hasNoOfChunks() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional int32 no_of_chunks = 15;</code>
+     * <code>required int32 no_of_chunks = 15;</code>
      */
     public int getNoOfChunks() {
       return noOfChunks_;
     }
 
-    public static final int TIME_FIELD_NUMBER = 21;
-    private long time_;
+    public static final int SEQ_SIZE_FIELD_NUMBER = 2;
+    private int seqSize_;
     /**
-     * <code>optional int64 time = 21;</code>
+     * <code>optional int32 seq_size = 2;</code>
      */
-    public boolean hasTime() {
+    public boolean hasSeqSize() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int64 time = 21;</code>
-     */
-    public long getTime() {
-      return time_;
-    }
-
-    public static final int SEQ_SIZE_FIELD_NUMBER = 19;
-    private int seqSize_;
-    /**
-     * <code>required int32 seq_size = 19;</code>
-     */
-    public boolean hasSeqSize() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required int32 seq_size = 19;</code>
+     * <code>optional int32 seq_size = 2;</code>
      */
     public int getSeqSize() {
       return seqSize_;
     }
 
+    public static final int TIME_FIELD_NUMBER = 3;
+    private long time_;
+    /**
+     * <code>optional int64 time = 3;</code>
+     */
+    public boolean hasTime() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional int64 time = 3;</code>
+     */
+    public long getTime() {
+      return time_;
+    }
+
     private void initFields() {
       noOfChunks_ = 0;
-      time_ = 0L;
       seqSize_ = 0;
+      time_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1314,7 +1314,7 @@ public final class ClientMessage {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasSeqSize()) {
+      if (!hasNoOfChunks()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1325,14 +1325,14 @@ public final class ClientMessage {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(15, noOfChunks_);
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, seqSize_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(19, seqSize_);
+        output.writeInt64(3, time_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(21, time_);
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(15, noOfChunks_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1343,17 +1343,17 @@ public final class ClientMessage {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(15, noOfChunks_);
+          .computeInt32Size(2, seqSize_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(19, seqSize_);
+          .computeInt64Size(3, time_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(21, time_);
+          .computeInt32Size(15, noOfChunks_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1474,9 +1474,9 @@ public final class ClientMessage {
         super.clear();
         noOfChunks_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        time_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000002);
         seqSize_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        time_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -1513,11 +1513,11 @@ public final class ClientMessage {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.time_ = time_;
+        result.seqSize_ = seqSize_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.seqSize_ = seqSize_;
+        result.time_ = time_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1537,18 +1537,18 @@ public final class ClientMessage {
         if (other.hasNoOfChunks()) {
           setNoOfChunks(other.getNoOfChunks());
         }
-        if (other.hasTime()) {
-          setTime(other.getTime());
-        }
         if (other.hasSeqSize()) {
           setSeqSize(other.getSeqSize());
+        }
+        if (other.hasTime()) {
+          setTime(other.getTime());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasSeqSize()) {
+        if (!hasNoOfChunks()) {
           
           return false;
         }
@@ -1576,19 +1576,19 @@ public final class ClientMessage {
 
       private int noOfChunks_ ;
       /**
-       * <code>optional int32 no_of_chunks = 15;</code>
+       * <code>required int32 no_of_chunks = 15;</code>
        */
       public boolean hasNoOfChunks() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int32 no_of_chunks = 15;</code>
+       * <code>required int32 no_of_chunks = 15;</code>
        */
       public int getNoOfChunks() {
         return noOfChunks_;
       }
       /**
-       * <code>optional int32 no_of_chunks = 15;</code>
+       * <code>required int32 no_of_chunks = 15;</code>
        */
       public Builder setNoOfChunks(int value) {
         bitField0_ |= 0x00000001;
@@ -1597,7 +1597,7 @@ public final class ClientMessage {
         return this;
       }
       /**
-       * <code>optional int32 no_of_chunks = 15;</code>
+       * <code>required int32 no_of_chunks = 15;</code>
        */
       public Builder clearNoOfChunks() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1606,66 +1606,66 @@ public final class ClientMessage {
         return this;
       }
 
-      private long time_ ;
+      private int seqSize_ ;
       /**
-       * <code>optional int64 time = 21;</code>
+       * <code>optional int32 seq_size = 2;</code>
        */
-      public boolean hasTime() {
+      public boolean hasSeqSize() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional int64 time = 21;</code>
-       */
-      public long getTime() {
-        return time_;
-      }
-      /**
-       * <code>optional int64 time = 21;</code>
-       */
-      public Builder setTime(long value) {
-        bitField0_ |= 0x00000002;
-        time_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 time = 21;</code>
-       */
-      public Builder clearTime() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        time_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private int seqSize_ ;
-      /**
-       * <code>required int32 seq_size = 19;</code>
-       */
-      public boolean hasSeqSize() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required int32 seq_size = 19;</code>
+       * <code>optional int32 seq_size = 2;</code>
        */
       public int getSeqSize() {
         return seqSize_;
       }
       /**
-       * <code>required int32 seq_size = 19;</code>
+       * <code>optional int32 seq_size = 2;</code>
        */
       public Builder setSeqSize(int value) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         seqSize_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 seq_size = 19;</code>
+       * <code>optional int32 seq_size = 2;</code>
        */
       public Builder clearSeqSize() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         seqSize_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long time_ ;
+      /**
+       * <code>optional int64 time = 3;</code>
+       */
+      public boolean hasTime() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int64 time = 3;</code>
+       */
+      public long getTime() {
+        return time_;
+      }
+      /**
+       * <code>optional int64 time = 3;</code>
+       */
+      public Builder setTime(long value) {
+        bitField0_ |= 0x00000004;
+        time_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 time = 3;</code>
+       */
+      public Builder clearTime() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        time_ = 0L;
         onChanged();
         return this;
       }
@@ -3253,8 +3253,8 @@ public final class ClientMessage {
       "equestMessage\022\035\n\toperation\030\005 \001(\0162\n.Opera" +
       "tion\022\013\n\003key\030\006 \001(\t\022\014\n\004data\030\007 \001(\014\022\016\n\006seq_n" +
       "o\030\010 \001(\005\022\035\n\tchunkInfo\030\020 \001(\0132\n.ChunkInfo\"A" +
-      "\n\tChunkInfo\022\024\n\014no_of_chunks\030\017 \001(\005\022\014\n\004tim" +
-      "e\030\025 \001(\003\022\020\n\010seq_size\030\023 \002(\005\"\315\001\n\017ResponseMe" +
+      "\n\tChunkInfo\022\024\n\014no_of_chunks\030\017 \002(\005\022\020\n\010seq" +
+      "_size\030\002 \001(\005\022\014\n\004time\030\003 \001(\003\"\315\001\n\017ResponseMe" +
       "ssage\022\035\n\toperation\030\t \001(\0162\n.Operation\022\017\n\007" +
       "success\030\n \001(\010\022\013\n\003key\030\013 \001(\t\022\020\n\010chunk_no\030\014" +
       " \001(\005\022\022\n\nstatus_msg\030\r \001(\t\022\033\n\007failure\030\024 \001(" +
@@ -3287,7 +3287,7 @@ public final class ClientMessage {
     internal_static_ChunkInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_ChunkInfo_descriptor,
-        new java.lang.String[] { "NoOfChunks", "Time", "SeqSize", });
+        new java.lang.String[] { "NoOfChunks", "SeqSize", "Time", });
     internal_static_ResponseMessage_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_ResponseMessage_fieldAccessorTable = new

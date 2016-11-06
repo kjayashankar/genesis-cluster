@@ -41,10 +41,6 @@ public class ParentHandler implements ServerHandler{
 
 	@Override
 	public void handleMessage(WorkMessage msg, Channel channel) {
-		// TODO Auto-generated method stub
-		if(msg.hasTask()){
-			handleTask(msg,channel);
-		}
 		
 	}
 
@@ -108,11 +104,19 @@ public class ParentHandler implements ServerHandler{
 							
 							state.getEmon().handleElectionMessage(msg);
 						}
+						break;
 					}
-				}
+					default:{
+						// probably a new node, help it to find leader
+						WorkMessage workMessage = state.getEmon().helpFindLeaderNode(msg);
+					}
+				
+					
 				break;
 			}
-		}	
+		}
 	}
+	}
+	
 	
 }
