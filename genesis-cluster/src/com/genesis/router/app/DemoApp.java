@@ -16,6 +16,10 @@
 package com.genesis.router.app;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +28,16 @@ import com.genesis.router.client.CommConnection;
 import com.genesis.router.client.CommListener;
 import com.genesis.router.client.MessageClient;
 import com.google.protobuf.ByteString;
-
+import com.message.ClientMessage.Operation;
+import com.message.ClientMessage.ResponseMessage;
 
 import routing.Pipe.CommandMessage;
 
 public class DemoApp implements CommListener {
 	protected static Logger logger = LoggerFactory.getLogger("demo");
 	private MessageClient mc;
+	private int noOfChunks; 
+	private List<ResponseMessage> responseList;
 
 	public DemoApp(MessageClient mc) {
 		init(mc);
@@ -94,23 +101,64 @@ public class DemoApp implements CommListener {
 
 	@Override
 	public void onMessage(CommandMessage msg) {
-		System.out.println("---> " + msg);
-		logger.info("process it now");
+
 		
-		if (msg.hasResMsg()) {
-			logger.info("print something atleast");
-			// If action is stored. Try to get back the data using key. 
-			/*if (msg.hasResMsg().getAction() == .POST) {
-				get(msg.getResponse().getKey());
+
+		
+		
+		if (msg.getResMsg().getOperation() == Operation.GET) {
+
+			logger.info("Got File from the server, reassembling chunks, no of chunks are : "+ msg.getResMsg().getChunkInfo().getSeqSize());
+			
+			if (msg.getResMsg().hasChunkInfo()) {
+				noOfChunks = msg.getResMsg().getChunkInfo().getSeqSize();
+			} else {
+				ByteString data = msg.getResMsg().getData();
+
 				
-				// This will not find data at the key.
-				get(msg.getResponse().getKey() + "1");
-			} else if (msg.getResponse().getAction() == Action.GET) {
-				System.out.println("***Data***");
-				System.out.println(new String(msg.getResponse().getData().toByteArray()));
-			}*/
+				responseList.add(msg.getResMsg());
+
+				
+				if (responseList.size() == noOfChunks) {
+				logger.info("Complete response is now received."); 	
+					
+					
+					
+					Collections.sort(responseList, new Comparator<ResponseMessage>() {
+						@Override
+						public int compare(ResponseMessage resp1, ResponseMessage resp2) {
+							
+							Integer chunkRes1 = resp1.getChunkNo();
+					    	Integer chunkRes2 = resp2.getChunkNo();
+					    	
+					    	
+					    	int comp = chunkRes1.compareTo(chunkRes2);
+
+					    		if(comp>0)
+					    			return -1;
+					            else if(comp<0)
+					                return 1; 
+					            else 
+					                return 0;
+					    	
+						}
+					});
+
+					List<ByteString> finalResList = new LinkedList<ByteString>();
+					for (ResponseMessage response : responseList) {
+						finalResList.add(response.getData());
+					}
+
+					
+					/*
+						FileConversion util = new FileConversion();
+						util.convertAndWrite(filepath, list);*/
+					
+					
+					
+				}
+			}
 		}
-		
 	}
 
 	/**
@@ -152,3 +200,43 @@ public class DemoApp implements CommListener {
 		}
 	}
 }
+/*class ResponseComparator implements Comparator<ResponseMessage> {
+    public int compare(Object o1, Object o2) {
+    	ResponseMessage resp1 = (ResponseMessage)o1;
+    	ResponseMessage resp2 = (ResponseMessage)o2;
+
+    	Integer chunkRes1 = resp1.getChunkNo();
+    	Integer chunkRes2 = resp2.getChunkNo();
+    	
+    	
+    	int comp = chunkRes1.compareTo(chunkRes2);
+
+    		if(comp>0)
+    			return -1;
+            else if(comp<0)
+                return 1; 
+            else 
+                return 0;
+    	
+       
+    	
+    }
+
+	@Override
+	public int compare(ResponseMessage resp1, ResponseMessage resp2) {
+		
+		Integer chunkRes1 = resp1.getChunkNo();
+    	Integer chunkRes2 = resp2.getChunkNo();
+    	
+    	
+    	int comp = chunkRes1.compareTo(chunkRes2);
+
+    		if(comp>0)
+    			return -1;
+            else if(comp<0)
+                return 1; 
+            else 
+                return 0;
+    	
+	}
+}*/
