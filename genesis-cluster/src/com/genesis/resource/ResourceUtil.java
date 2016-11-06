@@ -2,7 +2,11 @@ package com.genesis.resource;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.genesis.router.server.ServerState;
+import com.genesis.router.server.WorkInit;
 import com.genesis.router.server.edges.EdgeInfo;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -10,7 +14,14 @@ import com.message.ClientMessage.ChunkInfo;
 import com.message.ClientMessage.RequestMessage;
 import com.message.ClientMessage.ResponseMessage;
 
-import pipe.common.Common;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import pipe.common.Common.Failure;
 import pipe.common.Common.Header;
 import pipe.common.Common.Node;
@@ -22,6 +33,7 @@ import pipe.work.Work.Heartbeat;
 import pipe.work.Work.NodeLinks;
 import pipe.work.Work.Register;
 import pipe.work.Work.Task;
+import pipe.work.Work.Task.Builder;
 import pipe.work.Work.Vote;
 import pipe.work.Work.Vote.Verdict;
 import pipe.work.Work.WorkMessage;
@@ -30,6 +42,7 @@ import routing.Pipe.CommandMessage;
 
 public class ResourceUtil {
 
+	private static Logger logger = LoggerFactory.getLogger("resource util");
 	
 	public static WorkMessage createHB(EdgeInfo ei,WorkState sb,int destID) {
 		Node.Builder nb = Node.newBuilder();
@@ -154,6 +167,14 @@ public class ResourceUtil {
 		return new EdgeInfo(node.getId(),node.getHost(),node.getPort());
 		
 	}
+	
+	public static Node edgeToNode (EdgeInfo ei) {
+		Node.Builder node = Node.newBuilder();
+		node.setId(ei.getRef());
+		node.setHost(ei.getHost());
+		node.setPort(ei.getPort());
+		return node.build();
+	}
 
 	public static LeaderStatus createElectionMessage(EdgeInfo thisNode) {
 		
@@ -214,7 +235,7 @@ public class ResourceUtil {
 	}
 
 	
-	public static WorkMessage wrapIntoWorkMessage(EdgeInfo ei, int destID, Task t) {
+	public static WorkMessage wrapIntoWorkMessage(EdgeInfo ei, int destID, Task.Builder newTask) {
 		Node.Builder nb = Node.newBuilder();
 		nb.setId(ei.getRef());
 		nb.setHost(ei.getHost());
@@ -230,7 +251,7 @@ public class ResourceUtil {
 		wb.setSecret(1001);
 		wb.setHeader(hb);
 		
-		wb.setTask(t);
+		wb.setTask(newTask);
 		return wb.build();
 		
 	}
@@ -381,7 +402,32 @@ public class ResourceUtil {
 		wb.setRegister(register);
 		return wb.build();
 	}
-	
-	
 
+	public static Channel getChannel(EdgeInfo ei) {
+		if(ei.getChannel() != null && ei.isActive())
+			return ei.getChannel();
+		return createTemporaryChannel(ei);
+	}
+	private static Channel createTemporaryChannel(EdgeInfo ei) {
+		
+		// used a closed channel handler
+		
+		logger.info("trying to connect to node " + ei.getRef());
+		EventLoopGroup group = new NioEventLoopGroup();
+
+		Bootstrap b = new Bootstrap();
+
+		b.group(group).channel(NioSocketChannel.class).handler(si);
+		b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+		b.option(ChannelOption.TCP_NODELAY, true);
+		b.option(ChannelOption.SO_KEEPALIVE, true);
+		
+		ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
+		
+		ei.setChannel(channel.channel());
+		ei.setActive(channel.channel().isActive());
+		
+		return channel.channel();
+	}
+	
 }

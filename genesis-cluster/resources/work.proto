@@ -34,9 +34,10 @@ message NodeLinks {
 
 enum TaskType {
 	SIMPLETASK = 1;
-	STOLENTASK = 2;
+	LAZYTASK = 2;
 }
 message Task {  
+	repeated Node processed = 6;
 	optional TaskType type = 5;
     required int64 series_id = 1;
     required int32 seq_id = 2;

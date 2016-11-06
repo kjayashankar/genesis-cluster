@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.genesis.router.server.ServerState;
 
 import io.netty.channel.Channel;
-import pipe.work.Work.Task;
+import io.netty.channel.ChannelFuture;
 import pipe.work.Work.WorkMessage;
 
 public class OutboundQueue implements Queue{
@@ -74,10 +74,22 @@ public class OutboundQueue implements Queue{
 		
 		logger.info("Writing response back to the client");
 		logger.info("channel state : "+ channel.isActive() + ", Channel is open"+ channel.isOpen());
-		if(channel.isActive() && channel.isOpen()){
+		if(channel.isActive() && channel.isOpen() && channel.isWritable()){
 			logger.info("Message Key :: "+work.getTask().getCommandMessage());
-			channel.writeAndFlush(work.getTask().getCommandMessage());
+			ChannelFuture future = channel.writeAndFlush(work.getTask().getCommandMessage());
+			future.awaitUninterruptibly();
+			System.out.println("Written to channel");
+			boolean ret = future.isSuccess();
+			if(!ret){
+				logger.error("Error in sending message");
+				logger.error("Reason : "+future.cause() );
+				put(work,channel);
+			}
 		}
+		
+
+		
+		
 			/*if (keySocketMappings.containsKey(work.getTask().getCommandMessage().getResMsg().getKey())) {
 				SocketAddress addr = keySocketMappings.get(work.getTask().getCommandMessage().getResMsg().getKey());
 				

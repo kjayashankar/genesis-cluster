@@ -17,6 +17,8 @@ package com.genesis.router.server.edges;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,7 @@ import pipe.election.Election.LeaderStatus;
 import pipe.election.Election.LeaderStatus.LeaderQuery;
 import pipe.work.Work.NodeLinks;
 import pipe.work.Work.Task;
+import pipe.work.Work.TaskType;
 import pipe.work.Work.Vote.Verdict;
 import pipe.work.Work.WorkMessage;
 import pipe.work.Work.WorkState;
@@ -573,7 +576,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 				isSuccess = true;
 			}
 			else{
-				createChannel(ei);
+				createPermanentChannel(ei);
 				if(ei.getChannel() != null && ei.isActive()){
 					logger.info("newbie msg "+wm);
 					ei.getChannel().writeAndFlush(wm);
@@ -585,7 +588,32 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			this.inboundEdges = new EdgeList();
 	}
 
-	private void createChannel(EdgeInfo ei) {
+	
+	public void replaceOutNode(EdgeInfo oldEdge, EdgeInfo newEdge) {
+		this.outboundEdges.removeNode(oldEdge.getRef());
+		//onRemove(oldEdge);
+		this.outboundEdges.addNode(newEdge.getRef(), newEdge.getHost(), newEdge.getPort());
+		//onAdd(newEdge);
+	}
+
+	public void handleElectionMessage(WorkMessage msg) {
+		
+		String host =  msg.getLeader().getLeaderHost();
+		int port = msg.getLeader().getLeaderPort();
+		int id = msg.getLeader().getLeaderId();
+		
+		EdgeInfo candidate = new EdgeInfo(id,host,port);
+		WorkMessage accept = ResourceUtil.createVoteMessage(thisNode,id,Verdict.VOTE);
+
+		createPermanentChannel(candidate);
+		if (candidate.getChannel() != null && candidate.isActive()) {
+			candidate.getChannel().writeAndFlush(accept);
+		}
+		prepareAndPassElection(msg.getLeader());
+		
+	}
+
+	private void createPermanentChannel(EdgeInfo ei) {
 		if(!ei.isActive()) {
 			logger.info("trying to connect to node " + ei.getRef());
 			EventLoopGroup group = new NioEventLoopGroup();
@@ -603,30 +631,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		}
 	}
 
-	public void replaceOutNode(EdgeInfo oldEdge, EdgeInfo newEdge) {
-		this.outboundEdges.removeNode(oldEdge.getRef());
-		//onRemove(oldEdge);
-		this.outboundEdges.addNode(newEdge.getRef(), newEdge.getHost(), newEdge.getPort());
-		//onAdd(newEdge);
-	}
-
-	public void handleElectionMessage(WorkMessage msg) {
-		
-		String host =  msg.getLeader().getLeaderHost();
-		int port = msg.getLeader().getLeaderPort();
-		int id = msg.getLeader().getLeaderId();
-		
-		EdgeInfo candidate = new EdgeInfo(id,host,port);
-		WorkMessage accept = ResourceUtil.createVoteMessage(thisNode,id,Verdict.VOTE);
-
-		createChannel(candidate);
-		if (candidate.getChannel() != null && candidate.isActive()) {
-			candidate.getChannel().writeAndFlush(accept);
-		}
-		prepareAndPassElection(msg.getLeader());
-		
-	}
-
+	
 	public void handleVote(WorkMessage msg) {
 		// TODO Auto-generated method stub
 		eMonitor.setVotedNum(1);
@@ -676,13 +681,18 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	
 	public void sendToLazyQueue(Task t) {
 		
+		Node me = ResourceUtil.edgeToNode(thisNode);
+		Task.Builder newTask = t.newBuilder();
+		newTask.setType(TaskType.LAZYTASK);
+		newTask.setProcessed(0, me);
+		
 		if(lazyQ == null ){
 			logger.error("lazy queue not yet initialized");
 			return ;
 		}
 		for(EdgeInfo ei : this.outboundEdges.map.values()) {
 			if(ei.getChannel() != null && ei.isActive()) {
-				lazyQ.put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),t), ei.getChannel());
+				lazyQ.put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
 			}
 			else {
 				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());
@@ -690,10 +700,43 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		}
 	}
 
+	
+
 	public WorkMessage helpFindLeaderNode(WorkMessage msg) {
 		if(leader != null){
 			return ResourceUtil.buildRegisterNewbieResponse(leader, msg.getHeader().getOrigin().getId());
 		}
 		return null;
+	}
+
+	public void updateAndBoradCast(Task task) {
+		
+		Node me = ResourceUtil.edgeToNode(thisNode);
+		Task.Builder newTask = task.newBuilder();
+		
+		List<Node> nodeList = newTask.getProcessedList();
+		Set<Integer> nodeIds = new TreeSet<Integer>();
+		for(Node search : nodeList) {
+			nodeIds.add(search.getId());
+			if(search.getId() == me.getId())
+				return;
+		}
+		newTask.addProcessed(me);
+		
+		if(lazyQ == null ){
+			logger.error("lazy queue not yet initialized");
+			return ;
+		}
+		for(EdgeInfo ei : this.outboundEdges.map.values()) {
+			if(!nodeIds.contains(ei.getRef()) && 
+					ei.getChannel() != null && ei.isActive()) {
+				
+				lazyQ.put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
+			}
+			else {
+				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());
+			}
+		}
+		
 	}
 }

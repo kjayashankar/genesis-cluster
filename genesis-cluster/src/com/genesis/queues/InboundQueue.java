@@ -6,10 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.genesis.helper.TaskHandler;
+import com.genesis.resource.ResourceUtil;
 import com.genesis.router.server.ServerState;
+import com.genesis.router.server.edges.EdgeInfo;
 import com.genesis.router.server.tasks.Rebalancer;
+import com.message.ClientMessage.Operation;
 
 import io.netty.channel.Channel;
+import pipe.common.Common.Node;
+import pipe.work.Work.TaskType;
 import pipe.work.Work.WorkMessage;
 import routing.Pipe.CommandMessage;
 
@@ -72,10 +77,24 @@ public class InboundQueue implements Queue{
 		WorkMessage work = t.getWorkMessage();
 		
 		//Perform the processing for client request here
-		logger.info("Initiating processing for message");
+		logger.info("Initiating processing for inbound message");
 		handleClientOperation(work, t.getChannel());
-		
+		TaskType type = work.getTask().getType();
+		// Into Lazy queue for the first time
+		if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
+			state.getEmon().sendToLazyQueue(work.getTask());
+		// Already a lazy task, no need to check eligibility, just update header and broadcast
+		else if(type == TaskType.LAZYTASK)
+			state.getEmon().updateAndBoradCast(work.getTask());
 		return true;
+	}
+	
+	private boolean isEligible(WorkMessage work) {
+		CommandMessage cmd = work.getTask().getCommandMessage();
+		Operation op = cmd.getReqMsg().getOperation() ;
+		if(op == Operation.POST || op == Operation.PUT)
+				return true;
+		return false;
 	}
 	
 	/**
@@ -83,7 +102,10 @@ public class InboundQueue implements Queue{
 	 * @return 
 	 */
 	public void handleClientOperation(WorkMessage workMessage, Channel channel){
-		clientReqHandler.handleTask(workMessage, channel);
+		Node origin = workMessage.getHeader().getOrigin();
+		EdgeInfo ei = ResourceUtil.nodeToEdge(origin);
+		Channel destination = ResourceUtil.getChannel(ei);
+		clientReqHandler.handleTask(workMessage, destination);
 		
 	}
 	

@@ -18,9 +18,9 @@ public final class Work {
      */
     SIMPLETASK(0, 1),
     /**
-     * <code>STOLENTASK = 2;</code>
+     * <code>LAZYTASK = 2;</code>
      */
-    STOLENTASK(1, 2),
+    LAZYTASK(1, 2),
     ;
 
     /**
@@ -28,9 +28,9 @@ public final class Work {
      */
     public static final int SIMPLETASK_VALUE = 1;
     /**
-     * <code>STOLENTASK = 2;</code>
+     * <code>LAZYTASK = 2;</code>
      */
-    public static final int STOLENTASK_VALUE = 2;
+    public static final int LAZYTASK_VALUE = 2;
 
 
     public final int getNumber() { return value; }
@@ -38,7 +38,7 @@ public final class Work {
     public static TaskType valueOf(int value) {
       switch (value) {
         case 1: return SIMPLETASK;
-        case 2: return STOLENTASK;
+        case 2: return LAZYTASK;
         default: return null;
       }
     }
@@ -3372,6 +3372,30 @@ public final class Work {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    java.util.List<pipe.common.Common.Node> 
+        getProcessedList();
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    pipe.common.Common.Node getProcessed(int index);
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    int getProcessedCount();
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    java.util.List<? extends pipe.common.Common.NodeOrBuilder> 
+        getProcessedOrBuilderList();
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    pipe.common.Common.NodeOrBuilder getProcessedOrBuilder(
+        int index);
+
+    /**
      * <code>optional .TaskType type = 5;</code>
      */
     boolean hasType();
@@ -3517,6 +3541,14 @@ public final class Work {
               }
               break;
             }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                processed_ = new java.util.ArrayList<pipe.common.Common.Node>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              processed_.add(input.readMessage(pipe.common.Common.Node.PARSER, extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -3525,6 +3557,9 @@ public final class Work {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          processed_ = java.util.Collections.unmodifiableList(processed_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -3557,6 +3592,41 @@ public final class Work {
     }
 
     private int bitField0_;
+    public static final int PROCESSED_FIELD_NUMBER = 6;
+    private java.util.List<pipe.common.Common.Node> processed_;
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    public java.util.List<pipe.common.Common.Node> getProcessedList() {
+      return processed_;
+    }
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    public java.util.List<? extends pipe.common.Common.NodeOrBuilder> 
+        getProcessedOrBuilderList() {
+      return processed_;
+    }
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    public int getProcessedCount() {
+      return processed_.size();
+    }
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    public pipe.common.Common.Node getProcessed(int index) {
+      return processed_.get(index);
+    }
+    /**
+     * <code>repeated .Node processed = 6;</code>
+     */
+    public pipe.common.Common.NodeOrBuilder getProcessedOrBuilder(
+        int index) {
+      return processed_.get(index);
+    }
+
     public static final int TYPE_FIELD_NUMBER = 5;
     private pipe.work.Work.TaskType type_;
     /**
@@ -3666,6 +3736,7 @@ public final class Work {
     }
 
     private void initFields() {
+      processed_ = java.util.Collections.emptyList();
       type_ = pipe.work.Work.TaskType.SIMPLETASK;
       seriesId_ = 0L;
       seqId_ = 0;
@@ -3685,6 +3756,12 @@ public final class Work {
       if (!hasSeqId()) {
         memoizedIsInitialized = 0;
         return false;
+      }
+      for (int i = 0; i < getProcessedCount(); i++) {
+        if (!getProcessed(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       if (hasCommandMessage()) {
         if (!getCommandMessage().isInitialized()) {
@@ -3714,6 +3791,9 @@ public final class Work {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeEnum(5, type_.getNumber());
       }
+      for (int i = 0; i < processed_.size(); i++) {
+        output.writeMessage(6, processed_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3742,6 +3822,10 @@ public final class Work {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(5, type_.getNumber());
+      }
+      for (int i = 0; i < processed_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, processed_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3852,6 +3936,7 @@ public final class Work {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getProcessedFieldBuilder();
           getCommandMessageFieldBuilder();
         }
       }
@@ -3861,20 +3946,26 @@ public final class Work {
 
       public Builder clear() {
         super.clear();
+        if (processedBuilder_ == null) {
+          processed_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          processedBuilder_.clear();
+        }
         type_ = pipe.work.Work.TaskType.SIMPLETASK;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        seriesId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        seqId_ = 0;
+        seriesId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
-        token_ = "";
+        seqId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
+        token_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         if (commandMessageBuilder_ == null) {
           commandMessage_ = routing.Pipe.CommandMessage.getDefaultInstance();
         } else {
           commandMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -3903,23 +3994,32 @@ public final class Work {
         pipe.work.Work.Task result = new pipe.work.Work.Task(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+        if (processedBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            processed_ = java.util.Collections.unmodifiableList(processed_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.processed_ = processed_;
+        } else {
+          result.processed_ = processedBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000001;
         }
         result.type_ = type_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000002;
         }
         result.seriesId_ = seriesId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000004;
         }
         result.seqId_ = seqId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000008;
         }
         result.token_ = token_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000010;
         }
         if (commandMessageBuilder_ == null) {
@@ -3943,6 +4043,32 @@ public final class Work {
 
       public Builder mergeFrom(pipe.work.Work.Task other) {
         if (other == pipe.work.Work.Task.getDefaultInstance()) return this;
+        if (processedBuilder_ == null) {
+          if (!other.processed_.isEmpty()) {
+            if (processed_.isEmpty()) {
+              processed_ = other.processed_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureProcessedIsMutable();
+              processed_.addAll(other.processed_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.processed_.isEmpty()) {
+            if (processedBuilder_.isEmpty()) {
+              processedBuilder_.dispose();
+              processedBuilder_ = null;
+              processed_ = other.processed_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              processedBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getProcessedFieldBuilder() : null;
+            } else {
+              processedBuilder_.addAllMessages(other.processed_);
+            }
+          }
+        }
         if (other.hasType()) {
           setType(other.getType());
         }
@@ -3953,7 +4079,7 @@ public final class Work {
           setSeqId(other.getSeqId());
         }
         if (other.hasToken()) {
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000010;
           token_ = other.token_;
           onChanged();
         }
@@ -3972,6 +4098,12 @@ public final class Work {
         if (!hasSeqId()) {
           
           return false;
+        }
+        for (int i = 0; i < getProcessedCount(); i++) {
+          if (!getProcessed(i).isInitialized()) {
+            
+            return false;
+          }
         }
         if (hasCommandMessage()) {
           if (!getCommandMessage().isInitialized()) {
@@ -4001,12 +4133,252 @@ public final class Work {
       }
       private int bitField0_;
 
+      private java.util.List<pipe.common.Common.Node> processed_ =
+        java.util.Collections.emptyList();
+      private void ensureProcessedIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          processed_ = new java.util.ArrayList<pipe.common.Common.Node>(processed_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          pipe.common.Common.Node, pipe.common.Common.Node.Builder, pipe.common.Common.NodeOrBuilder> processedBuilder_;
+
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public java.util.List<pipe.common.Common.Node> getProcessedList() {
+        if (processedBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(processed_);
+        } else {
+          return processedBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public int getProcessedCount() {
+        if (processedBuilder_ == null) {
+          return processed_.size();
+        } else {
+          return processedBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public pipe.common.Common.Node getProcessed(int index) {
+        if (processedBuilder_ == null) {
+          return processed_.get(index);
+        } else {
+          return processedBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder setProcessed(
+          int index, pipe.common.Common.Node value) {
+        if (processedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProcessedIsMutable();
+          processed_.set(index, value);
+          onChanged();
+        } else {
+          processedBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder setProcessed(
+          int index, pipe.common.Common.Node.Builder builderForValue) {
+        if (processedBuilder_ == null) {
+          ensureProcessedIsMutable();
+          processed_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          processedBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder addProcessed(pipe.common.Common.Node value) {
+        if (processedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProcessedIsMutable();
+          processed_.add(value);
+          onChanged();
+        } else {
+          processedBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder addProcessed(
+          int index, pipe.common.Common.Node value) {
+        if (processedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProcessedIsMutable();
+          processed_.add(index, value);
+          onChanged();
+        } else {
+          processedBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder addProcessed(
+          pipe.common.Common.Node.Builder builderForValue) {
+        if (processedBuilder_ == null) {
+          ensureProcessedIsMutable();
+          processed_.add(builderForValue.build());
+          onChanged();
+        } else {
+          processedBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder addProcessed(
+          int index, pipe.common.Common.Node.Builder builderForValue) {
+        if (processedBuilder_ == null) {
+          ensureProcessedIsMutable();
+          processed_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          processedBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder addAllProcessed(
+          java.lang.Iterable<? extends pipe.common.Common.Node> values) {
+        if (processedBuilder_ == null) {
+          ensureProcessedIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, processed_);
+          onChanged();
+        } else {
+          processedBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder clearProcessed() {
+        if (processedBuilder_ == null) {
+          processed_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          processedBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public Builder removeProcessed(int index) {
+        if (processedBuilder_ == null) {
+          ensureProcessedIsMutable();
+          processed_.remove(index);
+          onChanged();
+        } else {
+          processedBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public pipe.common.Common.Node.Builder getProcessedBuilder(
+          int index) {
+        return getProcessedFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public pipe.common.Common.NodeOrBuilder getProcessedOrBuilder(
+          int index) {
+        if (processedBuilder_ == null) {
+          return processed_.get(index);  } else {
+          return processedBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public java.util.List<? extends pipe.common.Common.NodeOrBuilder> 
+           getProcessedOrBuilderList() {
+        if (processedBuilder_ != null) {
+          return processedBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(processed_);
+        }
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public pipe.common.Common.Node.Builder addProcessedBuilder() {
+        return getProcessedFieldBuilder().addBuilder(
+            pipe.common.Common.Node.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public pipe.common.Common.Node.Builder addProcessedBuilder(
+          int index) {
+        return getProcessedFieldBuilder().addBuilder(
+            index, pipe.common.Common.Node.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Node processed = 6;</code>
+       */
+      public java.util.List<pipe.common.Common.Node.Builder> 
+           getProcessedBuilderList() {
+        return getProcessedFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          pipe.common.Common.Node, pipe.common.Common.Node.Builder, pipe.common.Common.NodeOrBuilder> 
+          getProcessedFieldBuilder() {
+        if (processedBuilder_ == null) {
+          processedBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              pipe.common.Common.Node, pipe.common.Common.Node.Builder, pipe.common.Common.NodeOrBuilder>(
+                  processed_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          processed_ = null;
+        }
+        return processedBuilder_;
+      }
+
       private pipe.work.Work.TaskType type_ = pipe.work.Work.TaskType.SIMPLETASK;
       /**
        * <code>optional .TaskType type = 5;</code>
        */
       public boolean hasType() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional .TaskType type = 5;</code>
@@ -4021,7 +4393,7 @@ public final class Work {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         type_ = value;
         onChanged();
         return this;
@@ -4030,7 +4402,7 @@ public final class Work {
        * <code>optional .TaskType type = 5;</code>
        */
       public Builder clearType() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         type_ = pipe.work.Work.TaskType.SIMPLETASK;
         onChanged();
         return this;
@@ -4041,7 +4413,7 @@ public final class Work {
        * <code>required int64 series_id = 1;</code>
        */
       public boolean hasSeriesId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required int64 series_id = 1;</code>
@@ -4053,7 +4425,7 @@ public final class Work {
        * <code>required int64 series_id = 1;</code>
        */
       public Builder setSeriesId(long value) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         seriesId_ = value;
         onChanged();
         return this;
@@ -4062,7 +4434,7 @@ public final class Work {
        * <code>required int64 series_id = 1;</code>
        */
       public Builder clearSeriesId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         seriesId_ = 0L;
         onChanged();
         return this;
@@ -4073,7 +4445,7 @@ public final class Work {
        * <code>required int32 seq_id = 2;</code>
        */
       public boolean hasSeqId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
        * <code>required int32 seq_id = 2;</code>
@@ -4085,7 +4457,7 @@ public final class Work {
        * <code>required int32 seq_id = 2;</code>
        */
       public Builder setSeqId(int value) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         seqId_ = value;
         onChanged();
         return this;
@@ -4094,7 +4466,7 @@ public final class Work {
        * <code>required int32 seq_id = 2;</code>
        */
       public Builder clearSeqId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         seqId_ = 0;
         onChanged();
         return this;
@@ -4105,7 +4477,7 @@ public final class Work {
        * <code>optional string token = 4;</code>
        */
       public boolean hasToken() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>optional string token = 4;</code>
@@ -4148,7 +4520,7 @@ public final class Work {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000010;
         token_ = value;
         onChanged();
         return this;
@@ -4157,7 +4529,7 @@ public final class Work {
        * <code>optional string token = 4;</code>
        */
       public Builder clearToken() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         token_ = getDefaultInstance().getToken();
         onChanged();
         return this;
@@ -4170,7 +4542,7 @@ public final class Work {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000010;
         token_ = value;
         onChanged();
         return this;
@@ -4183,7 +4555,7 @@ public final class Work {
        * <code>optional .CommandMessage commandMessage = 3;</code>
        */
       public boolean hasCommandMessage() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
        * <code>optional .CommandMessage commandMessage = 3;</code>
@@ -4208,7 +4580,7 @@ public final class Work {
         } else {
           commandMessageBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
@@ -4222,7 +4594,7 @@ public final class Work {
         } else {
           commandMessageBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
@@ -4230,7 +4602,7 @@ public final class Work {
        */
       public Builder mergeCommandMessage(routing.Pipe.CommandMessage value) {
         if (commandMessageBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
               commandMessage_ != routing.Pipe.CommandMessage.getDefaultInstance()) {
             commandMessage_ =
               routing.Pipe.CommandMessage.newBuilder(commandMessage_).mergeFrom(value).buildPartial();
@@ -4241,7 +4613,7 @@ public final class Work {
         } else {
           commandMessageBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
@@ -4254,14 +4626,14 @@ public final class Work {
         } else {
           commandMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       /**
        * <code>optional .CommandMessage commandMessage = 3;</code>
        */
       public routing.Pipe.CommandMessage.Builder getCommandMessageBuilder() {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
         return getCommandMessageFieldBuilder().getBuilder();
       }
@@ -8423,23 +8795,24 @@ public final class Work {
       "\n\tnodelinks\030\001 \003(\0132\n.NodeLinks\022\020\n\010checksu" +
       "m\030\002 \001(\005\022\014\n\004mode\030\003 \002(\t\"O\n\tNodeLinks\022\026\n\007in" +
       "bound\030\001 \003(\0132\005.Node\022\021\n\002me\030\002 \002(\0132\005.Node\022\027\n" +
-      "\010outbound\030\003 \003(\0132\005.Node\"z\n\004Task\022\027\n\004type\030\005" +
-      " \001(\0162\t.TaskType\022\021\n\tseries_id\030\001 \002(\003\022\016\n\006se" +
-      "q_id\030\002 \002(\005\022\r\n\005token\030\004 \001(\t\022\'\n\016commandMess",
-      "age\030\003 \001(\0132\017.CommandMessage\"G\n\004Vote\022\036\n\007ve" +
-      "rdict\030\001 \002(\0162\r.Vote.Verdict\"\037\n\007Verdict\022\010\n" +
-      "\004VOTE\020\001\022\n\n\006REJECT\020\002\"H\n\010Register\022\014\n\004mode\030" +
-      "\001 \002(\t\022\027\n\010destNode\030\002 \001(\0132\005.Node\022\025\n\006leader" +
-      "\030\003 \001(\0132\005.Node\"\304\002\n\013WorkMessage\022\027\n\006header\030" +
-      "\001 \002(\0132\007.Header\022\016\n\006secret\030\002 \002(\003\022\027\n\003err\030\003 " +
-      "\001(\0132\010.FailureH\000\022\016\n\004ping\030\004 \001(\010H\000\022\032\n\004beat\030" +
-      "\005 \001(\0132\n.HeartbeatH\000\022\035\n\006dragon\030\t \001(\0132\013.Dr" +
-      "agonBeatH\000\022\025\n\004task\030\006 \001(\0132\005.TaskH\000\022\033\n\005sta" +
-      "te\030\007 \001(\0132\n.WorkStateH\000\022\037\n\006leader\030\010 \001(\0132\r",
-      ".LeaderStatusH\000\022\035\n\010register\030\n \001(\0132\t.Regi" +
-      "sterH\000\022\030\n\007verdict\030\013 \001(\0132\005.VoteH\000\022\017\n\005stea" +
-      "l\030\014 \001(\010H\000B\t\n\007payload**\n\010TaskType\022\016\n\nSIMP" +
-      "LETASK\020\001\022\016\n\nSTOLENTASK\020\002B\r\n\tpipe.workH\001"
+      "\010outbound\030\003 \003(\0132\005.Node\"\224\001\n\004Task\022\030\n\tproce" +
+      "ssed\030\006 \003(\0132\005.Node\022\027\n\004type\030\005 \001(\0162\t.TaskTy" +
+      "pe\022\021\n\tseries_id\030\001 \002(\003\022\016\n\006seq_id\030\002 \002(\005\022\r\n",
+      "\005token\030\004 \001(\t\022\'\n\016commandMessage\030\003 \001(\0132\017.C" +
+      "ommandMessage\"G\n\004Vote\022\036\n\007verdict\030\001 \002(\0162\r" +
+      ".Vote.Verdict\"\037\n\007Verdict\022\010\n\004VOTE\020\001\022\n\n\006RE" +
+      "JECT\020\002\"H\n\010Register\022\014\n\004mode\030\001 \002(\t\022\027\n\010dest" +
+      "Node\030\002 \001(\0132\005.Node\022\025\n\006leader\030\003 \001(\0132\005.Node" +
+      "\"\304\002\n\013WorkMessage\022\027\n\006header\030\001 \002(\0132\007.Heade" +
+      "r\022\016\n\006secret\030\002 \002(\003\022\027\n\003err\030\003 \001(\0132\010.Failure" +
+      "H\000\022\016\n\004ping\030\004 \001(\010H\000\022\032\n\004beat\030\005 \001(\0132\n.Heart" +
+      "beatH\000\022\035\n\006dragon\030\t \001(\0132\013.DragonBeatH\000\022\025\n" +
+      "\004task\030\006 \001(\0132\005.TaskH\000\022\033\n\005state\030\007 \001(\0132\n.Wo",
+      "rkStateH\000\022\037\n\006leader\030\010 \001(\0132\r.LeaderStatus" +
+      "H\000\022\035\n\010register\030\n \001(\0132\t.RegisterH\000\022\030\n\007ver" +
+      "dict\030\013 \001(\0132\005.VoteH\000\022\017\n\005steal\030\014 \001(\010H\000B\t\n\007" +
+      "payload*(\n\010TaskType\022\016\n\nSIMPLETASK\020\001\022\014\n\010L" +
+      "AZYTASK\020\002B\r\n\tpipe.workH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -8485,7 +8858,7 @@ public final class Work {
     internal_static_Task_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Task_descriptor,
-        new java.lang.String[] { "Type", "SeriesId", "SeqId", "Token", "CommandMessage", });
+        new java.lang.String[] { "Processed", "Type", "SeriesId", "SeqId", "Token", "CommandMessage", });
     internal_static_Vote_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Vote_fieldAccessorTable = new

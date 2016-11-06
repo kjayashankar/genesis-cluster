@@ -5,15 +5,21 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.router.server.ServerState;
+
 import io.netty.channel.Channel;
-import pipe.work.Work.Task;
 import pipe.work.Work.WorkMessage;
 
 public class LazyQueue implements Queue {
 
 	LinkedBlockingDeque<WorkChannel> lazy;
+	
+	private ServerState state;
+	
 	private static Logger logger = LoggerFactory.getLogger("lazy queue");
-	public LazyQueue() {
+	
+	public LazyQueue(ServerState state) {
+		this.state = state;
 		lazy = new LinkedBlockingDeque<WorkChannel>();
 		
 	}
