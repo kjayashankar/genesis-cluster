@@ -37,7 +37,7 @@ public class Flooder implements Runnable{
 		Header.Builder header = Header.newBuilder();
 		Node.Builder origin = Node.newBuilder();
 		origin.setId(state.getConf().getNodeId());
-		origin.setHost(state.getConf().getHost());
+		origin.setHost(state.getConf().getMyHost());
 		origin.setPort(state.getConf().getWorkPort());
 		header.setOrigin(origin.build());
 		header.setTime(System.currentTimeMillis());

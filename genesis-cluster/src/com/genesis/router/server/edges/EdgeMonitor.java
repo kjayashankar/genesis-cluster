@@ -68,7 +68,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		if (state == null)
 			throw new RuntimeException("state is null");
 		this.thisNode = new EdgeInfo(state.getConf().getNodeId(),
-				"localhost",state.getConf().getWorkPort());
+				state.getConf().getMyHost(),state.getConf().getWorkPort());
 		this.outboundEdges = new EdgeList();
 		this.inboundEdges = new EdgeList();
 		this.state = state;
