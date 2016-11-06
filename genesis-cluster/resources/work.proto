@@ -33,10 +33,11 @@ message NodeLinks {
  */
 
 enum TaskType {
-	SIMPLETASK,STOLENTASK
+	SIMPLETASK = 1;
+	STOLENTASK = 2;
 }
 message Task {  
-	optional TaskType type
+	optional TaskType type = 5;
     required int64 series_id = 1;
     required int32 seq_id = 2;
     optional string token = 4;

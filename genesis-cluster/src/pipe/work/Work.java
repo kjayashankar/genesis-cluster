@@ -8,6 +8,88 @@ public final class Work {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  /**
+   * Protobuf enum {@code TaskType}
+   */
+  public enum TaskType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>SIMPLETASK = 1;</code>
+     */
+    SIMPLETASK(0, 1),
+    /**
+     * <code>STOLENTASK = 2;</code>
+     */
+    STOLENTASK(1, 2),
+    ;
+
+    /**
+     * <code>SIMPLETASK = 1;</code>
+     */
+    public static final int SIMPLETASK_VALUE = 1;
+    /**
+     * <code>STOLENTASK = 2;</code>
+     */
+    public static final int STOLENTASK_VALUE = 2;
+
+
+    public final int getNumber() { return value; }
+
+    public static TaskType valueOf(int value) {
+      switch (value) {
+        case 1: return SIMPLETASK;
+        case 2: return STOLENTASK;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<TaskType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<TaskType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<TaskType>() {
+            public TaskType findValueByNumber(int number) {
+              return TaskType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return pipe.work.Work.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final TaskType[] VALUES = values();
+
+    public static TaskType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private TaskType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:TaskType)
+  }
+
   public interface WorkStateOrBuilder extends
       // @@protoc_insertion_point(interface_extends:WorkState)
       com.google.protobuf.MessageOrBuilder {
@@ -3290,6 +3372,15 @@ public final class Work {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <code>optional .TaskType type = 5;</code>
+     */
+    boolean hasType();
+    /**
+     * <code>optional .TaskType type = 5;</code>
+     */
+    pipe.work.Work.TaskType getType();
+
+    /**
      * <code>required int64 series_id = 1;</code>
      */
     boolean hasSeriesId();
@@ -3308,6 +3399,20 @@ public final class Work {
     int getSeqId();
 
     /**
+     * <code>optional string token = 4;</code>
+     */
+    boolean hasToken();
+    /**
+     * <code>optional string token = 4;</code>
+     */
+    java.lang.String getToken();
+    /**
+     * <code>optional string token = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getTokenBytes();
+
+    /**
      * <code>optional .CommandMessage commandMessage = 3;</code>
      */
     boolean hasCommandMessage();
@@ -3322,11 +3427,6 @@ public final class Work {
   }
   /**
    * Protobuf type {@code Task}
-   *
-   * <pre>
-   **
-   * description of the work
-   * </pre>
    */
   public static final class Task extends
       com.google.protobuf.GeneratedMessage implements
@@ -3378,18 +3478,18 @@ public final class Work {
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+              bitField0_ |= 0x00000002;
               seriesId_ = input.readInt64();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               seqId_ = input.readInt32();
               break;
             }
             case 26: {
               routing.Pipe.CommandMessage.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              if (((bitField0_ & 0x00000010) == 0x00000010)) {
                 subBuilder = commandMessage_.toBuilder();
               }
               commandMessage_ = input.readMessage(routing.Pipe.CommandMessage.PARSER, extensionRegistry);
@@ -3397,7 +3497,24 @@ public final class Work {
                 subBuilder.mergeFrom(commandMessage_);
                 commandMessage_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000010;
+              break;
+            }
+            case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000008;
+              token_ = bs;
+              break;
+            }
+            case 40: {
+              int rawValue = input.readEnum();
+              pipe.work.Work.TaskType value = pipe.work.Work.TaskType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(5, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                type_ = value;
+              }
               break;
             }
           }
@@ -3440,13 +3557,28 @@ public final class Work {
     }
 
     private int bitField0_;
+    public static final int TYPE_FIELD_NUMBER = 5;
+    private pipe.work.Work.TaskType type_;
+    /**
+     * <code>optional .TaskType type = 5;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .TaskType type = 5;</code>
+     */
+    public pipe.work.Work.TaskType getType() {
+      return type_;
+    }
+
     public static final int SERIES_ID_FIELD_NUMBER = 1;
     private long seriesId_;
     /**
      * <code>required int64 series_id = 1;</code>
      */
     public boolean hasSeriesId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required int64 series_id = 1;</code>
@@ -3461,7 +3593,7 @@ public final class Work {
      * <code>required int32 seq_id = 2;</code>
      */
     public boolean hasSeqId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>required int32 seq_id = 2;</code>
@@ -3470,13 +3602,55 @@ public final class Work {
       return seqId_;
     }
 
+    public static final int TOKEN_FIELD_NUMBER = 4;
+    private java.lang.Object token_;
+    /**
+     * <code>optional string token = 4;</code>
+     */
+    public boolean hasToken() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional string token = 4;</code>
+     */
+    public java.lang.String getToken() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          token_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string token = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTokenBytes() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        token_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int COMMANDMESSAGE_FIELD_NUMBER = 3;
     private routing.Pipe.CommandMessage commandMessage_;
     /**
      * <code>optional .CommandMessage commandMessage = 3;</code>
      */
     public boolean hasCommandMessage() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
      * <code>optional .CommandMessage commandMessage = 3;</code>
@@ -3492,8 +3666,10 @@ public final class Work {
     }
 
     private void initFields() {
+      type_ = pipe.work.Work.TaskType.SIMPLETASK;
       seriesId_ = 0L;
       seqId_ = 0;
+      token_ = "";
       commandMessage_ = routing.Pipe.CommandMessage.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
@@ -3523,14 +3699,20 @@ public final class Work {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt64(1, seriesId_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(2, seqId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeMessage(3, commandMessage_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getTokenBytes());
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(5, type_.getNumber());
       }
       getUnknownFields().writeTo(output);
     }
@@ -3541,17 +3723,25 @@ public final class Work {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, seriesId_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, seqId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, commandMessage_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getTokenBytes());
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(5, type_.getNumber());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3633,11 +3823,6 @@ public final class Work {
     }
     /**
      * Protobuf type {@code Task}
-     *
-     * <pre>
-     **
-     * description of the work
-     * </pre>
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
@@ -3676,16 +3861,20 @@ public final class Work {
 
       public Builder clear() {
         super.clear();
-        seriesId_ = 0L;
+        type_ = pipe.work.Work.TaskType.SIMPLETASK;
         bitField0_ = (bitField0_ & ~0x00000001);
-        seqId_ = 0;
+        seriesId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
+        seqId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        token_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
         if (commandMessageBuilder_ == null) {
           commandMessage_ = routing.Pipe.CommandMessage.getDefaultInstance();
         } else {
           commandMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -3717,13 +3906,21 @@ public final class Work {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.seriesId_ = seriesId_;
+        result.type_ = type_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.seqId_ = seqId_;
+        result.seriesId_ = seriesId_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
+        }
+        result.seqId_ = seqId_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.token_ = token_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
         }
         if (commandMessageBuilder_ == null) {
           result.commandMessage_ = commandMessage_;
@@ -3746,11 +3943,19 @@ public final class Work {
 
       public Builder mergeFrom(pipe.work.Work.Task other) {
         if (other == pipe.work.Work.Task.getDefaultInstance()) return this;
+        if (other.hasType()) {
+          setType(other.getType());
+        }
         if (other.hasSeriesId()) {
           setSeriesId(other.getSeriesId());
         }
         if (other.hasSeqId()) {
           setSeqId(other.getSeqId());
+        }
+        if (other.hasToken()) {
+          bitField0_ |= 0x00000008;
+          token_ = other.token_;
+          onChanged();
         }
         if (other.hasCommandMessage()) {
           mergeCommandMessage(other.getCommandMessage());
@@ -3796,12 +4001,47 @@ public final class Work {
       }
       private int bitField0_;
 
+      private pipe.work.Work.TaskType type_ = pipe.work.Work.TaskType.SIMPLETASK;
+      /**
+       * <code>optional .TaskType type = 5;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .TaskType type = 5;</code>
+       */
+      public pipe.work.Work.TaskType getType() {
+        return type_;
+      }
+      /**
+       * <code>optional .TaskType type = 5;</code>
+       */
+      public Builder setType(pipe.work.Work.TaskType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .TaskType type = 5;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        type_ = pipe.work.Work.TaskType.SIMPLETASK;
+        onChanged();
+        return this;
+      }
+
       private long seriesId_ ;
       /**
        * <code>required int64 series_id = 1;</code>
        */
       public boolean hasSeriesId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required int64 series_id = 1;</code>
@@ -3813,7 +4053,7 @@ public final class Work {
        * <code>required int64 series_id = 1;</code>
        */
       public Builder setSeriesId(long value) {
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         seriesId_ = value;
         onChanged();
         return this;
@@ -3822,7 +4062,7 @@ public final class Work {
        * <code>required int64 series_id = 1;</code>
        */
       public Builder clearSeriesId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         seriesId_ = 0L;
         onChanged();
         return this;
@@ -3833,7 +4073,7 @@ public final class Work {
        * <code>required int32 seq_id = 2;</code>
        */
       public boolean hasSeqId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required int32 seq_id = 2;</code>
@@ -3845,7 +4085,7 @@ public final class Work {
        * <code>required int32 seq_id = 2;</code>
        */
       public Builder setSeqId(int value) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         seqId_ = value;
         onChanged();
         return this;
@@ -3854,8 +4094,84 @@ public final class Work {
        * <code>required int32 seq_id = 2;</code>
        */
       public Builder clearSeqId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         seqId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object token_ = "";
+      /**
+       * <code>optional string token = 4;</code>
+       */
+      public boolean hasToken() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string token = 4;</code>
+       */
+      public java.lang.String getToken() {
+        java.lang.Object ref = token_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            token_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string token = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTokenBytes() {
+        java.lang.Object ref = token_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          token_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string token = 4;</code>
+       */
+      public Builder setToken(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        token_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string token = 4;</code>
+       */
+      public Builder clearToken() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        token_ = getDefaultInstance().getToken();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string token = 4;</code>
+       */
+      public Builder setTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        token_ = value;
         onChanged();
         return this;
       }
@@ -3867,7 +4183,7 @@ public final class Work {
        * <code>optional .CommandMessage commandMessage = 3;</code>
        */
       public boolean hasCommandMessage() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>optional .CommandMessage commandMessage = 3;</code>
@@ -3892,7 +4208,7 @@ public final class Work {
         } else {
           commandMessageBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000010;
         return this;
       }
       /**
@@ -3906,7 +4222,7 @@ public final class Work {
         } else {
           commandMessageBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000010;
         return this;
       }
       /**
@@ -3914,7 +4230,7 @@ public final class Work {
        */
       public Builder mergeCommandMessage(routing.Pipe.CommandMessage value) {
         if (commandMessageBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+          if (((bitField0_ & 0x00000010) == 0x00000010) &&
               commandMessage_ != routing.Pipe.CommandMessage.getDefaultInstance()) {
             commandMessage_ =
               routing.Pipe.CommandMessage.newBuilder(commandMessage_).mergeFrom(value).buildPartial();
@@ -3925,7 +4241,7 @@ public final class Work {
         } else {
           commandMessageBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000010;
         return this;
       }
       /**
@@ -3938,14 +4254,14 @@ public final class Work {
         } else {
           commandMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       /**
        * <code>optional .CommandMessage commandMessage = 3;</code>
        */
       public routing.Pipe.CommandMessage.Builder getCommandMessageBuilder() {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000010;
         onChanged();
         return getCommandMessageFieldBuilder().getBuilder();
       }
@@ -7906,9 +8222,10 @@ public final class Work {
       "\n\tnodelinks\030\001 \003(\0132\n.NodeLinks\022\020\n\010checksu" +
       "m\030\002 \001(\005\022\014\n\004mode\030\003 \002(\t\"O\n\tNodeLinks\022\026\n\007in" +
       "bound\030\001 \003(\0132\005.Node\022\021\n\002me\030\002 \002(\0132\005.Node\022\027\n" +
-      "\010outbound\030\003 \003(\0132\005.Node\"R\n\004Task\022\021\n\tseries" +
-      "_id\030\001 \002(\003\022\016\n\006seq_id\030\002 \002(\005\022\'\n\016commandMess" +
-      "age\030\003 \001(\0132\017.CommandMessage\"G\n\004Vote\022\036\n\007ve",
+      "\010outbound\030\003 \003(\0132\005.Node\"z\n\004Task\022\027\n\004type\030\005" +
+      " \001(\0162\t.TaskType\022\021\n\tseries_id\030\001 \002(\003\022\016\n\006se" +
+      "q_id\030\002 \002(\005\022\r\n\005token\030\004 \001(\t\022\'\n\016commandMess",
+      "age\030\003 \001(\0132\017.CommandMessage\"G\n\004Vote\022\036\n\007ve" +
       "rdict\030\001 \002(\0162\r.Vote.Verdict\"\037\n\007Verdict\022\010\n" +
       "\004VOTE\020\001\022\n\n\006REJECT\020\002\"1\n\010Register\022\014\n\004mode\030" +
       "\001 \002(\t\022\027\n\010destNode\030\002 \001(\0132\005.Node\"\304\002\n\013WorkM" +
@@ -7917,10 +8234,11 @@ public final class Work {
       "\030\004 \001(\010H\000\022\032\n\004beat\030\005 \001(\0132\n.HeartbeatH\000\022\035\n\006" +
       "dragon\030\t \001(\0132\013.DragonBeatH\000\022\025\n\004task\030\006 \001(" +
       "\0132\005.TaskH\000\022\033\n\005state\030\007 \001(\0132\n.WorkStateH\000\022" +
-      "\037\n\006leader\030\010 \001(\0132\r.LeaderStatusH\000\022\035\n\010regi" +
-      "ster\030\n \001(\0132\t.RegisterH\000\022\030\n\007verdict\030\013 \001(\013",
-      "2\005.VoteH\000\022\017\n\005steal\030\014 \001(\010H\000B\t\n\007payloadB\r\n" +
-      "\tpipe.workH\001"
+      "\037\n\006leader\030\010 \001(\0132\r.LeaderStatusH\000\022\035\n\010regi",
+      "ster\030\n \001(\0132\t.RegisterH\000\022\030\n\007verdict\030\013 \001(\013" +
+      "2\005.VoteH\000\022\017\n\005steal\030\014 \001(\010H\000B\t\n\007payload**\n" +
+      "\010TaskType\022\016\n\nSIMPLETASK\020\001\022\016\n\nSTOLENTASK\020" +
+      "\002B\r\n\tpipe.workH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -7966,7 +8284,7 @@ public final class Work {
     internal_static_Task_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Task_descriptor,
-        new java.lang.String[] { "SeriesId", "SeqId", "CommandMessage", });
+        new java.lang.String[] { "Type", "SeriesId", "SeqId", "Token", "CommandMessage", });
     internal_static_Vote_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Vote_fieldAccessorTable = new
