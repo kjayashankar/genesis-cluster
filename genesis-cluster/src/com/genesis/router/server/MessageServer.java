@@ -217,13 +217,13 @@ public class MessageServer {
 			Thread t = new Thread(emon);
 			t.start();
 			
-			ThreadPool pool = new ThreadPool(4, state);
+			/*ThreadPool pool = new ThreadPool(4, state);
 			pool.setThreadPause(1000);
 			pool.init();
 			pool.startWorkers();
 			
 			StealerThread stealer = new StealerThread(state);
-			stealer.start();
+			stealer.start();*/
 			
 			Flooder dT = new Flooder();
 			dT.setState(state);

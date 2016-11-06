@@ -62,6 +62,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private long dt = 2000;
 	private ServerState state;
 	private int candidateRetry = 0;
+	private int leaderStatus = 0;
 	private boolean forever = true;
 
 	public EdgeMonitor(ServerState state) {
@@ -110,8 +111,9 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		while (forever) {
 			try {
 				switch(state.state){
-				
 					case ORPHAN :{
+						askWhoIsLeader();
+						checkLeaderStatus();
 						if(this.inboundEdges.map != null && this.inboundEdges.map.size() > 0) {
 							logger.info("inbound edge formed, changing status");
 							state.state = STATE.FOLLOWER;
@@ -122,7 +124,24 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						}
 						break;
 					}
-					case FOLLOWER :
+					case FOLLOWER :{
+						checkLeaderStatus();
+						candidateRetry = 0;
+						checkInbound();
+						pushHeartBeat();
+						if(failedOutNodes.map != null && failedOutNodes.map.size() > 0)
+							reportOutNodeFailure();						
+						if(leader != null && "DEAD".equalsIgnoreCase(leader.status)){
+							candidateRetry = 0;
+							LeaderStatus lStatus= eMonitor.init(thisNode);
+							prepareAndPassElection(lStatus);
+							state.state = STATE.CANDIDATE;					
+						}
+						if(failedInNodes.map != null && failedInNodes.map.size() > 0)
+							reportInNodeFailure();
+						currentStats();
+						break;
+					}
 					case LEADER :{
 						candidateRetry = 0;
 						checkInbound();
@@ -141,6 +160,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						break;
 					}
 					case VOTED:{
+						checkLeaderStatus();
 						candidateRetry = 0;
 						checkInbound();
 						pushHeartBeat();
@@ -160,7 +180,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						pushHeartBeat();
 						if(failedOutNodes.map != null && failedOutNodes.map.size() > 0)
 							reportOutNodeFailure();						
-						
 						if(failedInNodes.map != null && failedInNodes.map.size() > 0)
 							reportInNodeFailure();
 						logger.info("candidate retry count and total nodes "
@@ -171,11 +190,9 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 							leader = thisNode;
 						}
 						if(candidateRetry > 3){
-							
-							
-								candidateRetry = 0;
-								LeaderStatus lStatus= eMonitor.init(thisNode);
-								prepareAndPassElection(lStatus);
+							candidateRetry = 0;
+							LeaderStatus lStatus= eMonitor.init(thisNode);
+							prepareAndPassElection(lStatus);
 							
 						}
 						break;
@@ -192,7 +209,59 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		}
 	}
 	
+	private void checkLeaderStatus() {
+		if(leader != null){
+			if("UNKNOWN".equalsIgnoreCase(leader.status)){
+				logger.info("leader status is unknown , i'm going to wait for 4 more ticks");
+				leaderStatus++;
+			}
+		}
+		else if(leader == null ){
+			logger.info("leader is not found , i'm going to wait for 4 more ticks");
+			leaderStatus++;
+		}
+		if(leaderStatus > 4){
+			leaderStatus = 0;
+			candidateRetry = 0;
+			LeaderStatus lStatus= eMonitor.init(thisNode);
+			prepareAndPassElection(lStatus);
+			state.state = STATE.CANDIDATE;		
+		}
+	}
+	
+	private void askWhoIsLeader() {
+		for (EdgeInfo ei : this.outboundEdges.map.values()) {
+			if (ei.getChannel() != null && ei.isActive()) {
+				ei.retry = 0;
+				WorkMessage wm = ResourceUtil.enquireLeader(thisNode,ei.getRef());
+				ei.getChannel().writeAndFlush(wm);
+			} else {
+				try{
+					logger.info("trying to connect to node " + ei.getRef());
+					EventLoopGroup group = new NioEventLoopGroup();
+					WorkInit si = new WorkInit(state, false);
+					Bootstrap b = new Bootstrap();
+					b.group(group).channel(NioSocketChannel.class).handler(si);
+					b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+					b.option(ChannelOption.TCP_NODELAY, true);
+					b.option(ChannelOption.SO_KEEPALIVE, true);
+					
+					ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
+					
+					ei.setChannel(channel.channel());
+					ei.setActive(channel.channel().isActive());
+				}
+				catch(Exception e){
+					logger.error("Failed outbound node, i'm clueless");
+				}
+			}
+		}
+		
+		
+	}
+
 	private void currentStats() {
+		logger.info("current state "+state.state);
 		logger.info("current inbounds "+this.inboundEdges.map.keySet());
 		logger.info("current outbounds "+this.outboundEdges.map.keySet());
 
@@ -307,9 +376,19 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private List<Node> checkCircularNodes(List<Node> badList) {
 		List<Node> goodList = new ArrayList<Node>();
 		for(Node n: badList){
-			if(!this.outboundEdges.map.containsKey(n.getId()) &&
+			/*
+			 * uncomment to enforce atleast three nodes in the ring
+			 * circular nodes checks if the failed node is connected to any of
+			 * the inbound or outbound nodes associated with the current node
+			 */
+			/*if(!this.outboundEdges.map.containsKey(n.getId()) &&
 					!this.inboundEdges.map.containsKey(n.getId()) &&
-					n.getId() != thisNode.getRef())
+					n.getId() != thisNode.getRef())*/
+			/*
+			 * it's okay to form a cluster with just 2 nodes as long as it is 
+			 * not connected to itself
+			 */
+			if(n.getId() != thisNode.getRef())
 				goodList.add(n);
 		}
 		return goodList;
@@ -392,6 +471,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 
 	public void setLeader(EdgeInfo e){
 		this.leader = e;
+		state.state = STATE.FOLLOWER;
 	}
 	
 	public EdgeInfo getLeader(){
@@ -586,5 +666,12 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());
 			}
 		}
+	}
+
+	public WorkMessage helpFindLeaderNode(WorkMessage msg) {
+		if(leader != null){
+			return ResourceUtil.buildWhoIsLeaderResponseNode(leader, msg.getHeader().getOrigin().getId());
+		}
+		return null;
 	}
 }

@@ -46,15 +46,5 @@ public class CandidateHandler extends ParentHandler  {
 	public void handleVote(WorkMessage msg, Channel channel) {
 		
 	}
-	private void handleLeader(WorkMessage msg, Channel channel) {
-		// TODO Auto-generated method stub
-		if(msg.getLeader().getAction() == LeaderQuery.THELEADERIS) {
-			Node origin = msg.getHeader().getOrigin();
-			EdgeInfo leader = new EdgeInfo(origin.getId(),origin.getHost(),origin.getPort());
-			leader.status = "ALIVE";
-			state.getEmon().setLeader(leader);
-			state.getEmon().passMsg(msg);
-			logger.info("leader received, updated leader : "+leader.getRef());
-		}
-	}
+	
 }

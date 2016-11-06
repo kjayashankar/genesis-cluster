@@ -58,34 +58,7 @@ public class VotedHandler extends ParentHandler {
 	}
 
 
-	private void handleLeader(WorkMessage msg, Channel channel) {
-		// TODO Auto-generated method stub
-		switch(msg.getLeader().getAction()){
-			case THELEADERIS: {
-			
-				Node origin = msg.getHeader().getOrigin();
-				EdgeInfo leader = new EdgeInfo(origin.getId(),origin.getHost(),origin.getPort());
-				leader.status = "ALIVE";
-				state.getEmon().setLeader(leader);
-				state.getEmon().passMsg(msg);
-				logger.info("leader received, updated leader : "+leader.getRef());
-				state.state = STATE.FOLLOWER;
-				break;
-			}
-			case WHOISTHELEADER: {
-				switch(msg.getLeader().getState()){
-					case LEADERDEAD: {
-						if(state.state != STATE.VOTED){
-							state.state = STATE.VOTED;
-							
-							state.getEmon().handleElectionMessage(msg);
-						}
-					}
-				}
-				break;
-			}
-		}	
-	}
+	
 
 	@Override
 	public void handleState(WorkMessage msg, Channel channel) {

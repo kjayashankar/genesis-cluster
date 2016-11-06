@@ -26,7 +26,7 @@ public class QueueMonitor {
 	
 	public QueueMonitor(int workerThreads , ServerState state, Rebalancer balancer){
 		this.state = state;
-		inboundQueue = new InboundQueue(balancer);
+		inboundQueue = new InboundQueue(state,balancer);
 		outboundQueue = new OutboundQueue();
 		lazyQueue = new LazyQueue();
 		this.workerthreads = workerThreads;

@@ -17,10 +17,17 @@ package com.genesis.router.server.edges;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EdgeList {
+	
+	private static Logger logger = LoggerFactory.getLogger("edge list");
+	
 	protected ConcurrentHashMap<Integer, EdgeInfo> map = new ConcurrentHashMap<Integer, EdgeInfo>();
 
 	public EdgeList() {
+		
 	}
 
 	public EdgeInfo createIfNew(int ref, String host, int port) {
@@ -33,7 +40,12 @@ public class EdgeList {
 	public EdgeInfo addNode(int ref, String host, int port) {
 		if (!verify(ref, host, port)) {
 			// TODO log error
-			throw new RuntimeException("Invalid node info");
+			logger.error("errror in verification fo the node with the follwoing details");
+			
+			logger.error("Node id : "+ref);
+			logger.error("host : " + host);
+			logger.error("port no : "+port);
+			//throw new RuntimeException("Invalid node info");
 		}
 
 		if (!hasNode(ref)) {

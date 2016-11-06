@@ -5,10 +5,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.router.server.ServerState;
 import com.genesis.router.server.tasks.Rebalancer;
 
 import io.netty.channel.Channel;
-import pipe.work.Work.Task;
 import pipe.work.Work.WorkMessage;
 
 public class InboundQueue implements Queue{
@@ -16,12 +16,12 @@ public class InboundQueue implements Queue{
 	LinkedBlockingDeque<WorkChannel> inbound;
 	
 	private int balanced;
-
+	private ServerState state;
 	Rebalancer rebalance ;
 	private static Logger logger = LoggerFactory.getLogger("inbound queue");
 	
-	public InboundQueue(Rebalancer newBalancer) {
-		
+	public InboundQueue(ServerState state,Rebalancer newBalancer) {
+		this.state = state;
 		this.rebalance = newBalancer;
 		inbound = new LinkedBlockingDeque<WorkChannel>();
 		
@@ -61,11 +61,14 @@ public class InboundQueue implements Queue{
 			logger.info("inbound queue size is 0, process other queues, may be lazy ?");
 			return false;
 		}
-		/*WorkChannel t = get();
+		
+		WorkChannel t = get();
 		WorkMessage work = t.getWorkMessage();
+		/*Task task
 		Channel channel = t.getChannel();
 		if(channel.isActive() && channel.isOpen())
 			channel.writeAndFlush(work);
+		state
 		return true;*/
 		return true;
 	}
