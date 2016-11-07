@@ -685,7 +685,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		Node me = ResourceUtil.edgeToNode(thisNode);
 		Task.Builder newTask = t.newBuilder();
 		newTask.setType(TaskType.LAZYTASK);
-		newTask.setProcessed(0, me);
+		newTask.addProcessed(me);
 		
 		if(lazyQ == null ){
 			logger.error("lazy queue not yet initialized");
@@ -693,7 +693,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		}
 		for(EdgeInfo ei : this.outboundEdges.map.values()) {
 			if(ei.getChannel() != null && ei.isActive()) {
-				lazyQ.put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
+				qMon.getOutboundQueue().put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
 			}
 			else {
 				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());
@@ -722,7 +722,8 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			if(search.getId() == me.getId())
 				return;
 		}
-		newTask.addProcessed(me);
+		nodeList.add(me);
+		newTask.addAllProcessed(nodeList);
 		
 		if(lazyQ == null ){
 			logger.error("lazy queue not yet initialized");
@@ -732,7 +733,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			if(!nodeIds.contains(ei.getRef()) && 
 					ei.getChannel() != null && ei.isActive()) {
 				
-				lazyQ.put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
+				qMon.getOutboundQueue().put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
 			}
 			else {
 				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());

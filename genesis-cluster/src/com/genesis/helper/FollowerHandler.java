@@ -27,12 +27,6 @@ public class FollowerHandler extends ParentHandler {
 		super(state);
 	}
 
-
-	@Override
-	public void handleTask(WorkMessage msg, Channel channel) {
-		
-	}
-
 	@Override
 	public void handleMessage(WorkMessage msg, Channel channel) {
 		if(msg.hasBeat())
@@ -55,6 +49,9 @@ public class FollowerHandler extends ParentHandler {
 		}
 		else if(msg.hasStealResponse()){
 			handleStealResponse(msg, channel);
+		}
+		else if(msg.hasTask()){
+			handleTask(msg,channel);
 		}
 	}
 

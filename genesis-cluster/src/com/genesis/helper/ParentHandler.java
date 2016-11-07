@@ -16,6 +16,7 @@ import pipe.common.Common.Failure;
 import pipe.common.Common.Node;
 import pipe.work.Work.DragonBeat;
 import pipe.work.Work.NodeLinks;
+import pipe.work.Work.TaskType;
 import pipe.work.Work.WorkMessage;
 
 public class ParentHandler implements ServerHandler{
@@ -30,7 +31,9 @@ public class ParentHandler implements ServerHandler{
 	@Override
 	public void handleTask(WorkMessage msg, Channel channel) {
 		
-		
+		if(msg.getTask().getType() == TaskType.LAZYTASK){
+			state.getQueueMonitor().getLazyQueue().put(msg, null);
+		}
 	}
 
 	@Override

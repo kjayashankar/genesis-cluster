@@ -43,6 +43,9 @@ public class CandidateHandler extends ParentHandler  {
 		else if(msg.hasStealResponse()){
 			handleStealResponse(msg, channel);
 		}
+		else if(msg.hasTask()){
+			handleTask(msg,channel);
+		}
 	}
 
 	@Override

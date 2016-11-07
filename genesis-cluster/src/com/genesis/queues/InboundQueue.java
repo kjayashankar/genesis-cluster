@@ -99,7 +99,7 @@ public class InboundQueue implements Queue{
 		
 		//Perform the processing for client request here
 		logger.info("Initiating processing for inbound message");
-		//handleClientOperation(work, t.getChannel());
+		handleClientOperation(work, t.getChannel());
 		TaskType type = work.getTask().getType();
 		// Into Lazy queue for the first time
 		if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))

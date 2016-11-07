@@ -26,12 +26,6 @@ public class LeaderHandler extends ParentHandler {
 		super(state);
 	}
 
-
-	@Override
-	public void handleTask(WorkMessage msg, Channel channel) {
-		
-	}
-
 	@Override
 	public void handleBeat(WorkMessage msg, Channel channel) {	
 		state.getEmon().updateHeartBeat(msg.getHeader().getOrigin(),
@@ -58,6 +52,9 @@ public class LeaderHandler extends ParentHandler {
 		}
 		else if(msg.hasStealResponse()){
 			handleStealResponse(msg, channel);
+		}
+		else if(msg.hasTask()){
+			handleTask(msg,channel);
 		}
 		
 	}

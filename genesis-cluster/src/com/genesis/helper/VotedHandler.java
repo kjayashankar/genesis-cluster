@@ -26,11 +26,6 @@ public class VotedHandler extends ParentHandler {
 	public VotedHandler(ServerState state) {
 		super(state);
 	}
-	
-	@Override
-	public void handleTask(WorkMessage msg, Channel channel) {
-		
-	}
 
 	@Override
 	public void handleMessage(WorkMessage msg, Channel channel) {
@@ -54,6 +49,9 @@ public class VotedHandler extends ParentHandler {
 		}
 		else if(msg.hasStealResponse()){
 			handleStealResponse(msg, channel);
+		}
+		else if(msg.hasTask()){
+			handleTask(msg,channel);
 		}
 	}
 
