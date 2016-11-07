@@ -153,6 +153,7 @@ public class TaskHandlerHelper {
 					logger.info("Key is inside get "+requestMessage.getKey());
 					logger.info("----- Getting key from DataBase ----" + requestMessage.getKey());
 					Map<Integer, byte[]> keyMap = redisClient.get(requestMessage.getKey());
+					logger.info("Key size retrieved is ::: "+keyMap.size());
 					if(keyMap.isEmpty()){
 						CommandMessage failureMsg = ResourceUtil.createResponseFailureMessage(msg, state);
 						logger.info("Sending failure message");
@@ -165,7 +166,7 @@ public class TaskHandlerHelper {
 							//channel.write(returnMsg);
 						}
 					}
-					Map<Integer, byte[]> keyMapMongo = mongoDBServiceImpl.get(requestMessage.getKey());
+					/*Map<Integer, byte[]> keyMapMongo = mongoDBServiceImpl.get(requestMessage.getKey());
 					if(keyMapMongo.isEmpty()){
 						CommandMessage failureMsg = ResourceUtil.createResponseFailureMessage(msg, state);
 						 doMessageForwardingToClient(failureMsg, channel);
@@ -175,7 +176,7 @@ public class TaskHandlerHelper {
 							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state);
 							doMessageForwardingToClient(returnMsg, channel);
 						}
-					}
+					}*/
 					
 					break;
 					
@@ -185,8 +186,8 @@ public class TaskHandlerHelper {
 					boolean updateKey = redisClient.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key received  ----"+ updateKey);
 					
-					boolean updateKeyMongo = mongoDBServiceImpl.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
-					logger.info("---- Key received  ----"+ updateKeyMongo);
+					/*boolean updateKeyMongo = mongoDBServiceImpl.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
+					logger.info("---- Key received  ----"+ updateKeyMongo);*/
 					
 					break;
 				case POST:
@@ -195,8 +196,8 @@ public class TaskHandlerHelper {
 					String keyStored = redisClient.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key stored ----"+ keyStored);
 					
-					String keyStoredMongo = mongoDBServiceImpl.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
-					logger.info("---- Key stored ----"+ keyStoredMongo);
+					/*String keyStoredMongo = mongoDBServiceImpl.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
+					logger.info("---- Key stored ----"+ keyStoredMongo);*/
 					break;
 				case DELETE:
 					
@@ -204,8 +205,8 @@ public class TaskHandlerHelper {
 					boolean deletedKey = redisClient.delete(requestMessage.getKey());
 					logger.info("---- Key deleted ----"+ deletedKey);
 					
-					boolean deletedKeyMongo = mongoDBServiceImpl.delete(requestMessage.getKey());
-					logger.info("---- Key deleted ----"+ deletedKeyMongo);
+					/*boolean deletedKeyMongo = mongoDBServiceImpl.delete(requestMessage.getKey());
+					logger.info("---- Key deleted ----"+ deletedKeyMongo);*/
 					
 					break;
 					
@@ -219,6 +220,8 @@ public class TaskHandlerHelper {
 
 		} catch (Exception e) {
 			// TODO add logging
+			logger.info("Exception in operation , "+ msg.getReqMsg().getOperation() + ", " + e.getMessage());
+			e.printStackTrace();
 			Failure.Builder eb = Failure.newBuilder();
 			eb.setId(state.getConf().getNodeId());
 			eb.setRefId(msg.getHeader().getNodeId());

@@ -170,7 +170,7 @@ public class DemoApp implements CommListener {
 		String host = "127.0.0.1";
 		//int port = 4568;
 
-		int port = 4668;
+		int port = 4168;
 		
 		if (args.length == 0) {
 			System.out.println("usage: server <config file>");

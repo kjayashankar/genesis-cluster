@@ -35,8 +35,8 @@ public class FileConversion {
 	}
 	
 	public static int noOfChunksToCreate(BufferedInputStream bufferedInputStream){
-		System.out.println("getBytesAvailable(bufferedInputStream) "+ getBytesAvailable(bufferedInputStream)
-		+ ", chunkSize "+ chunkSize +" no of Chunks will be created " + ((getBytesAvailable(bufferedInputStream)/chunkSize) +1));
+		//System.out.println("getBytesAvailable(bufferedInputStream) "+ getBytesAvailable(bufferedInputStream)
+		//+ ", chunkSize "+ chunkSize +" no of Chunks will be created " + ((getBytesAvailable(bufferedInputStream)/chunkSize) +1));
 		
 		
 		return (int) ((getBytesAvailable(bufferedInputStream)/chunkSize) +1);
@@ -59,8 +59,14 @@ public class FileConversion {
 				
 				//bufferedInputStream.skip(i * chunkSize);		
 				if(bufferedInputStream.read(data) > 0){
+					/*if(( i== chunksNo -1 ) && (bufferedInputStream.available() < chunkSize)){
+						output.add(ByteString.copyFrom(data));
+					}
+					else{
+						output.add(ByteString.copyFrom(data));
+					}*/
 					//bufferedInputStream.skip(i * chunkSize);
-					System.out.println("Added sequence"+ i);
+					//System.out.println("Added sequence"+ i);
 					output.add(ByteString.copyFrom(data));
 				}
 				

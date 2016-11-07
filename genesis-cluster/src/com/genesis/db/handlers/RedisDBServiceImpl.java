@@ -98,10 +98,10 @@ public class RedisDBServiceImpl implements IDBService {
 				}
 				
 				//Map<Integer, byte[]> keyMap = get(key);
-				logger.info("KeyMap is :: ");
+				/*logger.info("KeyMap is :: ");
 				for (Map.Entry<Integer, byte[]> entry: chunkDataMap.entrySet()){
-					logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
-				}
+					//logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
+				}*/
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -149,11 +149,11 @@ public class RedisDBServiceImpl implements IDBService {
 					redis.hset(parsedKey, parseChunkId, value);
 					done = true;
 					
-					Map<Integer, byte[]> keyMap = get(key);
+					/*Map<Integer, byte[]> keyMap = get(key);
 					logger.info("Updated Values are :: ");
 					for (Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
 						logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
-					}
+					}*/
 				}
 				//display the updated contents of the map now
 				
@@ -189,11 +189,11 @@ public class RedisDBServiceImpl implements IDBService {
 			redis.hset(serialize(key), serialize(chunkID), value);
 			
 			//Display stored values in the map
-			Map<Integer, byte[]> keyMap = get(key);
+			/*Map<Integer, byte[]> keyMap = get(key);
 			logger.info("Stored Values in the Map :: ");
 			for (Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
 				logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
-			}
+			}*/
 			
 		} catch (IOException e) {
 			e.printStackTrace();

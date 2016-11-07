@@ -110,9 +110,9 @@ public class MessageServer {
 			if (background) {
 				Thread cthread2 = new Thread(comm2);
 				cthread2.start();
-			//} else
-		//		comm2.run();
-		}
+			} else
+				comm2.run();
+		
 	}
 
 	/**

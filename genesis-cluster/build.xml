@@ -75,6 +75,21 @@
 			</java>
 	</target>
 	
+	<target name="file" depends="build">
+			<java fork="yes" classname="com.genesis.router.app.FileApp">
+				<classpath refid="project.classpath" />
+				<arg value="runtime/clientConf.conf" />
+			</java>
+	</target>
+	
+	<target name="file1" depends="build">
+				<java fork="yes" classname="com.genesis.router.app.FileApp">
+					<classpath refid="project.classpath" />
+					<arg value="runtime/clientConf.conf" />
+					<arg value="runtime/clientConf.conf" />
+				</java>
+		</target>
+	
 	<target name="global" depends="build">
 				<java fork="yes" classname="com.genesis.router.app.GlobalApp">
 					<classpath refid="project.classpath" />

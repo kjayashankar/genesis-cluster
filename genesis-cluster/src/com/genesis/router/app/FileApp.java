@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +27,16 @@ import routing.Pipe.CommandMessage;
 public class FileApp implements CommListener {
 	protected static Logger logger = LoggerFactory.getLogger("DemoApp");
 	private MessageClient mc;
-	private int noOfChunks; 
+	private int noOfChunks = -1; 
 	private List<ResponseMessage> responseList;
 	private Map<String, Integer> keyChunkNoMap;
 	String filePath;
+	String outputFilePath;
 	
 	public FileApp(MessageClient mc) {
 		init(mc);
 		this.responseList = new LinkedList<>();
+		keyChunkNoMap = new HashMap<String,Integer>();
 	}
 
 	
@@ -95,56 +98,65 @@ public class FileApp implements CommListener {
 	@Override
 	public void onMessage(CommandMessage msg) {
 
-		
+		//TODO write check for failuremsg
 
 		
-		ByteString chunkData = null;
+		int chunkData = 0;
+		
 		if (msg.getResMsg().getOperation() == Operation.GET) {
 			
-			noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
+			//noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
 			
-			
+			logger.info("Beginning to read message... ");
+			logger.info("It has no of chunks...");
 			if (msg.getResMsg().hasChunkInfo()) {
-				logger.info("Got File from the server, reassembling chunks, no of chunks are : "+ noOfChunks);
+				chunkData = msg.getResMsg().getChunkNo();
+				logger.info("Got File from the server, reassembling chunks, no of chunks are : "+ chunkData);
 				//TODO Do I need this data? come back later.
-				chunkData = msg.getResMsg().getData();
+				
 				
 			} else {
 				ByteString data = msg.getResMsg().getData();
 
 				responseList.add(msg.getResMsg());
 
-				
+				logger.info("   ---   "+ responseList.size() + ", noOfChunks " + noOfChunks);
 				if (responseList.size() == noOfChunks) {
 				logger.info("Complete response is now received."); 	
 				
 					Collections.sort(responseList, new Comparator<ResponseMessage>() {
 						@Override
 						public int compare(ResponseMessage resp1, ResponseMessage resp2) {
-							
+							//TODO check if this is working fine
 							Integer chunkRes1 = resp1.getChunkNo();
 					    	Integer chunkRes2 = resp2.getChunkNo();
 					    	
 					    	int comp = chunkRes1.compareTo(chunkRes2);
 					    		
+					    	
+					    	return (comp != 0 ? comp : chunkRes1.compareTo(chunkRes1));
+					    	
+					    	/*
 					    	if(comp>0)
 					    		return -1;
 					        else if(comp<0)
-					        	return 1; 
-					        else 
-					            return 0;
+					        	return 1;
+					        else
+					            return 0;*/
 					    	
 						}
 					});
 
+					
 					List<ByteString> finalResList = new LinkedList<ByteString>();
 					for (ResponseMessage response : responseList) {
+						System.out.println("Sequencing m printing "+response.getChunkNo());
 						finalResList.add(response.getData());
 					}
 					
-						FileConversion convertUtil = new FileConversion();
-						convertUtil.convertAndWrite(filePath, finalResList);
-						
+						//FileConversion convertUtil = new FileConversion();
+						FileConversion.convertAndWrite(outputFilePath, finalResList);
+						logger.info("File written...");
 					
 					
 					
@@ -154,14 +166,14 @@ public class FileApp implements CommListener {
 	}
 
 	/**
-	 * sample application (client) use of our messaging service client lost connection to the server
+	 * sample application (client) use of our messaging service client lost connection to the server 
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		String host = "127.0.0.1";
 		
-		int port = 4668;
+		int port = 4168;
 		
 		
 		
@@ -175,17 +187,13 @@ public class FileApp implements CommListener {
 		
 		try {
 			MessageClient mc = new MessageClient(host, port,cf);
-			//mc.init(cf);
-			FileApp fa = new FileApp(mc);
-			fa.clientFileOperation("Java_Programming_with_BlueJ.pdf|POST|my_book");
-			// do stuff w/ the connection
-			//da.ping(2);
-			//da.post(1);
 			
+			FileApp fa = new FileApp(mc);
+			fa.clientFileOperation(args[1]);
 			
 			System.out.println("\n** exiting in 10 seconds. **");
 			System.out.flush();
-			Thread.sleep(50 * 2000);
+			Thread.sleep(1000 * 2000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -195,11 +203,14 @@ public class FileApp implements CommListener {
 	
 	public void clientFileOperation(String params) throws FileNotFoundException {
 		
-		String paramArr[] = params.split("|");
+		String paramArr[] = params.split("\\|");
+		//System.out.println("Array length is \n"+ paramArr.length 
+			//	+ " Array string ,"+ params.toString());
 		
 		/** 
 		 * Need to set below as command line arguments
 		 * Java_Programming_with_BlueJ.pdf|POST|my_book
+		 * Java_Programming_with_BlueJ.pdf|GET|my_book
 		 * Filename|GET|key
 		 * Need operations below to perform the operation on server
 		 * 1) Input file Path
@@ -232,6 +243,8 @@ public class FileApp implements CommListener {
 		//FileConversion fileUtil = new FileConversion(); No need made it static utility
 		
 		filePath = "src/com/genesis/file/write/"+fileName;
+		outputFilePath = "src/com/genesis/file/write/output/"+fileName;
+		
 		File tempFile = new File(filePath);
 		long fileSize = tempFile.length();
 		BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(filePath));
@@ -240,6 +253,7 @@ public class FileApp implements CommListener {
 		
 		switch (paramArr[1]) {
 		case "GET":
+					logger.info("performing get from client");
 					mc.get(key);
 					break;
 
@@ -249,15 +263,19 @@ public class FileApp implements CommListener {
 						throw new FileNotFoundException(filePath);
 					}
 					
-					mc.postChunkInfo(filePath, 0, fileSize);
-					for (int i = 0; i < noOfChunks; i++) {
+					logger.info("Post Messages chunkSize is "+ noOfChunks + ", filePath "+ filePath);
+					mc.postChunkInfo(key, noOfChunks, fileSize);
+					//for (int i = 0; i < noOfChunks; i++) {
 						List<ByteString> dataList = FileConversion.readAndConvert(filePath);
 		
-						int sequenceNo = 1;
+						int seqNo = 1;
+						
 						for (ByteString data : dataList) {
-							mc.post(key, sequenceNo++, data);
+							mc.post(key, seqNo++, data);
 						}
-					}
+						
+						logger.info("total no. to be retreived ... "+ seqNo);
+					//}
 					break;
 
 		case "PUT":
@@ -270,7 +288,7 @@ public class FileApp implements CommListener {
 			mc.postChunkInfo(filePath, 0, fileSize);
 			
 			for (int i = 0; i < noOfChunks; i++) {
-				List<ByteString> dataList = FileConversion.readAndConvert(filePath);
+				dataList = FileConversion.readAndConvert(filePath);
 
 				int sequenceNo = 1;
 				for (ByteString data : dataList) {
