@@ -82,10 +82,10 @@
 				</java>
 	</target>
 
-	<target name="node-3" depends="build">
-				<java fork="yes" classname="gash.router.server.MessageApp">
+	<target name="node-5" depends="build">
+				<java fork="yes" classname="com.genesis.router.server.MessageApp">
 					<classpath refid="project.classpath" />
-					<arg value="runtime/ring/route-3.conf" />
+					<arg value="runtime/route-5.conf" />
 				</java>
 			</target>
 	

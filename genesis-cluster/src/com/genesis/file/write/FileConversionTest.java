@@ -40,7 +40,7 @@ public class FileConversionTest {
 	@Test
 	public void testWriteFile() {
 		
-		list = conversionObj.readAndConvert("src/com/genesis/file/write/Java_Programming_with_BlueJ.pdf", 0, 1000000, 1);
+		list = conversionObj.readAndConvert("src/com/genesis/file/write/Java_Programming_with_BlueJ.pdf");
 
 		System.out.println(list.size());
 		

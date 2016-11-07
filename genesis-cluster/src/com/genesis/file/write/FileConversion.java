@@ -17,11 +17,11 @@ import com.google.protobuf.ByteString;
  */
 public class FileConversion {
 
-	private int chunkSize = 1000000; //1 Mb kept for now.
+	private static int chunkSize = 1000000; //1 Mb kept for now.
 	
-	public int getBytesAvailable(BufferedInputStream bcs){
+	public static int getBytesAvailable(BufferedInputStream bcs){
 		int bytesNo =0;
-		boolean flag = false;
+		//boolean flag = false;
 		
 		try {
 			bytesNo = bcs.available();
@@ -34,15 +34,15 @@ public class FileConversion {
 		return bytesNo;
 	}
 	
-	public int noOfChunksToCreate(BufferedInputStream bufferedInputStream){
+	public static int noOfChunksToCreate(BufferedInputStream bufferedInputStream){
 		System.out.println("getBytesAvailable(bufferedInputStream) "+ getBytesAvailable(bufferedInputStream)
-		+ ", chunkSize"+ chunkSize +"no of Chunks will be created" + ((getBytesAvailable(bufferedInputStream)/chunkSize) +1));
+		+ ", chunkSize "+ chunkSize +" no of Chunks will be created " + ((getBytesAvailable(bufferedInputStream)/chunkSize) +1));
 		
 		
 		return (int) ((getBytesAvailable(bufferedInputStream)/chunkSize) +1);
 	}
 	
-	public List<ByteString> readAndConvert(String file, long from, int size, int N) {
+	public static List<ByteString> readAndConvert(String file) {
 
 		List<ByteString> output = null;
 		BufferedInputStream bufferedInputStream = null;
@@ -93,7 +93,7 @@ public class FileConversion {
 	 * 
 	 */
 	
-	public void convertAndWrite(String file, List<ByteString> chunkList) {
+	public static void convertAndWrite(String file, List<ByteString> chunkList) {
 		BufferedOutputStream buffOutStream = null;
 		try {
 			buffOutStream = new BufferedOutputStream(new FileOutputStream(file));

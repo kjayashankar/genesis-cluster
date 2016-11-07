@@ -34,6 +34,7 @@ import pipe.common.Common.Node;
 import routing.Pipe.CommandMessage;
 
 
+
 /**
  * front-end (proxy) to our service - functional-based
  * 
@@ -284,6 +285,31 @@ public class MessageClient {
 		}
 	}
 
+	public void postChunkInfo(String key, int seqSize, long size) {
+		Header.Builder hb = buildHeader();
+
+		CommandMessage.Builder cb = CommandMessage.newBuilder();
+		cb.setHeader(hb);
+
+		RequestMessage.Builder qb = RequestMessage.newBuilder();
+		qb.setOperation(Operation.POST);
+		qb.setKey(key);
+		qb.setSeqNo(seqSize);
+
+		ChunkInfo.Builder mb = ChunkInfo.newBuilder();
+		mb.setNoOfChunks(seqSize);
+		mb.setSeqSize(size); 
+		mb.setTime(System.currentTimeMillis());
+
+		qb.setChunkInfo(mb);
+		cb.setReqMsg(qb);
+
+		try {
+			CommConnection.getInstance().enqueue(cb.build());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * @return
 	 */
