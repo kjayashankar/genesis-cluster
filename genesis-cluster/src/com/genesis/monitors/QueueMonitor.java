@@ -43,9 +43,9 @@ public class QueueMonitor {
 				return outboundQueue;
 			}
 		}
-		/*else if( state != null) {
+		else if( state != null) {
 			return lazyQueue;
-		}*/
+		}
 		//default inbound queue;
 		return inboundQueue;
 	}

@@ -66,14 +66,14 @@ public class VotedHandler extends ParentHandler {
 		// TODO Auto-generated method stub
 		switch(msg.getLeader().getAction()){
 			case THELEADERIS: {
-			
+				state.state = STATE.FOLLOWER;
 				Node origin = msg.getHeader().getOrigin();
 				EdgeInfo leader = new EdgeInfo(origin.getId(),origin.getHost(),origin.getPort());
 				leader.status = "ALIVE";
 				state.getEmon().setLeader(leader);
 				state.getEmon().passMsg(msg);
 				logger.info("leader received, updated leader : "+leader.getRef());
-				state.state = STATE.FOLLOWER;
+
 				break;
 			}
 			case WHOISTHELEADER: {

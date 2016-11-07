@@ -98,7 +98,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 
 	public void updateHeartBeat(Node node,long heartBeat,WorkState wstate){
-		if(state.state == STATE.ORPHAN)
+		if(state.state == STATE.ORPHAN )
 			state.state = STATE.FOLLOWER;
 		EdgeInfo edge = createInboundIfNew(node.getId(), node.getHost(), node.getPort());
 		edge.setLastHeartbeat(heartBeat);
@@ -470,7 +470,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 					ei.setActive(channel.channel().isActive());
 				}
 				catch(Exception e){
-					logger.error("error in conecting to node "+ei.getRef());
+					logger.error("error in conecting to node "+ei.getRef()+" exception "+e.getMessage());
 					if(++ei.retry > 2){
 						if(leader != null){
 							
@@ -616,7 +616,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 
 	private void createPermanentChannel(EdgeInfo ei) {
 		if(!ei.isActive()) {
-			logger.info("trying to connect to node " + ei.getRef());
 			EventLoopGroup group = new NioEventLoopGroup();
 			WorkInit si = new WorkInit(state, false);
 			Bootstrap b = new Bootstrap();
