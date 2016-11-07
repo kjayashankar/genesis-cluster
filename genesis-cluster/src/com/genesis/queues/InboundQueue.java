@@ -23,6 +23,7 @@ public class InboundQueue implements Queue{
 	LinkedBlockingDeque<WorkChannel> inbound;
 	
 	private int balanced;
+	private int processed = 0;
 	private ServerState state;
 	Rebalancer rebalance ;
 	private TaskHandler clientReqHandler;
@@ -31,6 +32,7 @@ public class InboundQueue implements Queue{
 	public InboundQueue(ServerState state,Rebalancer newBalancer) {
 		this.state = state;
 		this.rebalance = newBalancer;
+		rebalance.setQueue(this);
 		inbound = new LinkedBlockingDeque<WorkChannel>();
 		
 		
@@ -86,6 +88,7 @@ public class InboundQueue implements Queue{
 		// Already a lazy task, no need to check eligibility, just update header and broadcast
 		else if(type == TaskType.LAZYTASK)
 			state.getEmon().updateAndBoradCast(work.getTask());
+		processed ++;
 		return true;
 	}
 	
@@ -109,19 +112,33 @@ public class InboundQueue implements Queue{
 		
 	}
 	
-	public WorkChannel rebalance() {
+	public WorkMessage rebalance() {
 		WorkChannel t = null;
 
 		try {
 			if (rebalance != null && !rebalance.allow())
-				return t;
+				return null;
 
 			t = inbound.take();
 			balanced++;
 		} catch (InterruptedException e) {
 			logger.error("failed to rebalance a task", e);
 		}
-		return t;
+		if(t != null)
+			return t.getWorkMessage();
+		return null;
+	}
+
+	@Override
+	public int numEnqueued() {
+		// TODO Auto-generated method stub
+		return inbound.size();
+	}
+
+	@Override
+	public int numProcessed() {
+		// TODO Auto-generated method stub
+		return processed;
 	}
 
 }

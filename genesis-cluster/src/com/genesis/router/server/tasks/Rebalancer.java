@@ -15,7 +15,12 @@
  */
 package com.genesis.router.server.tasks;
 
+import com.genesis.queues.Queue;
+
 public interface Rebalancer {
+	
+	public void setQueue(Queue inbound);
+	
 	public abstract boolean allow();
 
 	public abstract float calcLoad();

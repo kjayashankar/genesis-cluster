@@ -84,5 +84,6 @@ message WorkMessage {
       Register register = 10;
       Vote verdict = 11;
       bool steal = 12;
+      bool stealResponse = 13;
    }
 }

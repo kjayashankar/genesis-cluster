@@ -13,4 +13,14 @@ public interface Queue {
 	int getSize();
 	
 	boolean process();
+	
+	WorkMessage rebalance();
+
+	int numEnqueued();
+
+	int numProcessed();
+	
+	
+
+
 }

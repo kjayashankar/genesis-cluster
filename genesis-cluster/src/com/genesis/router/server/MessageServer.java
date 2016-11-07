@@ -32,9 +32,7 @@ import com.genesis.monitors.StealerThread;
 import com.genesis.queues.workers.ThreadPool;
 import com.genesis.router.container.RoutingConf;
 import com.genesis.router.server.edges.EdgeMonitor;
-import com.genesis.router.server.tasks.NoOpBalancer;
 import com.genesis.router.server.tasks.SimpleBalancer;
-import com.genesis.router.server.tasks.TaskList;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -72,15 +70,12 @@ public class MessageServer {
 				state = new ServerState();
 				state.setConf(conf);
 				
-				TaskList tasks = new TaskList(new NoOpBalancer());
-				state.setTasks(tasks);
-				
 				NetworkMonitor nmon = NetworkMonitor.getInstance();
 				nmon.setState(state);
 				state.setNetworkmon(nmon);
 				
-				if (!conf.isInternalNode()) 
-					state.state = STATE.LEADER;
+				//if (!conf.isInternalNode()) 
+					//state.state = STATE.LEADER;
 				
 				QueueMonitor qMon = new QueueMonitor(conf.getWorkerThreads(),state,new SimpleBalancer());
 				state.setQueueMonitor(qMon);
@@ -108,15 +103,15 @@ public class MessageServer {
 		Thread cthread = new Thread(comm);
 		cthread.start();
 
-		if (!conf.isInternalNode()) {
+		//if (!conf.isInternalNode()) {
 			StartCommandCommunication comm2 = new StartCommandCommunication(conf);
 			logger.info("Command starting");
 
 			if (background) {
 				Thread cthread2 = new Thread(comm2);
 				cthread2.start();
-			} else
-				comm2.run();
+			//} else
+		//		comm2.run();
 		}
 	}
 
@@ -227,28 +222,26 @@ public class MessageServer {
 				throw new RuntimeException("missing conf");
 
 			
-			ThreadPool pool = new ThreadPool(4, state);
-			pool.setThreadPause(1000);
-			pool.init();
-			pool.startWorkers();
 			
-			/*
+			
+			
 			EdgeMonitor emon = new EdgeMonitor(state);
 			Thread t = new Thread(emon);
 			t.start();
 			
-			ThreadPool pool = new ThreadPool(4, state);
-			pool.setThreadPause(1000);
-			pool.init();
-			pool.startWorkers();
+			
+		
+			Flooder dT = new Flooder();
+			dT.setState(state);
+			new Thread(dT).start();
 			
 			StealerThread stealer = new StealerThread(state);
 			stealer.start();
 			
-			Flooder dT = new Flooder();
-			dT.setState(state);
-			new Thread(dT).start();*/
-			
+			ThreadPool pool = new ThreadPool(conf.getWorkerThreads(), state);
+			pool.setThreadPause(1000);
+			pool.init();
+			pool.startWorkers();
 		}
 
 		public void run() {

@@ -1,15 +1,16 @@
 package com.genesis.router.server.tasks;
 
+import com.genesis.queues.Queue;
 
 public class SimpleBalancer implements Rebalancer {
 
-	private TaskList taskList;
+	private Queue inbound;
 	
 	public SimpleBalancer() {}
 
 
-	public void setTaskList(TaskList taskList) {
-		this.taskList = taskList;
+	public void setQueue(Queue inbound) {
+		this.inbound = inbound;
 	}
 
 
@@ -20,7 +21,7 @@ public class SimpleBalancer implements Rebalancer {
 
 	@Override
 	public float calcLoad() {
-		return taskList.numEnqueued() / taskList.MAX_SIZE;
+		return inbound.numEnqueued() / 200;
 	}
 
 }

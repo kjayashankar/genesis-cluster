@@ -6224,6 +6224,15 @@ public final class Work {
      * <code>optional bool steal = 12;</code>
      */
     boolean getSteal();
+
+    /**
+     * <code>optional bool stealResponse = 13;</code>
+     */
+    boolean hasStealResponse();
+    /**
+     * <code>optional bool stealResponse = 13;</code>
+     */
+    boolean getStealResponse();
   }
   /**
    * Protobuf type {@code WorkMessage}
@@ -6413,6 +6422,11 @@ public final class Work {
               payload_ = input.readBool();
               break;
             }
+            case 104: {
+              payloadCase_ = 13;
+              payload_ = input.readBool();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -6467,6 +6481,7 @@ public final class Work {
       REGISTER(10),
       VERDICT(11),
       STEAL(12),
+      STEALRESPONSE(13),
       PAYLOAD_NOT_SET(0);
       private int value = 0;
       private PayloadCase(int value) {
@@ -6484,6 +6499,7 @@ public final class Work {
           case 10: return REGISTER;
           case 11: return VERDICT;
           case 12: return STEAL;
+          case 13: return STEALRESPONSE;
           case 0: return PAYLOAD_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -6798,6 +6814,23 @@ public final class Work {
       return false;
     }
 
+    public static final int STEALRESPONSE_FIELD_NUMBER = 13;
+    /**
+     * <code>optional bool stealResponse = 13;</code>
+     */
+    public boolean hasStealResponse() {
+      return payloadCase_ == 13;
+    }
+    /**
+     * <code>optional bool stealResponse = 13;</code>
+     */
+    public boolean getStealResponse() {
+      if (payloadCase_ == 13) {
+        return (java.lang.Boolean) payload_;
+      }
+      return false;
+    }
+
     private void initFields() {
       header_ = pipe.common.Common.Header.getDefaultInstance();
       secret_ = 0L;
@@ -6913,6 +6946,10 @@ public final class Work {
         output.writeBool(
             12, (boolean)((java.lang.Boolean) payload_));
       }
+      if (payloadCase_ == 13) {
+        output.writeBool(
+            13, (boolean)((java.lang.Boolean) payload_));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6971,6 +7008,11 @@ public final class Work {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(
               12, (boolean)((java.lang.Boolean) payload_));
+      }
+      if (payloadCase_ == 13) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(
+              13, (boolean)((java.lang.Boolean) payload_));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -7206,6 +7248,9 @@ public final class Work {
         if (payloadCase_ == 12) {
           result.payload_ = payload_;
         }
+        if (payloadCase_ == 13) {
+          result.payload_ = payload_;
+        }
         result.bitField0_ = to_bitField0_;
         result.payloadCase_ = payloadCase_;
         onBuilt();
@@ -7268,6 +7313,10 @@ public final class Work {
           }
           case STEAL: {
             setSteal(other.getSteal());
+            break;
+          }
+          case STEALRESPONSE: {
+            setStealResponse(other.getStealResponse());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -8728,6 +8777,42 @@ public final class Work {
         return this;
       }
 
+      /**
+       * <code>optional bool stealResponse = 13;</code>
+       */
+      public boolean hasStealResponse() {
+        return payloadCase_ == 13;
+      }
+      /**
+       * <code>optional bool stealResponse = 13;</code>
+       */
+      public boolean getStealResponse() {
+        if (payloadCase_ == 13) {
+          return (java.lang.Boolean) payload_;
+        }
+        return false;
+      }
+      /**
+       * <code>optional bool stealResponse = 13;</code>
+       */
+      public Builder setStealResponse(boolean value) {
+        payloadCase_ = 13;
+        payload_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool stealResponse = 13;</code>
+       */
+      public Builder clearStealResponse() {
+        if (payloadCase_ == 13) {
+          payloadCase_ = 0;
+          payload_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:WorkMessage)
     }
 
@@ -8803,16 +8888,17 @@ public final class Work {
       ".Vote.Verdict\"\037\n\007Verdict\022\010\n\004VOTE\020\001\022\n\n\006RE" +
       "JECT\020\002\"H\n\010Register\022\014\n\004mode\030\001 \002(\t\022\027\n\010dest" +
       "Node\030\002 \001(\0132\005.Node\022\025\n\006leader\030\003 \001(\0132\005.Node" +
-      "\"\304\002\n\013WorkMessage\022\027\n\006header\030\001 \002(\0132\007.Heade" +
+      "\"\335\002\n\013WorkMessage\022\027\n\006header\030\001 \002(\0132\007.Heade" +
       "r\022\016\n\006secret\030\002 \002(\003\022\027\n\003err\030\003 \001(\0132\010.Failure" +
       "H\000\022\016\n\004ping\030\004 \001(\010H\000\022\032\n\004beat\030\005 \001(\0132\n.Heart" +
       "beatH\000\022\035\n\006dragon\030\t \001(\0132\013.DragonBeatH\000\022\025\n" +
       "\004task\030\006 \001(\0132\005.TaskH\000\022\033\n\005state\030\007 \001(\0132\n.Wo",
       "rkStateH\000\022\037\n\006leader\030\010 \001(\0132\r.LeaderStatus" +
       "H\000\022\035\n\010register\030\n \001(\0132\t.RegisterH\000\022\030\n\007ver" +
-      "dict\030\013 \001(\0132\005.VoteH\000\022\017\n\005steal\030\014 \001(\010H\000B\t\n\007" +
-      "payload*(\n\010TaskType\022\016\n\nSIMPLETASK\020\001\022\014\n\010L" +
-      "AZYTASK\020\002B\r\n\tpipe.workH\001"
+      "dict\030\013 \001(\0132\005.VoteH\000\022\017\n\005steal\030\014 \001(\010H\000\022\027\n\r" +
+      "stealResponse\030\r \001(\010H\000B\t\n\007payload*(\n\010Task" +
+      "Type\022\016\n\nSIMPLETASK\020\001\022\014\n\010LAZYTASK\020\002B\r\n\tpi" +
+      "pe.workH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -8876,7 +8962,7 @@ public final class Work {
     internal_static_WorkMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_WorkMessage_descriptor,
-        new java.lang.String[] { "Header", "Secret", "Err", "Ping", "Beat", "Dragon", "Task", "State", "Leader", "Register", "Verdict", "Steal", "Payload", });
+        new java.lang.String[] { "Header", "Secret", "Err", "Ping", "Beat", "Dragon", "Task", "State", "Leader", "Register", "Verdict", "Steal", "StealResponse", "Payload", });
     pipe.common.Common.getDescriptor();
     pipe.election.Election.getDescriptor();
     routing.Pipe.getDescriptor();

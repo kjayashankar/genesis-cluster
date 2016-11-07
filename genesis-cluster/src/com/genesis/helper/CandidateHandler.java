@@ -36,6 +36,13 @@ public class CandidateHandler extends ParentHandler  {
 			logger.info("received a vote from "+msg.getHeader().getOrigin());
 			state.getEmon().handleVote(msg);
 		}
+		else if(msg.hasSteal()){
+			WorkMessage stolenTask = handleSteal(msg);
+			channel.writeAndFlush(stolenTask);
+		}
+		else if(msg.hasStealResponse()){
+			handleStealResponse(msg, channel);
+		}
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import com.genesis.router.server.ServerState;
 import com.genesis.router.server.edges.EdgeInfo;
 
 import io.netty.channel.Channel;
+import pipe.common.Common.Failure;
 import pipe.common.Common.Node;
 import pipe.work.Work.DragonBeat;
 import pipe.work.Work.NodeLinks;
@@ -58,10 +59,8 @@ public class ParentHandler implements ServerHandler{
 
 	public void handleDragonL2(WorkMessage msg, Channel channel) {
 		logger.debug("Dragon L2 "+msg);
-
 		NetworkMonitor nmon = NetworkMonitor.getInstance();
-		DragonBeat dragon = msg.getDragon();
-		 
+		DragonBeat dragon = msg.getDragon(); 
 		List<NodeLinks> links = dragon.getNodelinksList();
 		nmon.nmap = links;
 		state.getEmon().passOnDragon("L2",links,nmon.getOutCheckSum());
@@ -70,19 +69,34 @@ public class ParentHandler implements ServerHandler{
 	public void handleDragonL1(WorkMessage msg, Channel channel) {
 
 		NetworkMonitor nmon = NetworkMonitor.getInstance();
-		DragonBeat dragon = msg.getDragon();
-		 
+		DragonBeat dragon = msg.getDragon();	 
 		List<NodeLinks> links = new ArrayList<NodeLinks>();
 		links.addAll(dragon.getNodelinksList());
 		logger.debug("L1 links received : "+links);
-
 		links.add(state.getEmon().prepareDragonBeatMsg());
-		logger.debug("L1 links received and transmitted : "+links);
-		
+		logger.debug("L1 links received and transmitted : "+links);	
 		state.getEmon().passOnDragon("L1",links,nmon.getOutCheckSum());
 	}
 	
+	public WorkMessage handleSteal(WorkMessage wm){
+		WorkMessage returnWorkMessage = state.getQueueMonitor().getInboundQueue().rebalance();
+		if(returnWorkMessage != null){
+			WorkMessage.Builder tempWork = WorkMessage.newBuilder(returnWorkMessage);
+			tempWork.setStealResponse(true);
+			return tempWork.build();
+		}
+		else{
+			Failure.Builder eb = Failure.newBuilder();
+			eb.setId(state.getConf().getNodeId());
+			eb.setRefId(wm.getHeader().getNodeId());
+			eb.setMessage("No stealing needed");
+			WorkMessage.Builder rb = WorkMessage.newBuilder(wm);
+			rb.setErr(eb);
+			return rb.build();
+		}
+	}
 	
-	
-	
+	public void handleStealResponse(WorkMessage wm, Channel channel) {
+		state.getQueueMonitor().getInboundQueue().put(wm, channel);
+	}
 }

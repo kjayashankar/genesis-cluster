@@ -16,6 +16,8 @@ public class LazyQueue implements Queue {
 	
 	private ServerState state;
 	
+	private int processed = 0;
+	
 	private static Logger logger = LoggerFactory.getLogger("lazy queue");
 	
 	public LazyQueue(ServerState state) {
@@ -63,7 +65,26 @@ public class LazyQueue implements Queue {
 		Channel channel = t.getChannel();
 		if(channel.isActive() && channel.isOpen())
 			channel.writeAndFlush(work);
+		processed ++;
 		return true;
+	}
+
+	@Override
+	public WorkMessage rebalance() {
+		logger.error("operation not supported in this type of queue");
+		return null;
+	}
+	
+	@Override
+	public int numEnqueued() {
+		// TODO Auto-generated method stub
+		return lazy.size();
+	}
+
+	@Override
+	public int numProcessed() {
+		// TODO Auto-generated method stub
+		return processed;
 	}
 
 }

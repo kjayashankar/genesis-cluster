@@ -104,7 +104,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		edge.setLastHeartbeat(heartBeat);
 		edge.setEnqueue(wstate.getEnqueued());
 		edge.setProcessed(wstate.getProcessed());
-		logger.info("received heart beat from "+node.getId());	
 	}
 	
 
@@ -211,7 +210,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		}
 	}
 	
-	private void claimLeadership() {
+	public void claimLeadership() {
 		WorkMessage.Builder leaderB = WorkMessage.newBuilder();
 		LeaderStatus.Builder status = LeaderStatus.newBuilder();
 		status.setAction(LeaderQuery.THELEADERIS);
@@ -244,7 +243,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			logger.info("leader is not found , i'm going to wait for 4 more ticks");
 			leaderStatus++;
 		}
-		if(leaderStatus > 4){
+		if(leaderStatus > 7){
 			leaderStatus = 0;
 			candidateRetry = 0;
 			LeaderStatus lStatus= eMonitor.init(thisNode);
@@ -288,6 +287,9 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		logger.info("current state "+state.state);
 		logger.info("current inbounds "+this.inboundEdges.map.keySet());
 		logger.info("current outbounds "+this.outboundEdges.map.keySet());
+		logger.info("inbound queue size " +qMon.getInboundQueue().getSize());
+		logger.info("Outbouond queue size "+qMon.getOutboundQueue().getSize());
+		logger.info("Lazy queue size "+qMon.getLazyQueue().getSize());
 
 	}
 
@@ -443,8 +445,8 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private void pushHeartBeat(){
 
 		WorkState.Builder sb = WorkState.newBuilder();
-		sb.setEnqueued(state.getTasks().numEnqueued());
-		sb.setProcessed(state.getTasks().numProcessed());
+		sb.setEnqueued(qMon.getInboundQueue().numEnqueued());
+		sb.setProcessed(qMon.getInboundQueue().numProcessed());
 
 		for (EdgeInfo ei : this.outboundEdges.map.values()) {
 			if (ei.getChannel() != null && ei.isActive()) {
@@ -454,7 +456,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			} else {
 				// TODO create a client to the node
 				try{
-					logger.info("trying to connect to node " + ei.getRef());
 					EventLoopGroup group = new NioEventLoopGroup();
 					WorkInit si = new WorkInit(state, false);
 					Bootstrap b = new Bootstrap();
@@ -640,7 +641,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	public void handleStealer() {
 		
 		if(shouldStealTask()){
-			logger.info("Threshold cross looking to steal work, Node id is "+state.getConf().getNodeId());
 			for (EdgeInfo ei : this.outboundEdges.map.values()) {
 				
 				if (ei.isActive() && ei.getChannel() != null) {
@@ -654,11 +654,10 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 					wb.setSteal(true);
 					wb.setSecret(1);
 					ei.getChannel().writeAndFlush(wb.build());
-					logger.info("Steal request sent to the outbound edge");
 				}
 			}
 			for(EdgeInfo ei: this.inboundEdges.map.values()) {
-				if(ei.getEnqueue() - ei.getProcessed() > 20) {
+				if(ei.getEnqueue() > 2) {
 					Header.Builder hb = Header.newBuilder();
 					hb.setNodeId(state.getConf().getNodeId());
 					hb.setDestination(-1);
@@ -668,15 +667,17 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 					wb.setSteal(true);
 					wb.setSecret(1);
 					ei.getChannel().writeAndFlush(wb.build());
-					logger.info("Steal request sent to the inbound edge");
 				}
 			}
 		}
 	}
 	
 	private boolean shouldStealTask() {
-		logger.info("Should steal numEnqueued :: "+ state.getTasks().numEnqueued() + ", threshold :: "+state.getTasks().STEALING_THRESHOLD);
-		return state.getTasks().startStealing();
+		{
+			if(qMon.getInboundQueue().getSize() < 2)
+				return true;
+		}
+		return false;
 	}
 	
 	public void sendToLazyQueue(Task t) {

@@ -52,6 +52,14 @@ public class LeaderHandler extends ParentHandler {
 		else if(msg.hasLeader()){
 			handleLeader(msg, channel);
 		}
+		else if(msg.hasSteal()){
+			WorkMessage stolenTask = handleSteal(msg);
+			channel.writeAndFlush(stolenTask);
+		}
+		else if(msg.hasStealResponse()){
+			handleStealResponse(msg, channel);
+		}
+		
 	}
 	
 	public void handleRegister(WorkMessage msg, Channel channel) {
@@ -69,20 +77,9 @@ public class LeaderHandler extends ParentHandler {
 			case WHOISTHELEADER: {
 				switch(msg.getLeader().getState()){
 					case LEADERDEAD: {
-						if(state.state != STATE.CANDIDATE && state.state != STATE.VOTED){
-							state.state = STATE.VOTED;
-							
-							state.getEmon().handleElectionMessage(msg);
-						}
-						break;
-					}
-					default:{
-						// probably a new node, help it to find leader
-						//WorkMessage workMessage = state.getEmon().helpFindLeaderNode(msg);
-						//if(workMessage != null)
-						//	channel.writeAndFlush(workMessage);
-					}
-				
+						state.getEmon().claimLeadership();
+						return;
+					}				
 				}
 			}
 		}

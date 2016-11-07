@@ -19,13 +19,11 @@ public class StealerThread extends Thread{
 	
 	
 	public void run(){
-		while(1==1){
+		while(1 == 1){
 			state.getEmon().handleStealer();
 			try {
-				logger.info("running stealer thread");
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

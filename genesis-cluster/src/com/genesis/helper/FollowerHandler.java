@@ -49,6 +49,13 @@ public class FollowerHandler extends ParentHandler {
 		else if(msg.hasRegister()){
 			handleRegister(msg,channel);
 		}
+		else if(msg.hasSteal()){
+			WorkMessage stolenTask = handleSteal(msg);
+			channel.writeAndFlush(stolenTask);
+		}
+		else if(msg.hasStealResponse()){
+			handleStealResponse(msg, channel);
+		}
 	}
 
 	public void handleRegister(WorkMessage msg, Channel channel) {

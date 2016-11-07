@@ -36,7 +36,7 @@ import routing.Pipe.CommandMessage;
 public class DemoApp implements CommListener {
 	protected static Logger logger = LoggerFactory.getLogger("demo");
 	private MessageClient mc;
-	private int noOfChunks; 
+	private long noOfChunks; 
 	private List<ResponseMessage> responseList;
 
 	public DemoApp(MessageClient mc) {

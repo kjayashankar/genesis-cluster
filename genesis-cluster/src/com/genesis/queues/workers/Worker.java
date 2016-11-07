@@ -28,29 +28,14 @@ public class Worker extends Thread{
 	@Override
 	public void run() {
 		while(1==1) {
-			logger.info("worker index "+id+", ");
-			// TODO Auto-generated method stub
 			if(state != null && state.getQueueMonitor() != null) {
 				Queue queue = state.getQueueMonitor().getQueue();
-				if(queue instanceof InboundQueue){
-					logger.info("worker index "+id+", performing inbound tasks ");
-		
-					// treat inbound tasks
-				}
-				else{
-					logger.info("worker index "+id+", performing outbound tasks ");
-					/*TaskChannel tc = queue.get();
-					Channel channel = tc.getChannel();
-					if(channel != null && channel.isActive())
-						channel.writeAndFlush(tc);*/
-				}
 				queue.process();
 			}
 			
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

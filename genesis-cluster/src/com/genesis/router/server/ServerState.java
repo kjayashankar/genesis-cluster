@@ -3,12 +3,10 @@ package com.genesis.router.server;
 import java.net.SocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.genesis.monitors.LoadMonitor;
 import com.genesis.monitors.NetworkMonitor;
 import com.genesis.monitors.QueueMonitor;
 import com.genesis.router.container.RoutingConf;
 import com.genesis.router.server.edges.EdgeMonitor;
-import com.genesis.router.server.tasks.TaskList;
 
 import io.netty.channel.Channel;
 
@@ -16,8 +14,6 @@ import io.netty.channel.Channel;
 public class ServerState {
 	private RoutingConf conf;
 	private EdgeMonitor emon;
-	private TaskList tasks;
-	private LoadMonitor loadmon;
 	private NetworkMonitor networkmon;
 	private QueueMonitor queueMonitor;
 	private ConcurrentHashMap<String, SocketAddress> keySocketMappings = new ConcurrentHashMap<>();
@@ -34,10 +30,7 @@ public class ServerState {
 		}
 		
 	}
-	public LoadMonitor getLoadmon() {
-		return loadmon;
-	}
-
+	
 	public void setQueueMonitor(QueueMonitor qMon){
 		this.queueMonitor = qMon;
 	}
@@ -46,9 +39,6 @@ public class ServerState {
 		return queueMonitor;
 	}
 	
-	public void setLoadmon(LoadMonitor loadmon) {
-		this.loadmon = loadmon;
-	}
 
 	public NetworkMonitor getNetworkmon() {
 		return networkmon;
@@ -74,13 +64,6 @@ public class ServerState {
 		this.emon = emon;
 	}
 
-	public TaskList getTasks() {
-		return tasks;
-	}
-
-	public void setTasks(TaskList tasks) {
-		this.tasks = tasks;
-	}
 	public ConcurrentHashMap<SocketAddress, Channel> getAddressChannelMappings() {
 		if(addressChannelMappings!=null){
 			return addressChannelMappings;

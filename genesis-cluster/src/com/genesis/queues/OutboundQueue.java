@@ -21,6 +21,7 @@ public class OutboundQueue implements Queue{
 	private ConcurrentHashMap<String, SocketAddress> keySocketMappings;
 	private ConcurrentHashMap<SocketAddress, Channel> addressChannelMappings;
 
+	private int processed = 0;
 	
 	public OutboundQueue(ServerState state) {
 		this.state = state;
@@ -108,8 +109,24 @@ public class OutboundQueue implements Queue{
 				logger.info("No Client is waiting for the response....");
 			}
 		}*/
-			
+		processed++;
 		return true;
 	}
+	
+	@Override
+	public WorkMessage rebalance() {
+		logger.error("operation not supported in this type of queue");
+		return null;
+	}
+	@Override
+	public int numEnqueued() {
+		// TODO Auto-generated method stub
+		return outbound.size();
+	}
 
+	@Override
+	public int numProcessed() {
+		// TODO Auto-generated method stub
+		return processed;
+	}
 }
