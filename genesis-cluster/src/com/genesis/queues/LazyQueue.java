@@ -62,9 +62,7 @@ public class LazyQueue implements Queue {
 		}
 		WorkChannel t = get();
 		WorkMessage work = t.getWorkMessage();
-		Channel channel = t.getChannel();
-		if(channel.isActive() && channel.isOpen())
-			channel.writeAndFlush(work);
+		logger.info("processed lazy task +++ " +work);
 		processed ++;
 		return true;
 	}
