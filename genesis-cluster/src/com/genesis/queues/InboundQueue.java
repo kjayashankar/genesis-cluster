@@ -13,7 +13,9 @@ import com.genesis.router.server.tasks.Rebalancer;
 import com.message.ClientMessage.Operation;
 
 import io.netty.channel.Channel;
+import pipe.common.Common.Header;
 import pipe.common.Common.Node;
+import pipe.work.Work.Task;
 import pipe.work.Work.TaskType;
 import pipe.work.Work.WorkMessage;
 import routing.Pipe.CommandMessage;
@@ -28,16 +30,33 @@ public class InboundQueue implements Queue{
 	Rebalancer rebalance ;
 	private TaskHandler clientReqHandler;
 	private static Logger logger = LoggerFactory.getLogger("inbound queue");
+	private boolean debug = false;
+	
 	
 	public InboundQueue(ServerState state,Rebalancer newBalancer) {
 		this.state = state;
 		this.rebalance = newBalancer;
 		rebalance.setQueue(this);
 		inbound = new LinkedBlockingDeque<WorkChannel>();
-		
-		
+		if(debug)
+			addDummy();
 	}
 	
+	private void addDummy() {
+		WorkMessage.Builder wm = WorkMessage.newBuilder();
+		Header.Builder header = Header.newBuilder();
+		wm.setSecret(1);
+		wm.setHeader(header);
+		Task.Builder t = Task.newBuilder();
+		t.setSeqId(12);
+		t.setSeriesId(1000);
+		wm.setTask(t);
+		for(int i = 0; i < 20 ; i ++){
+			inbound.add(new WorkChannel(wm.build(),null));
+		}
+		
+	}
+
 	@Override
 	public void put(WorkMessage work, Channel channel) {
 		inbound.add(new WorkChannel(work, channel));
@@ -80,7 +99,7 @@ public class InboundQueue implements Queue{
 		
 		//Perform the processing for client request here
 		logger.info("Initiating processing for inbound message");
-		handleClientOperation(work, t.getChannel());
+		//handleClientOperation(work, t.getChannel());
 		TaskType type = work.getTask().getType();
 		// Into Lazy queue for the first time
 		if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
@@ -116,11 +135,10 @@ public class InboundQueue implements Queue{
 		WorkChannel t = null;
 
 		try {
-			if (rebalance != null && !rebalance.allow())
-				return null;
-
-			t = inbound.take();
-			balanced++;
+			if (rebalance != null && !rebalance.allow()) {
+				t = inbound.take();
+				balanced++;
+			}
 		} catch (InterruptedException e) {
 			logger.error("failed to rebalance a task", e);
 		}
