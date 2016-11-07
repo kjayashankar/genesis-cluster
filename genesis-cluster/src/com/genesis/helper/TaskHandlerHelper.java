@@ -21,6 +21,7 @@ import io.netty.channel.ChannelFutureListener;
 import pipe.common.Common.Failure;
 import pipe.work.Work.WorkMessage;
 import routing.Pipe.CommandMessage;
+import com.genesis.db.handlers.MongoDBServiceImpl;
 
 public class TaskHandlerHelper {
 
@@ -28,6 +29,19 @@ public class TaskHandlerHelper {
 	private ServerState state;
 	//TODO Write to pick it from the Factory, fine for now
 	IDBService redisClient ;
+	static IDBService mongoDBServiceImpl;
+	
+	
+	public static IDBService getMongoConnection(){
+		
+		try{
+			logger.info("Got mongo Object");
+			mongoDBServiceImpl = new MongoDBServiceImpl();
+		}
+		catch(Exception e){}
+		return mongoDBServiceImpl;
+	}
+	
 	Queue outboundQueue;
 	private ConcurrentHashMap<String, SocketAddress> keySocketMappings;
 	private ConcurrentHashMap<SocketAddress, Channel> addressChannelMappings;
@@ -41,6 +55,7 @@ public class TaskHandlerHelper {
 				e.printStackTrace();
 			}
 			this.redisClient= new RedisDBServiceImpl();
+			
 		}
 	}
 	

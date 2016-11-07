@@ -28,8 +28,9 @@ import com.message.ClientMessage.ChunkInfo;
 import com.message.ClientMessage.Operation;
 import com.message.ClientMessage.RequestMessage;
 
-
+import pipe.common.Common;
 import pipe.common.Common.Header;
+import pipe.common.Common.Node;
 import routing.Pipe.CommandMessage;
 
 
@@ -43,6 +44,8 @@ public class MessageClient {
 	// track requests
 	private long curID = 0;
 	protected RoutingConf conf;
+	private String host; 
+	private int port;
 	
 	public void init(File cfg) {
 		if (!cfg.exists())
@@ -74,6 +77,8 @@ public class MessageClient {
 	}
 	
 	public MessageClient(String host, int port, File confFile) {
+		this.host= host;
+		this.port = port;
 		init(host, port);
 		init(confFile);
 		
@@ -286,9 +291,21 @@ public class MessageClient {
 		
 		Header.Builder hb = Header.newBuilder();
 		hb.setNodeId(conf.getNodeId());
+		hb.setOrigin(buildNode());
 		hb.setTime(System.currentTimeMillis());
 		hb.setDestination(-1);
 		return hb;
+	}
+	
+	private Common.Node buildNode(){
+		
+			Node.Builder commNode = Node.newBuilder();
+			
+			commNode.setId(conf.getNodeId());
+			commNode.setPort(port);
+			commNode.setHost(host);
+		
+			return commNode.build();
 	}
 
 

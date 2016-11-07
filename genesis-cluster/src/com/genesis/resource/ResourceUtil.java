@@ -316,8 +316,10 @@ public class ResourceUtil {
 		
 		Header.Builder hb = Header.newBuilder();
 		hb.setNodeId(state.getConf().getNodeId());
+		hb.setOrigin(commandMessage.getHeader().getOrigin());
 		hb.setTime(System.currentTimeMillis());
 		hb.setDestination(commandMessage.getHeader().getNodeId());
+		
 		return hb;
 	}
 	
