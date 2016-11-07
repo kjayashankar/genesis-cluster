@@ -107,7 +107,7 @@ public class InboundQueue implements Queue{
 	public void handleClientOperation(WorkMessage workMessage, Channel channel){
 		Node origin = workMessage.getHeader().getOrigin();
 		EdgeInfo ei = ResourceUtil.nodeToEdge(origin);
-		Channel destination = ResourceUtil.getChannel(state , ei);
+		Channel destination = ResourceUtil.getChannel(ei);
 		clientReqHandler.handleTask(workMessage, channel);
 		
 	}

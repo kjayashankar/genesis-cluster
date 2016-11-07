@@ -1,10 +1,13 @@
 package com.genesis.resource;
 
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.router.client.CommInit;
+import com.genesis.router.server.CommandInit;
 import com.genesis.router.server.ServerState;
 import com.genesis.router.server.WorkInit;
 import com.genesis.router.server.edges.EdgeInfo;
@@ -15,12 +18,14 @@ import com.message.ClientMessage.RequestMessage;
 import com.message.ClientMessage.ResponseMessage;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import pipe.common.Common.Failure;
 import pipe.common.Common.Header;
@@ -405,33 +410,42 @@ public class ResourceUtil {
 		return wb.build();
 	}
 
-	public static Channel getChannel(ServerState state, EdgeInfo ei) {
+	public static Channel getChannel(EdgeInfo ei) {
 		if(ei.getChannel() != null && ei.isActive())
 			return ei.getChannel();
-		return createTemporaryChannel(state,ei);
+		return createTemporaryChannel(ei);
 	}
-	private static Channel createTemporaryChannel(ServerState state, EdgeInfo ei) {
-		
-		// used a closed channel handler
-		
-		logger.info("trying to connect to node " + ei.getRef());
+	private static Channel createTemporaryChannel( EdgeInfo ei) {
 		EventLoopGroup group = new NioEventLoopGroup();
+		LinkedBlockingDeque<CommandMessage> outbound = 
+				new LinkedBlockingDeque<CommandMessage>();
+		try {
+//			GlobalCommandChannelInitializer si = new GlobalCommandChannelInitializer(conf,false);
+			CommInit si = new CommInit(false);
+			Bootstrap b = new Bootstrap();
+			b.group(group).channel(NioSocketChannel.class).handler(si);
+			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 100000);
+			b.option(ChannelOption.TCP_NODELAY, true);
+			b.option(ChannelOption.SO_KEEPALIVE, true);
 
-		WorkInit si = new WorkInit(state, false);
-		Bootstrap b = new Bootstrap();
-		
+			// Make the connection attempt.
+			ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
+			//ClientClosedListener ccl = new ClientClosedListener(this);
+			//channel.channel().closeFuture();
 
-		b.group(group).channel(NioSocketChannel.class).handler(si);
-		b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
-		b.option(ChannelOption.TCP_NODELAY, true);
-		b.option(ChannelOption.SO_KEEPALIVE, true);
+			logger.info(channel.channel().remoteAddress() + " -> open: "
+					+channel.channel().isActive() + ", isActive"
+				+ channel.channel().isOpen() + ", write: "
+				+ channel.channel().isWritable() + ", reg: "
+				+ channel.channel().isRegistered());
+			return channel.channel();
+		}
+		catch(Exception e) {
+			logger.error("got an error in creating a temporary "
+					+ "command channel to talk to client");
+		}
+		return null;
 		
-		ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
-		
-		ei.setChannel(channel.channel());
-		ei.setActive(channel.channel().isActive());
-		
-		return channel.channel();
 	}
 	
 }

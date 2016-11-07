@@ -79,10 +79,12 @@ public class ParentHandler implements ServerHandler{
 	}
 	
 	public WorkMessage handleSteal(WorkMessage wm){
+		logger.info("received a steal request from node "+wm.getHeader().getNodeId());
 		WorkMessage returnWorkMessage = state.getQueueMonitor().getInboundQueue().rebalance();
 		if(returnWorkMessage != null){
 			WorkMessage.Builder tempWork = WorkMessage.newBuilder(returnWorkMessage);
 			tempWork.setStealResponse(true);
+			logger.info("gave my task");
 			return tempWork.build();
 		}
 		else{
@@ -97,6 +99,8 @@ public class ParentHandler implements ServerHandler{
 	}
 	
 	public void handleStealResponse(WorkMessage wm, Channel channel) {
+		logger.info("got a steal response task");
 		state.getQueueMonitor().getInboundQueue().put(wm, channel);
+		logger.info("added to my inbound queue");
 	}
 }

@@ -153,12 +153,11 @@ public class CommConnection {
 
 	private void init() {
 		logger.info("--> initializing connection to " + host + ":" + port);
-		// the queue to support client-side surging
-		outbound = new LinkedBlockingDeque<CommandMessage>();
 		
-		group = new NioEventLoopGroup();
+		EventLoopGroup group = new NioEventLoopGroup();
+		LinkedBlockingDeque<CommandMessage> outbound = 
+				new LinkedBlockingDeque<CommandMessage>();
 		try {
-//			GlobalCommandChannelInitializer si = new GlobalCommandChannelInitializer(conf,false);
 			CommInit si = new CommInit(false);
 			Bootstrap b = new Bootstrap();
 			b.group(group).channel(NioSocketChannel.class).handler(si);
