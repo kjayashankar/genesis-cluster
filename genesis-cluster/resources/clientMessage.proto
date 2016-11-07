@@ -25,7 +25,7 @@ message RequestMessage {
 }
 message ChunkInfo {
 	required int32 no_of_chunks = 15;
-	optional int32 seq_size = 2;
+	optional int64 seq_size = 2;
 	optional int64 time = 3;
 }
 message ResponseMessage {
