@@ -165,6 +165,17 @@ public class TaskHandlerHelper {
 							//channel.write(returnMsg);
 						}
 					}
+					Map<Integer, byte[]> keyMapMongo = mongoDBServiceImpl.get(requestMessage.getKey());
+					if(keyMapMongo.isEmpty()){
+						CommandMessage failureMsg = ResourceUtil.createResponseFailureMessage(msg, state);
+						 doMessageForwardingToClient(failureMsg, channel);
+					} else {
+						logger.info("Sending message for success get");
+						for(Map.Entry<Integer, byte[]> entry: keyMapMongo.entrySet()){
+							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state);
+							doMessageForwardingToClient(returnMsg, channel);
+						}
+					}
 					
 					break;
 					
@@ -173,18 +184,29 @@ public class TaskHandlerHelper {
 					logger.info("----- Updating key into DataBase ----");
 					boolean updateKey = redisClient.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key received  ----"+ updateKey);
+					
+					boolean updateKeyMongo = mongoDBServiceImpl.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
+					logger.info("---- Key received  ----"+ updateKeyMongo);
+					
 					break;
 				case POST:
 					
 					logger.info("----- Storing key into DataBase ----");
 					String keyStored = redisClient.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key stored ----"+ keyStored);
+					
+					String keyStoredMongo = mongoDBServiceImpl.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
+					logger.info("---- Key stored ----"+ keyStoredMongo);
 					break;
 				case DELETE:
 					
 					logger.info("----- deleting key from DataBase ----");
 					boolean deletedKey = redisClient.delete(requestMessage.getKey());
 					logger.info("---- Key deleted ----"+ deletedKey);
+					
+					boolean deletedKeyMongo = mongoDBServiceImpl.delete(requestMessage.getKey());
+					logger.info("---- Key deleted ----"+ deletedKeyMongo);
+					
 					break;
 					
 				case STEAL: 

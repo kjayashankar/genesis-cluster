@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="/Users/navdeepdahiya/git/genesis-cluster/genesis-cluster/lib/commons-pool2-2.4.2.jar"/>
 	<classpathentry kind="lib" path="/Users/navdeepdahiya/git/genesis-cluster/genesis-cluster/lib/jedis-2.4.2.jar"/>
 	<classpathentry kind="lib" path="/Users/navdeepdahiya/git/genesis-cluster/genesis-cluster/lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/Users/navdeepdahiya/git/genesis-cluster/genesis-cluster/lib/mongo-java-driver-2.13.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
