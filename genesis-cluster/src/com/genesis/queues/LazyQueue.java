@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.genesis.router.server.ServerState;
 
 import io.netty.channel.Channel;
+import pipe.work.Work.TaskType;
 import pipe.work.Work.WorkMessage;
 
 public class LazyQueue implements Queue {
@@ -64,6 +65,9 @@ public class LazyQueue implements Queue {
 		WorkMessage work = t.getWorkMessage();
 		logger.info("processed lazy task +++ " +work);
 		processed ++;
+		
+		state.getEmon().updateAndBoradCast(work.getTask());
+		
 		return true;
 	}
 

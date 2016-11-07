@@ -105,8 +105,7 @@ public class InboundQueue implements Queue{
 		if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
 			state.getEmon().sendToLazyQueue(work.getTask());
 		// Already a lazy task, no need to check eligibility, just update header and broadcast
-		else if(type == TaskType.LAZYTASK)
-			state.getEmon().updateAndBoradCast(work.getTask());
+		
 		processed ++;
 		return true;
 	}
