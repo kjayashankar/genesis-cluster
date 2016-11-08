@@ -97,6 +97,8 @@ public class RedisDBServiceImpl implements IDBService {
 					chunkDataMap.put((Integer) deserialize(bci), redis.hget(parsedKey, bci));
 				}
 				
+				logger.info("In database keys :::\n\n"+ chunkDataMap.size()+"\n\n");
+				
 				//Map<Integer, byte[]> keyMap = get(key);
 				/*logger.info("KeyMap is :: ");
 				for (Map.Entry<Integer, byte[]> entry: chunkDataMap.entrySet()){

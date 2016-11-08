@@ -29,6 +29,7 @@ public class VotedHandler extends ParentHandler {
 
 	@Override
 	public void handleMessage(WorkMessage msg, Channel channel) {
+		logger.info("Voted hander message :: \n"+ msg);
 		if(msg.hasBeat())
 			handleBeat(msg, channel);
 		else if(msg.hasDragon()){

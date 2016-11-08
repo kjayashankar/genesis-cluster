@@ -561,7 +561,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	public void passMsg(WorkMessage leader2) {
 		for (EdgeInfo ei : this.outboundEdges.map.values()) {
 			if (ei.getChannel() != null && ei.isActive()) {
-				//logger.info("sending leader msg "+leader2);
+				logger.info("Edge monitor sending leader msg "+leader2);
 				ei.getChannel().writeAndFlush(leader2);
 			}
 		}
@@ -616,18 +616,28 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 
 	private void createPermanentChannel(EdgeInfo ei) {
 		if(!ei.isActive()) {
-			EventLoopGroup group = new NioEventLoopGroup();
-			WorkInit si = new WorkInit(state, false);
-			Bootstrap b = new Bootstrap();
-			b.group(group).channel(NioSocketChannel.class).handler(si);
-			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
-			b.option(ChannelOption.TCP_NODELAY, true);
-			b.option(ChannelOption.SO_KEEPALIVE, true);
+
+		
 			
-			ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
+			try{
+				logger.info("trying to connect to node " + ei.getRef());
+				EventLoopGroup group = new NioEventLoopGroup();
+				WorkInit si = new WorkInit(state, false);
+				Bootstrap b = new Bootstrap();
+				b.group(group).channel(NioSocketChannel.class).handler(si);
+				b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+				b.option(ChannelOption.TCP_NODELAY, true);
+				b.option(ChannelOption.SO_KEEPALIVE, true);
+				
+				ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
+				
+				ei.setChannel(channel.channel());
+				ei.setActive(channel.channel().isActive());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+
 			
-			ei.setChannel(channel.channel());
-			ei.setActive(channel.channel().isActive());
 		}
 	}
 

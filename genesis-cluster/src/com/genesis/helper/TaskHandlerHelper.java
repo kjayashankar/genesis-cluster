@@ -93,7 +93,7 @@ public class TaskHandlerHelper {
 
 		try {
 			
-			logger.info("sending to client updated messages");
+			logger.info("sending to client updated messages, msg.hasReq - " + msg.hasReqMsg() + ",has msg.getChunkInfo ??? " +msg.getReqMsg().hasChunkInfo());
 			
 			WorkMessage returnWork = ResourceUtil.buildWorkMessageFromCommandMsg(msg, state);
 			
@@ -153,14 +153,17 @@ public class TaskHandlerHelper {
 					logger.info("Key is inside get "+requestMessage.getKey());
 					logger.info("----- Getting key from DataBase ----" + requestMessage.getKey());
 					Map<Integer, byte[]> keyMap = redisClient.get(requestMessage.getKey());
-					logger.info("Key size retrieved is ::: "+keyMap.size());
+					logger.info("Key size retrieved is ::: "+keyMap.size()+ "\n\n");
 					if(keyMap.isEmpty()){
 						CommandMessage failureMsg = ResourceUtil.createResponseFailureMessage(msg, state);
 						logger.info("Sending failure message");
 						 doMessageForwardingToClient(failureMsg, channel);
 					} else {
-						logger.info("Sending message for success get");
+						logger.info("TaskHandlerHelper: handleDBOperations() Sending message for conversion n sending");
+						logger.info("TaskHandlerHelper: handleDBOperations() GetMap total size"+ keyMap.size());
+						
 						for(Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
+							
 							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state);
 							doMessageForwardingToClient(returnMsg, channel);
 							//channel.write(returnMsg);
