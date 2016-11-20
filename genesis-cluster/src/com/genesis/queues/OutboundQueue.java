@@ -76,7 +76,7 @@ public class OutboundQueue implements Queue{
 		logger.info("Writing response back to the client");
 		logger.info("channel state : "+ channel.isActive() + ", Channel is open"+ channel.isOpen());
 		if(channel.isActive() && channel.isOpen() && channel.isWritable()){
-			logger.info("Message Key :: "+work.getTask().getCommandMessage());
+			//logger.info("Message Key :: "+work.getTask().getCommandMessage());
 			ChannelFuture future = channel.writeAndFlush(work.getTask().getCommandMessage());
 			future.awaitUninterruptibly();
 			System.out.println("Written to channel");

@@ -27,7 +27,7 @@ import routing.Pipe.CommandMessage;
 public class FileApp implements CommListener {
 	protected static Logger logger = LoggerFactory.getLogger("DemoApp");
 	private MessageClient mc;
-	private int noOfChunks = -1; 
+	private int noOfChunks = 0; 
 	private List<ResponseMessage> responseList;
 	private Map<String, Integer> keyChunkNoMap;
 	String filePath;
@@ -37,10 +37,20 @@ public class FileApp implements CommListener {
 		init(mc);
 		this.responseList = new LinkedList<>();
 		keyChunkNoMap = new HashMap<String,Integer>();
+		initMap(keyChunkNoMap);
 	}
 
 	
 	
+	private void initMap(Map<String, Integer> keyChunkNoMap) {
+		// TODO Auto-generated method stub
+		keyChunkNoMap.put("nasa1", 2);
+		keyChunkNoMap.put("nasa2", 2);
+		
+	}
+
+
+
 	private void init(MessageClient mc) {
 		this.mc = mc;
 		this.mc.addListener(this);
@@ -121,6 +131,9 @@ public class FileApp implements CommListener {
 				responseList.add(msg.getResMsg());
 
 				logger.info("   ---   "+ responseList.size() + ", noOfChunks " + noOfChunks);
+				//if(chunkData ==0)
+					noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
+				
 				if (responseList.size() == noOfChunks) {
 				logger.info("Complete response is now received."); 	
 				
@@ -171,11 +184,12 @@ public class FileApp implements CommListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String host = "127.0.0.1";
+		String host = "localhost";
+		//String host = "169.254.148.24";
+		//169.254.148.24
+		//String host = "169.254.97.102";
 		
-		int port = 4168;
-		
-		
+		int port = 4668;
 		
 		if (args.length == 0) {
 			System.out.println("usage: server <config file>");

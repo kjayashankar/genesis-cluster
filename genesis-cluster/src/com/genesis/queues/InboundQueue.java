@@ -126,7 +126,7 @@ public class InboundQueue implements Queue{
 		Node origin = workMessage.getHeader().getOrigin();
 		EdgeInfo ei = ResourceUtil.nodeToEdge(origin);
 		Channel destination = ResourceUtil.getChannel(ei);
-		clientReqHandler.handleTask(workMessage, destination);
+		clientReqHandler.handleTask(workMessage, channel);
 		
 	}
 	
@@ -134,10 +134,11 @@ public class InboundQueue implements Queue{
 		WorkChannel t = null;
 
 		try {
-			if (rebalance != null && !rebalance.allow()) {
+			//if (rebalance != null && !rebalance.allow()) {
+			if(inbound != null && inbound.size() > 0)
 				t = inbound.take();
 				balanced++;
-			}
+			//}
 		} catch (InterruptedException e) {
 			logger.error("failed to rebalance a task", e);
 		}

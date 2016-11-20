@@ -40,6 +40,7 @@ public class RoutingConf {
 	private List<RoutingEntry> routing;
 	private int workerThreads ;
 	private String myHost;
+	private List<RoutingEntry> global;
 
 	public HashMap<String, Integer> asHashMap() {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
