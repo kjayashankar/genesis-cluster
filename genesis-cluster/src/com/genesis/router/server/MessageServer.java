@@ -74,8 +74,8 @@ public class MessageServer {
 				nmon.setState(state);
 				state.setNetworkmon(nmon);
 				
-				//if (!conf.isInternalNode()) 
-					//state.state = STATE.LEADER;
+				/*if (!conf.isInternalNode()) 
+					state.state = STATE.LEADER;*/
 				
 				QueueMonitor qMon = new QueueMonitor(conf.getWorkerThreads(),state,new SimpleBalancer());
 				state.setQueueMonitor(qMon);
@@ -96,6 +96,8 @@ public class MessageServer {
 		//Initializing the server's state ...
 		initServer();
 		
+		
+		
 		StartWorkCommunication comm = new StartWorkCommunication(conf);
 		logger.info("Work starting");
 
@@ -112,8 +114,33 @@ public class MessageServer {
 				cthread2.start();
 			} else
 				comm2.run();
-		
+			
+			StartGlobalCommunication global = new StartGlobalCommunication(state);
+			Thread globalThread = new Thread(global);
+			
+			globalThread.start();
+			
 	}
+	
+		private static class StartGlobalCommunication implements Runnable{
+			
+			public ServerState state;
+			public GlobalEdgeMonitor gMon = null;
+			
+			
+			public StartGlobalCommunication(ServerState state){
+				this.state = state;
+				gMon = new GlobalEdgeMonitor(ServerState state);
+			}
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				
+				
+			}
+		}
 
 	/**
 	 * static because we need to get a handle to the factory from the shutdown
@@ -229,19 +256,22 @@ public class MessageServer {
 			Thread t = new Thread(emon);
 			t.start();
 			
-			
+			GlobalThread global = new GlobalThread();
+			global.setAddress("169.254.244.97",4567 );
+			global.start();
 		
 			Flooder dT = new Flooder();
 			dT.setState(state);
 			new Thread(dT).start();
 			
+			
 			StealerThread stealer = new StealerThread(state);
 			stealer.start();
 			
-			ThreadPool pool = new ThreadPool(conf.getWorkerThreads(), state);
+			/*ThreadPool pool = new ThreadPool(conf.getWorkerThreads(), state);
 			pool.setThreadPause(1000);
 			pool.init();
-			pool.startWorkers();
+			pool.startWorkers(); */
 		}
 
 		public void run() {

@@ -54,6 +54,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	protected static Logger logger = LoggerFactory.getLogger("edge monitor");
 
 	private NetworkMonitor nmon = NetworkMonitor.getInstance();
+	private int hackCounter = 0;
 	private EdgeList outboundEdges;
 	private EdgeList inboundEdges;
 	private EdgeList failedInNodes = new EdgeList();
@@ -591,10 +592,16 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 
 	
 	public void replaceOutNode(EdgeInfo oldEdge, EdgeInfo newEdge) {
-		this.outboundEdges.removeNode(oldEdge.getRef());
-		//onRemove(oldEdge);
-		this.outboundEdges.addNode(newEdge.getRef(), newEdge.getHost(), newEdge.getPort());
+		
+			logger.error("-----------------------------------");
+			logger.error("replacing out node and in nodes");
+			logger.error("-----------------------------------");			
+			
+			this.outboundEdges.removeNode(oldEdge.getRef());
+			//onRemove(oldEdge);
+			this.outboundEdges.addNode(newEdge.getRef(), newEdge.getHost(), newEdge.getPort());
 		//onAdd(newEdge);
+		
 	}
 
 	public void handleElectionMessage(WorkMessage msg) {
@@ -616,9 +623,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 
 	private void createPermanentChannel(EdgeInfo ei) {
 		if(!ei.isActive()) {
-
-		
-			
 			try{
 				logger.info("trying to connect to node " + ei.getRef());
 				EventLoopGroup group = new NioEventLoopGroup();
@@ -636,8 +640,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-
-			
 		}
 	}
 
@@ -648,45 +650,35 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 
 	public void handleStealer() {
-		
+		if(state.state == STATE.FOLLOWER)
 		if(shouldStealTask()){
 			for (EdgeInfo ei : this.outboundEdges.map.values()) {
 				
-				if (ei.isActive() && ei.getChannel() != null) {
+				if (ei.getChannel() != null && ei.isActive()) {
 		
 					Header.Builder hb = Header.newBuilder();
 					hb.setNodeId(state.getConf().getNodeId());
-					hb.setDestination(-1);
+					hb.setDestination(ei.getRef());
 					hb.setTime(System.currentTimeMillis());
 					WorkMessage.Builder wb = WorkMessage.newBuilder();
 					wb.setHeader(hb);
 					wb.setSteal(true);
 					wb.setSecret(1);
+					logger.info("the steal request is being sent to node "+ei.getRef());
+					logger.info("steal msg is "+wb);
 					ei.getChannel().writeAndFlush(wb.build());
 				}
 			}
-			for(EdgeInfo ei: this.inboundEdges.map.values()) {
-				if(ei.getEnqueue() > 2) {
-					Header.Builder hb = Header.newBuilder();
-					hb.setNodeId(state.getConf().getNodeId());
-					hb.setDestination(-1);
-					hb.setTime(System.currentTimeMillis());
-					WorkMessage.Builder wb = WorkMessage.newBuilder();
-					wb.setHeader(hb);
-					wb.setSteal(true);
-					wb.setSecret(1);
-					ei.getChannel().writeAndFlush(wb.build());
-				}
-			}
+			
 		}
 	}
 	
 	private boolean shouldStealTask() {
 		{
-			if(qMon.getInboundQueue().getSize() < 2)
+			//if(qMon.getInboundQueue().getSize() < 2)
 				return true;
 		}
-		return false;
+		//return false;
 	}
 	
 	public void sendToLazyQueue(Task t) {

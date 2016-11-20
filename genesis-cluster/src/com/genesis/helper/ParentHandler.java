@@ -39,6 +39,7 @@ public class ParentHandler implements ServerHandler{
 	@Override
 	public void handleBeat(WorkMessage msg, Channel channel) {
 		// TODO Auto-generated method stub
+		logger.info("heart beat received :" +msg);
 		state.getEmon().updateHeartBeat(msg.getHeader().getOrigin(),
 				msg.getHeader().getTime(),msg.getState());
 	}
@@ -91,6 +92,7 @@ public class ParentHandler implements ServerHandler{
 			return tempWork.build();
 		}
 		else{
+			logger.error("no tasks to give it to steal!");
 			Failure.Builder eb = Failure.newBuilder();
 			eb.setId(state.getConf().getNodeId());
 			eb.setRefId(wm.getHeader().getNodeId());

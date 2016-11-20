@@ -184,12 +184,11 @@ public class FileApp implements CommListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		String host = "localhost";
+		//String host = "169.254.148.24";
 		//String host = "169.254.203.11";
-		String host = "169.254.148.24";
-		//169.254.148.24
-		//String host = "169.254.97.102";
 		
-		int port = 4268;
+		int port = 4668;
 		
 		if (args.length == 0) {
 			System.out.println("usage: server <config file>");
