@@ -1,0 +1,76 @@
+option optimize_for = SPEED;
+option java_package = "global";
+import "common.proto";
+
+//Contains the cluster information of the requester Note: While forwarding the Global Message Please Don't change the DestinationId
+message GlobalHeader { 
+	//Own Cluster Id
+	required int32 cluster_id = 1; 
+	required int64 time = 2;
+	// Recipient clusterId who has got Client Request
+	optional int32 destination_id = 8; 
+}
+
+message GlobalMessage {
+	
+	required GlobalHeader globalHeader = 1;
+		oneof payload {
+		bool ping = 2; // For testing only
+		string message = 3; // For testing only
+		Request request = 4; // Global File Request - (READ only for now)
+		Response response = 5; // Global File Response -( contains the READ's result)
+		WhoIsLeader whoIsClusterLeader = 6; 
+		LeaderInfo clusterLeaderInfo =7; 
+		
+}
+}
+
+message File {
+	optional int32 chunkId = 1;
+	optional bytes data = 2;
+	required string filename = 3; 
+	//total number of chunks of a requested file
+	optional int32 totalNoOfChunks = 5; 
+}
+
+enum RequestType {
+	READ = 1;
+	WRITE = 2; 
+	UPDATE = 3;
+	DELETE = 4;
+}
+
+message Request {
+	
+	required string requestId = 4; // UUID which maps to a client request
+	
+	//READ for now
+	required RequestType requestType = 1; 
+		oneof payload {
+			// Will be Sent when requestType is READ/DELETE
+			string fileName = 2 ; 
+			// Will be Sent when requestType is WRITE/UPDATE
+			File file = 3; 
+		} 
+}
+
+message Response {
+	required string requestId = 5;// UUID which maps to a client request
+	required RequestType requestType = 1; //READ for now
+	optional bool success = 2; //true When requested action is successfully (READ for now)
+		oneof payload {
+		Failure failure = 3;
+		File file = 4; //Will be sent When READ/DELETE is success 
+		string fileName = 5; //Will be sent When WRITE/UPDATE is success
+		}
+}
+
+message WhoIsLeader{
+	required string requesterIp =1; 
+	required int32 requesterPort =2;
+}
+
+message LeaderInfo{
+	required string leaderIp =1;
+	required int32 leaderPort =2;
+}

@@ -624,10 +624,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private void createPermanentChannel(EdgeInfo ei) {
 		if(!ei.isActive()) {
 			try{
-
-		
-			
-			try{
 				logger.info("trying to connect to node " + ei.getRef());
 				EventLoopGroup group = new NioEventLoopGroup();
 				WorkInit si = new WorkInit(state, false);
@@ -642,12 +638,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 				ei.setChannel(channel.channel());
 				ei.setActive(channel.channel().isActive());
 			}catch(Exception e){
-				e.printStackTrace();
-			}
-
-			
-			}
-			catch(Exception e){
 				e.printStackTrace();
 			}
 		}

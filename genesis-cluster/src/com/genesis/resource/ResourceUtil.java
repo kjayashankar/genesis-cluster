@@ -279,8 +279,10 @@ public class ResourceUtil {
 		
 		try {
 				if(seqNo == 0){
+					logger.info("RU:createResponseCommandMessage Getting chunk seq.");
 					resMsg.setChunkInfo(ChunkInfo.parseFrom(data));
 				} else {
+					logger.info("RU:createResponseCommandMessage Getting data seq.");
 					resMsg.setData(ByteString.copyFrom(data));
 				}
 				

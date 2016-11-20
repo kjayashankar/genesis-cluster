@@ -114,10 +114,18 @@ public final class Global {
 
     /**
      * <code>required int32 cluster_id = 1;</code>
+     *
+     * <pre>
+     *Own Cluster Id
+     * </pre>
      */
     boolean hasClusterId();
     /**
      * <code>required int32 cluster_id = 1;</code>
+     *
+     * <pre>
+     *Own Cluster Id
+     * </pre>
      */
     int getClusterId();
 
@@ -132,24 +140,27 @@ public final class Global {
 
     /**
      * <code>optional int32 destination_id = 8;</code>
+     *
+     * <pre>
+     * Recipient clusterId who has got Client Request
+     * </pre>
      */
     boolean hasDestinationId();
     /**
      * <code>optional int32 destination_id = 8;</code>
+     *
+     * <pre>
+     * Recipient clusterId who has got Client Request
+     * </pre>
      */
     int getDestinationId();
-
-    /**
-     * <code>optional int32 max_hops = 10 [default = -1];</code>
-     */
-    boolean hasMaxHops();
-    /**
-     * <code>optional int32 max_hops = 10 [default = -1];</code>
-     */
-    int getMaxHops();
   }
   /**
    * Protobuf type {@code GlobalHeader}
+   *
+   * <pre>
+   *Contains the cluster information of the requester Note: While forwarding the Global Message Please Don't change the DestinationId
+   * </pre>
    */
   public static final class GlobalHeader extends
       com.google.protobuf.GeneratedMessage implements
@@ -215,11 +226,6 @@ public final class Global {
               destinationId_ = input.readInt32();
               break;
             }
-            case 80: {
-              bitField0_ |= 0x00000008;
-              maxHops_ = input.readInt32();
-              break;
-            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -264,12 +270,20 @@ public final class Global {
     private int clusterId_;
     /**
      * <code>required int32 cluster_id = 1;</code>
+     *
+     * <pre>
+     *Own Cluster Id
+     * </pre>
      */
     public boolean hasClusterId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required int32 cluster_id = 1;</code>
+     *
+     * <pre>
+     *Own Cluster Id
+     * </pre>
      */
     public int getClusterId() {
       return clusterId_;
@@ -294,37 +308,29 @@ public final class Global {
     private int destinationId_;
     /**
      * <code>optional int32 destination_id = 8;</code>
+     *
+     * <pre>
+     * Recipient clusterId who has got Client Request
+     * </pre>
      */
     public boolean hasDestinationId() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>optional int32 destination_id = 8;</code>
+     *
+     * <pre>
+     * Recipient clusterId who has got Client Request
+     * </pre>
      */
     public int getDestinationId() {
       return destinationId_;
-    }
-
-    public static final int MAX_HOPS_FIELD_NUMBER = 10;
-    private int maxHops_;
-    /**
-     * <code>optional int32 max_hops = 10 [default = -1];</code>
-     */
-    public boolean hasMaxHops() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int32 max_hops = 10 [default = -1];</code>
-     */
-    public int getMaxHops() {
-      return maxHops_;
     }
 
     private void initFields() {
       clusterId_ = 0;
       time_ = 0L;
       destinationId_ = 0;
-      maxHops_ = -1;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -356,9 +362,6 @@ public final class Global {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(8, destinationId_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(10, maxHops_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -379,10 +382,6 @@ public final class Global {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, destinationId_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(10, maxHops_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -464,6 +463,10 @@ public final class Global {
     }
     /**
      * Protobuf type {@code GlobalHeader}
+     *
+     * <pre>
+     *Contains the cluster information of the requester Note: While forwarding the Global Message Please Don't change the DestinationId
+     * </pre>
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
@@ -507,8 +510,6 @@ public final class Global {
         bitField0_ = (bitField0_ & ~0x00000002);
         destinationId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        maxHops_ = -1;
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -549,10 +550,6 @@ public final class Global {
           to_bitField0_ |= 0x00000004;
         }
         result.destinationId_ = destinationId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.maxHops_ = maxHops_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -577,9 +574,6 @@ public final class Global {
         }
         if (other.hasDestinationId()) {
           setDestinationId(other.getDestinationId());
-        }
-        if (other.hasMaxHops()) {
-          setMaxHops(other.getMaxHops());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -619,18 +613,30 @@ public final class Global {
       private int clusterId_ ;
       /**
        * <code>required int32 cluster_id = 1;</code>
+       *
+       * <pre>
+       *Own Cluster Id
+       * </pre>
        */
       public boolean hasClusterId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required int32 cluster_id = 1;</code>
+       *
+       * <pre>
+       *Own Cluster Id
+       * </pre>
        */
       public int getClusterId() {
         return clusterId_;
       }
       /**
        * <code>required int32 cluster_id = 1;</code>
+       *
+       * <pre>
+       *Own Cluster Id
+       * </pre>
        */
       public Builder setClusterId(int value) {
         bitField0_ |= 0x00000001;
@@ -640,6 +646,10 @@ public final class Global {
       }
       /**
        * <code>required int32 cluster_id = 1;</code>
+       *
+       * <pre>
+       *Own Cluster Id
+       * </pre>
        */
       public Builder clearClusterId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -683,18 +693,30 @@ public final class Global {
       private int destinationId_ ;
       /**
        * <code>optional int32 destination_id = 8;</code>
+       *
+       * <pre>
+       * Recipient clusterId who has got Client Request
+       * </pre>
        */
       public boolean hasDestinationId() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>optional int32 destination_id = 8;</code>
+       *
+       * <pre>
+       * Recipient clusterId who has got Client Request
+       * </pre>
        */
       public int getDestinationId() {
         return destinationId_;
       }
       /**
        * <code>optional int32 destination_id = 8;</code>
+       *
+       * <pre>
+       * Recipient clusterId who has got Client Request
+       * </pre>
        */
       public Builder setDestinationId(int value) {
         bitField0_ |= 0x00000004;
@@ -704,42 +726,14 @@ public final class Global {
       }
       /**
        * <code>optional int32 destination_id = 8;</code>
+       *
+       * <pre>
+       * Recipient clusterId who has got Client Request
+       * </pre>
        */
       public Builder clearDestinationId() {
         bitField0_ = (bitField0_ & ~0x00000004);
         destinationId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int maxHops_ = -1;
-      /**
-       * <code>optional int32 max_hops = 10 [default = -1];</code>
-       */
-      public boolean hasMaxHops() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int32 max_hops = 10 [default = -1];</code>
-       */
-      public int getMaxHops() {
-        return maxHops_;
-      }
-      /**
-       * <code>optional int32 max_hops = 10 [default = -1];</code>
-       */
-      public Builder setMaxHops(int value) {
-        bitField0_ |= 0x00000008;
-        maxHops_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 max_hops = 10 [default = -1];</code>
-       */
-      public Builder clearMaxHops() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        maxHops_ = -1;
         onChanged();
         return this;
       }
@@ -774,65 +768,122 @@ public final class Global {
 
     /**
      * <code>optional bool ping = 2;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     boolean hasPing();
     /**
      * <code>optional bool ping = 2;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     boolean getPing();
 
     /**
      * <code>optional string message = 3;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     boolean hasMessage();
     /**
      * <code>optional string message = 3;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     java.lang.String getMessage();
     /**
      * <code>optional string message = 3;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     com.google.protobuf.ByteString
         getMessageBytes();
 
     /**
-     * <code>optional .Failure failure = 4;</code>
-     */
-    boolean hasFailure();
-    /**
-     * <code>optional .Failure failure = 4;</code>
-     */
-    pipe.common.Common.Failure getFailure();
-    /**
-     * <code>optional .Failure failure = 4;</code>
-     */
-    pipe.common.Common.FailureOrBuilder getFailureOrBuilder();
-
-    /**
-     * <code>optional .Request request = 5;</code>
+     * <code>optional .Request request = 4;</code>
+     *
+     * <pre>
+     * Global File Request - (READ only for now)
+     * </pre>
      */
     boolean hasRequest();
     /**
-     * <code>optional .Request request = 5;</code>
+     * <code>optional .Request request = 4;</code>
+     *
+     * <pre>
+     * Global File Request - (READ only for now)
+     * </pre>
      */
     global.Global.Request getRequest();
     /**
-     * <code>optional .Request request = 5;</code>
+     * <code>optional .Request request = 4;</code>
+     *
+     * <pre>
+     * Global File Request - (READ only for now)
+     * </pre>
      */
     global.Global.RequestOrBuilder getRequestOrBuilder();
 
     /**
-     * <code>optional .Response response = 6;</code>
+     * <code>optional .Response response = 5;</code>
+     *
+     * <pre>
+     * Global File Response -( contains the READ's result)
+     * </pre>
      */
     boolean hasResponse();
     /**
-     * <code>optional .Response response = 6;</code>
+     * <code>optional .Response response = 5;</code>
+     *
+     * <pre>
+     * Global File Response -( contains the READ's result)
+     * </pre>
      */
     global.Global.Response getResponse();
     /**
-     * <code>optional .Response response = 6;</code>
+     * <code>optional .Response response = 5;</code>
+     *
+     * <pre>
+     * Global File Response -( contains the READ's result)
+     * </pre>
      */
     global.Global.ResponseOrBuilder getResponseOrBuilder();
+
+    /**
+     * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+     */
+    boolean hasWhoIsClusterLeader();
+    /**
+     * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+     */
+    global.Global.WhoIsLeader getWhoIsClusterLeader();
+    /**
+     * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+     */
+    global.Global.WhoIsLeaderOrBuilder getWhoIsClusterLeaderOrBuilder();
+
+    /**
+     * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+     */
+    boolean hasClusterLeaderInfo();
+    /**
+     * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+     */
+    global.Global.LeaderInfo getClusterLeaderInfo();
+    /**
+     * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+     */
+    global.Global.LeaderInfoOrBuilder getClusterLeaderInfoOrBuilder();
   }
   /**
    * Protobuf type {@code GlobalMessage}
@@ -911,21 +962,8 @@ public final class Global {
               break;
             }
             case 34: {
-              pipe.common.Common.Failure.Builder subBuilder = null;
-              if (payloadCase_ == 4) {
-                subBuilder = ((pipe.common.Common.Failure) payload_).toBuilder();
-              }
-              payload_ = input.readMessage(pipe.common.Common.Failure.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom((pipe.common.Common.Failure) payload_);
-                payload_ = subBuilder.buildPartial();
-              }
-              payloadCase_ = 4;
-              break;
-            }
-            case 42: {
               global.Global.Request.Builder subBuilder = null;
-              if (payloadCase_ == 5) {
+              if (payloadCase_ == 4) {
                 subBuilder = ((global.Global.Request) payload_).toBuilder();
               }
               payload_ = input.readMessage(global.Global.Request.PARSER, extensionRegistry);
@@ -933,12 +971,12 @@ public final class Global {
                 subBuilder.mergeFrom((global.Global.Request) payload_);
                 payload_ = subBuilder.buildPartial();
               }
-              payloadCase_ = 5;
+              payloadCase_ = 4;
               break;
             }
-            case 50: {
+            case 42: {
               global.Global.Response.Builder subBuilder = null;
-              if (payloadCase_ == 6) {
+              if (payloadCase_ == 5) {
                 subBuilder = ((global.Global.Response) payload_).toBuilder();
               }
               payload_ = input.readMessage(global.Global.Response.PARSER, extensionRegistry);
@@ -946,7 +984,33 @@ public final class Global {
                 subBuilder.mergeFrom((global.Global.Response) payload_);
                 payload_ = subBuilder.buildPartial();
               }
+              payloadCase_ = 5;
+              break;
+            }
+            case 50: {
+              global.Global.WhoIsLeader.Builder subBuilder = null;
+              if (payloadCase_ == 6) {
+                subBuilder = ((global.Global.WhoIsLeader) payload_).toBuilder();
+              }
+              payload_ = input.readMessage(global.Global.WhoIsLeader.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((global.Global.WhoIsLeader) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
               payloadCase_ = 6;
+              break;
+            }
+            case 58: {
+              global.Global.LeaderInfo.Builder subBuilder = null;
+              if (payloadCase_ == 7) {
+                subBuilder = ((global.Global.LeaderInfo) payload_).toBuilder();
+              }
+              payload_ = input.readMessage(global.Global.LeaderInfo.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((global.Global.LeaderInfo) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 7;
               break;
             }
           }
@@ -995,9 +1059,10 @@ public final class Global {
         implements com.google.protobuf.Internal.EnumLite {
       PING(2),
       MESSAGE(3),
-      FAILURE(4),
-      REQUEST(5),
-      RESPONSE(6),
+      REQUEST(4),
+      RESPONSE(5),
+      WHOISCLUSTERLEADER(6),
+      CLUSTERLEADERINFO(7),
       PAYLOAD_NOT_SET(0);
       private int value = 0;
       private PayloadCase(int value) {
@@ -1007,9 +1072,10 @@ public final class Global {
         switch (value) {
           case 2: return PING;
           case 3: return MESSAGE;
-          case 4: return FAILURE;
-          case 5: return REQUEST;
-          case 6: return RESPONSE;
+          case 4: return REQUEST;
+          case 5: return RESPONSE;
+          case 6: return WHOISCLUSTERLEADER;
+          case 7: return CLUSTERLEADERINFO;
           case 0: return PAYLOAD_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -1050,12 +1116,20 @@ public final class Global {
     public static final int PING_FIELD_NUMBER = 2;
     /**
      * <code>optional bool ping = 2;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     public boolean hasPing() {
       return payloadCase_ == 2;
     }
     /**
      * <code>optional bool ping = 2;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     public boolean getPing() {
       if (payloadCase_ == 2) {
@@ -1067,12 +1141,20 @@ public final class Global {
     public static final int MESSAGE_FIELD_NUMBER = 3;
     /**
      * <code>optional string message = 3;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     public boolean hasMessage() {
       return payloadCase_ == 3;
     }
     /**
      * <code>optional string message = 3;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     public java.lang.String getMessage() {
       java.lang.Object ref = "";
@@ -1093,6 +1175,10 @@ public final class Global {
     }
     /**
      * <code>optional string message = 3;</code>
+     *
+     * <pre>
+     * For testing only
+     * </pre>
      */
     public com.google.protobuf.ByteString
         getMessageBytes() {
@@ -1113,82 +1199,132 @@ public final class Global {
       }
     }
 
-    public static final int FAILURE_FIELD_NUMBER = 4;
+    public static final int REQUEST_FIELD_NUMBER = 4;
     /**
-     * <code>optional .Failure failure = 4;</code>
+     * <code>optional .Request request = 4;</code>
+     *
+     * <pre>
+     * Global File Request - (READ only for now)
+     * </pre>
      */
-    public boolean hasFailure() {
+    public boolean hasRequest() {
       return payloadCase_ == 4;
     }
     /**
-     * <code>optional .Failure failure = 4;</code>
+     * <code>optional .Request request = 4;</code>
+     *
+     * <pre>
+     * Global File Request - (READ only for now)
+     * </pre>
      */
-    public pipe.common.Common.Failure getFailure() {
+    public global.Global.Request getRequest() {
       if (payloadCase_ == 4) {
-         return (pipe.common.Common.Failure) payload_;
+         return (global.Global.Request) payload_;
       }
-      return pipe.common.Common.Failure.getDefaultInstance();
+      return global.Global.Request.getDefaultInstance();
     }
     /**
-     * <code>optional .Failure failure = 4;</code>
+     * <code>optional .Request request = 4;</code>
+     *
+     * <pre>
+     * Global File Request - (READ only for now)
+     * </pre>
      */
-    public pipe.common.Common.FailureOrBuilder getFailureOrBuilder() {
+    public global.Global.RequestOrBuilder getRequestOrBuilder() {
       if (payloadCase_ == 4) {
-         return (pipe.common.Common.Failure) payload_;
+         return (global.Global.Request) payload_;
       }
-      return pipe.common.Common.Failure.getDefaultInstance();
+      return global.Global.Request.getDefaultInstance();
     }
 
-    public static final int REQUEST_FIELD_NUMBER = 5;
+    public static final int RESPONSE_FIELD_NUMBER = 5;
     /**
-     * <code>optional .Request request = 5;</code>
+     * <code>optional .Response response = 5;</code>
+     *
+     * <pre>
+     * Global File Response -( contains the READ's result)
+     * </pre>
      */
-    public boolean hasRequest() {
+    public boolean hasResponse() {
       return payloadCase_ == 5;
     }
     /**
-     * <code>optional .Request request = 5;</code>
+     * <code>optional .Response response = 5;</code>
+     *
+     * <pre>
+     * Global File Response -( contains the READ's result)
+     * </pre>
      */
-    public global.Global.Request getRequest() {
+    public global.Global.Response getResponse() {
       if (payloadCase_ == 5) {
-         return (global.Global.Request) payload_;
+         return (global.Global.Response) payload_;
       }
-      return global.Global.Request.getDefaultInstance();
+      return global.Global.Response.getDefaultInstance();
     }
     /**
-     * <code>optional .Request request = 5;</code>
+     * <code>optional .Response response = 5;</code>
+     *
+     * <pre>
+     * Global File Response -( contains the READ's result)
+     * </pre>
      */
-    public global.Global.RequestOrBuilder getRequestOrBuilder() {
+    public global.Global.ResponseOrBuilder getResponseOrBuilder() {
       if (payloadCase_ == 5) {
-         return (global.Global.Request) payload_;
+         return (global.Global.Response) payload_;
       }
-      return global.Global.Request.getDefaultInstance();
+      return global.Global.Response.getDefaultInstance();
     }
 
-    public static final int RESPONSE_FIELD_NUMBER = 6;
+    public static final int WHOISCLUSTERLEADER_FIELD_NUMBER = 6;
     /**
-     * <code>optional .Response response = 6;</code>
+     * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
      */
-    public boolean hasResponse() {
+    public boolean hasWhoIsClusterLeader() {
       return payloadCase_ == 6;
     }
     /**
-     * <code>optional .Response response = 6;</code>
+     * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
      */
-    public global.Global.Response getResponse() {
+    public global.Global.WhoIsLeader getWhoIsClusterLeader() {
       if (payloadCase_ == 6) {
-         return (global.Global.Response) payload_;
+         return (global.Global.WhoIsLeader) payload_;
       }
-      return global.Global.Response.getDefaultInstance();
+      return global.Global.WhoIsLeader.getDefaultInstance();
     }
     /**
-     * <code>optional .Response response = 6;</code>
+     * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
      */
-    public global.Global.ResponseOrBuilder getResponseOrBuilder() {
+    public global.Global.WhoIsLeaderOrBuilder getWhoIsClusterLeaderOrBuilder() {
       if (payloadCase_ == 6) {
-         return (global.Global.Response) payload_;
+         return (global.Global.WhoIsLeader) payload_;
       }
-      return global.Global.Response.getDefaultInstance();
+      return global.Global.WhoIsLeader.getDefaultInstance();
+    }
+
+    public static final int CLUSTERLEADERINFO_FIELD_NUMBER = 7;
+    /**
+     * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+     */
+    public boolean hasClusterLeaderInfo() {
+      return payloadCase_ == 7;
+    }
+    /**
+     * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+     */
+    public global.Global.LeaderInfo getClusterLeaderInfo() {
+      if (payloadCase_ == 7) {
+         return (global.Global.LeaderInfo) payload_;
+      }
+      return global.Global.LeaderInfo.getDefaultInstance();
+    }
+    /**
+     * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+     */
+    public global.Global.LeaderInfoOrBuilder getClusterLeaderInfoOrBuilder() {
+      if (payloadCase_ == 7) {
+         return (global.Global.LeaderInfo) payload_;
+      }
+      return global.Global.LeaderInfo.getDefaultInstance();
     }
 
     private void initFields() {
@@ -1208,12 +1344,6 @@ public final class Global {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (hasFailure()) {
-        if (!getFailure().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       if (hasRequest()) {
         if (!getRequest().isInitialized()) {
           memoizedIsInitialized = 0;
@@ -1222,6 +1352,18 @@ public final class Global {
       }
       if (hasResponse()) {
         if (!getResponse().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasWhoIsClusterLeader()) {
+        if (!getWhoIsClusterLeader().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasClusterLeaderInfo()) {
+        if (!getClusterLeaderInfo().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -1244,13 +1386,16 @@ public final class Global {
         output.writeBytes(3, getMessageBytes());
       }
       if (payloadCase_ == 4) {
-        output.writeMessage(4, (pipe.common.Common.Failure) payload_);
+        output.writeMessage(4, (global.Global.Request) payload_);
       }
       if (payloadCase_ == 5) {
-        output.writeMessage(5, (global.Global.Request) payload_);
+        output.writeMessage(5, (global.Global.Response) payload_);
       }
       if (payloadCase_ == 6) {
-        output.writeMessage(6, (global.Global.Response) payload_);
+        output.writeMessage(6, (global.Global.WhoIsLeader) payload_);
+      }
+      if (payloadCase_ == 7) {
+        output.writeMessage(7, (global.Global.LeaderInfo) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1276,15 +1421,19 @@ public final class Global {
       }
       if (payloadCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, (pipe.common.Common.Failure) payload_);
+          .computeMessageSize(4, (global.Global.Request) payload_);
       }
       if (payloadCase_ == 5) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, (global.Global.Request) payload_);
+          .computeMessageSize(5, (global.Global.Response) payload_);
       }
       if (payloadCase_ == 6) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, (global.Global.Response) payload_);
+          .computeMessageSize(6, (global.Global.WhoIsLeader) payload_);
+      }
+      if (payloadCase_ == 7) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, (global.Global.LeaderInfo) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1455,24 +1604,31 @@ public final class Global {
           result.payload_ = payload_;
         }
         if (payloadCase_ == 4) {
-          if (failureBuilder_ == null) {
-            result.payload_ = payload_;
-          } else {
-            result.payload_ = failureBuilder_.build();
-          }
-        }
-        if (payloadCase_ == 5) {
           if (requestBuilder_ == null) {
             result.payload_ = payload_;
           } else {
             result.payload_ = requestBuilder_.build();
           }
         }
-        if (payloadCase_ == 6) {
+        if (payloadCase_ == 5) {
           if (responseBuilder_ == null) {
             result.payload_ = payload_;
           } else {
             result.payload_ = responseBuilder_.build();
+          }
+        }
+        if (payloadCase_ == 6) {
+          if (whoIsClusterLeaderBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = whoIsClusterLeaderBuilder_.build();
+          }
+        }
+        if (payloadCase_ == 7) {
+          if (clusterLeaderInfoBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = clusterLeaderInfoBuilder_.build();
           }
         }
         result.bitField0_ = to_bitField0_;
@@ -1506,16 +1662,20 @@ public final class Global {
             onChanged();
             break;
           }
-          case FAILURE: {
-            mergeFailure(other.getFailure());
-            break;
-          }
           case REQUEST: {
             mergeRequest(other.getRequest());
             break;
           }
           case RESPONSE: {
             mergeResponse(other.getResponse());
+            break;
+          }
+          case WHOISCLUSTERLEADER: {
+            mergeWhoIsClusterLeader(other.getWhoIsClusterLeader());
+            break;
+          }
+          case CLUSTERLEADERINFO: {
+            mergeClusterLeaderInfo(other.getClusterLeaderInfo());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -1535,12 +1695,6 @@ public final class Global {
           
           return false;
         }
-        if (hasFailure()) {
-          if (!getFailure().isInitialized()) {
-            
-            return false;
-          }
-        }
         if (hasRequest()) {
           if (!getRequest().isInitialized()) {
             
@@ -1549,6 +1703,18 @@ public final class Global {
         }
         if (hasResponse()) {
           if (!getResponse().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasWhoIsClusterLeader()) {
+          if (!getWhoIsClusterLeader().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasClusterLeaderInfo()) {
+          if (!getClusterLeaderInfo().isInitialized()) {
             
             return false;
           }
@@ -1708,12 +1874,20 @@ public final class Global {
 
       /**
        * <code>optional bool ping = 2;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public boolean hasPing() {
         return payloadCase_ == 2;
       }
       /**
        * <code>optional bool ping = 2;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public boolean getPing() {
         if (payloadCase_ == 2) {
@@ -1723,6 +1897,10 @@ public final class Global {
       }
       /**
        * <code>optional bool ping = 2;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public Builder setPing(boolean value) {
         payloadCase_ = 2;
@@ -1732,6 +1910,10 @@ public final class Global {
       }
       /**
        * <code>optional bool ping = 2;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public Builder clearPing() {
         if (payloadCase_ == 2) {
@@ -1744,12 +1926,20 @@ public final class Global {
 
       /**
        * <code>optional string message = 3;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public boolean hasMessage() {
         return payloadCase_ == 3;
       }
       /**
        * <code>optional string message = 3;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public java.lang.String getMessage() {
         java.lang.Object ref = "";
@@ -1772,6 +1962,10 @@ public final class Global {
       }
       /**
        * <code>optional string message = 3;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public com.google.protobuf.ByteString
           getMessageBytes() {
@@ -1793,6 +1987,10 @@ public final class Global {
       }
       /**
        * <code>optional string message = 3;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public Builder setMessage(
           java.lang.String value) {
@@ -1806,6 +2004,10 @@ public final class Global {
       }
       /**
        * <code>optional string message = 3;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public Builder clearMessage() {
         if (payloadCase_ == 3) {
@@ -1817,6 +2019,10 @@ public final class Global {
       }
       /**
        * <code>optional string message = 3;</code>
+       *
+       * <pre>
+       * For testing only
+       * </pre>
        */
       public Builder setMessageBytes(
           com.google.protobuf.ByteString value) {
@@ -1830,166 +2036,43 @@ public final class Global {
       }
 
       private com.google.protobuf.SingleFieldBuilder<
-          pipe.common.Common.Failure, pipe.common.Common.Failure.Builder, pipe.common.Common.FailureOrBuilder> failureBuilder_;
+          global.Global.Request, global.Global.Request.Builder, global.Global.RequestOrBuilder> requestBuilder_;
       /**
-       * <code>optional .Failure failure = 4;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
-      public boolean hasFailure() {
+      public boolean hasRequest() {
         return payloadCase_ == 4;
       }
       /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      public pipe.common.Common.Failure getFailure() {
-        if (failureBuilder_ == null) {
-          if (payloadCase_ == 4) {
-            return (pipe.common.Common.Failure) payload_;
-          }
-          return pipe.common.Common.Failure.getDefaultInstance();
-        } else {
-          if (payloadCase_ == 4) {
-            return failureBuilder_.getMessage();
-          }
-          return pipe.common.Common.Failure.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      public Builder setFailure(pipe.common.Common.Failure value) {
-        if (failureBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          payload_ = value;
-          onChanged();
-        } else {
-          failureBuilder_.setMessage(value);
-        }
-        payloadCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      public Builder setFailure(
-          pipe.common.Common.Failure.Builder builderForValue) {
-        if (failureBuilder_ == null) {
-          payload_ = builderForValue.build();
-          onChanged();
-        } else {
-          failureBuilder_.setMessage(builderForValue.build());
-        }
-        payloadCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      public Builder mergeFailure(pipe.common.Common.Failure value) {
-        if (failureBuilder_ == null) {
-          if (payloadCase_ == 4 &&
-              payload_ != pipe.common.Common.Failure.getDefaultInstance()) {
-            payload_ = pipe.common.Common.Failure.newBuilder((pipe.common.Common.Failure) payload_)
-                .mergeFrom(value).buildPartial();
-          } else {
-            payload_ = value;
-          }
-          onChanged();
-        } else {
-          if (payloadCase_ == 4) {
-            failureBuilder_.mergeFrom(value);
-          }
-          failureBuilder_.setMessage(value);
-        }
-        payloadCase_ = 4;
-        return this;
-      }
-      /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      public Builder clearFailure() {
-        if (failureBuilder_ == null) {
-          if (payloadCase_ == 4) {
-            payloadCase_ = 0;
-            payload_ = null;
-            onChanged();
-          }
-        } else {
-          if (payloadCase_ == 4) {
-            payloadCase_ = 0;
-            payload_ = null;
-          }
-          failureBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      public pipe.common.Common.Failure.Builder getFailureBuilder() {
-        return getFailureFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      public pipe.common.Common.FailureOrBuilder getFailureOrBuilder() {
-        if ((payloadCase_ == 4) && (failureBuilder_ != null)) {
-          return failureBuilder_.getMessageOrBuilder();
-        } else {
-          if (payloadCase_ == 4) {
-            return (pipe.common.Common.Failure) payload_;
-          }
-          return pipe.common.Common.Failure.getDefaultInstance();
-        }
-      }
-      /**
-       * <code>optional .Failure failure = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          pipe.common.Common.Failure, pipe.common.Common.Failure.Builder, pipe.common.Common.FailureOrBuilder> 
-          getFailureFieldBuilder() {
-        if (failureBuilder_ == null) {
-          if (!(payloadCase_ == 4)) {
-            payload_ = pipe.common.Common.Failure.getDefaultInstance();
-          }
-          failureBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              pipe.common.Common.Failure, pipe.common.Common.Failure.Builder, pipe.common.Common.FailureOrBuilder>(
-                  (pipe.common.Common.Failure) payload_,
-                  getParentForChildren(),
-                  isClean());
-          payload_ = null;
-        }
-        payloadCase_ = 4;
-        return failureBuilder_;
-      }
-
-      private com.google.protobuf.SingleFieldBuilder<
-          global.Global.Request, global.Global.Request.Builder, global.Global.RequestOrBuilder> requestBuilder_;
-      /**
-       * <code>optional .Request request = 5;</code>
-       */
-      public boolean hasRequest() {
-        return payloadCase_ == 5;
-      }
-      /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       public global.Global.Request getRequest() {
         if (requestBuilder_ == null) {
-          if (payloadCase_ == 5) {
+          if (payloadCase_ == 4) {
             return (global.Global.Request) payload_;
           }
           return global.Global.Request.getDefaultInstance();
         } else {
-          if (payloadCase_ == 5) {
+          if (payloadCase_ == 4) {
             return requestBuilder_.getMessage();
           }
           return global.Global.Request.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       public Builder setRequest(global.Global.Request value) {
         if (requestBuilder_ == null) {
@@ -2001,11 +2084,15 @@ public final class Global {
         } else {
           requestBuilder_.setMessage(value);
         }
-        payloadCase_ = 5;
+        payloadCase_ = 4;
         return this;
       }
       /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       public Builder setRequest(
           global.Global.Request.Builder builderForValue) {
@@ -2015,15 +2102,19 @@ public final class Global {
         } else {
           requestBuilder_.setMessage(builderForValue.build());
         }
-        payloadCase_ = 5;
+        payloadCase_ = 4;
         return this;
       }
       /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       public Builder mergeRequest(global.Global.Request value) {
         if (requestBuilder_ == null) {
-          if (payloadCase_ == 5 &&
+          if (payloadCase_ == 4 &&
               payload_ != global.Global.Request.getDefaultInstance()) {
             payload_ = global.Global.Request.newBuilder((global.Global.Request) payload_)
                 .mergeFrom(value).buildPartial();
@@ -2032,26 +2123,30 @@ public final class Global {
           }
           onChanged();
         } else {
-          if (payloadCase_ == 5) {
+          if (payloadCase_ == 4) {
             requestBuilder_.mergeFrom(value);
           }
           requestBuilder_.setMessage(value);
         }
-        payloadCase_ = 5;
+        payloadCase_ = 4;
         return this;
       }
       /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       public Builder clearRequest() {
         if (requestBuilder_ == null) {
-          if (payloadCase_ == 5) {
+          if (payloadCase_ == 4) {
             payloadCase_ = 0;
             payload_ = null;
             onChanged();
           }
         } else {
-          if (payloadCase_ == 5) {
+          if (payloadCase_ == 4) {
             payloadCase_ = 0;
             payload_ = null;
           }
@@ -2060,32 +2155,44 @@ public final class Global {
         return this;
       }
       /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       public global.Global.Request.Builder getRequestBuilder() {
         return getRequestFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       public global.Global.RequestOrBuilder getRequestOrBuilder() {
-        if ((payloadCase_ == 5) && (requestBuilder_ != null)) {
+        if ((payloadCase_ == 4) && (requestBuilder_ != null)) {
           return requestBuilder_.getMessageOrBuilder();
         } else {
-          if (payloadCase_ == 5) {
+          if (payloadCase_ == 4) {
             return (global.Global.Request) payload_;
           }
           return global.Global.Request.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .Request request = 5;</code>
+       * <code>optional .Request request = 4;</code>
+       *
+       * <pre>
+       * Global File Request - (READ only for now)
+       * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
           global.Global.Request, global.Global.Request.Builder, global.Global.RequestOrBuilder> 
           getRequestFieldBuilder() {
         if (requestBuilder_ == null) {
-          if (!(payloadCase_ == 5)) {
+          if (!(payloadCase_ == 4)) {
             payload_ = global.Global.Request.getDefaultInstance();
           }
           requestBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -2095,36 +2202,48 @@ public final class Global {
                   isClean());
           payload_ = null;
         }
-        payloadCase_ = 5;
+        payloadCase_ = 4;
         return requestBuilder_;
       }
 
       private com.google.protobuf.SingleFieldBuilder<
           global.Global.Response, global.Global.Response.Builder, global.Global.ResponseOrBuilder> responseBuilder_;
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
        */
       public boolean hasResponse() {
-        return payloadCase_ == 6;
+        return payloadCase_ == 5;
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
        */
       public global.Global.Response getResponse() {
         if (responseBuilder_ == null) {
-          if (payloadCase_ == 6) {
+          if (payloadCase_ == 5) {
             return (global.Global.Response) payload_;
           }
           return global.Global.Response.getDefaultInstance();
         } else {
-          if (payloadCase_ == 6) {
+          if (payloadCase_ == 5) {
             return responseBuilder_.getMessage();
           }
           return global.Global.Response.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
        */
       public Builder setResponse(global.Global.Response value) {
         if (responseBuilder_ == null) {
@@ -2136,11 +2255,15 @@ public final class Global {
         } else {
           responseBuilder_.setMessage(value);
         }
-        payloadCase_ = 6;
+        payloadCase_ = 5;
         return this;
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
        */
       public Builder setResponse(
           global.Global.Response.Builder builderForValue) {
@@ -2150,15 +2273,19 @@ public final class Global {
         } else {
           responseBuilder_.setMessage(builderForValue.build());
         }
-        payloadCase_ = 6;
+        payloadCase_ = 5;
         return this;
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
        */
       public Builder mergeResponse(global.Global.Response value) {
         if (responseBuilder_ == null) {
-          if (payloadCase_ == 6 &&
+          if (payloadCase_ == 5 &&
               payload_ != global.Global.Response.getDefaultInstance()) {
             payload_ = global.Global.Response.newBuilder((global.Global.Response) payload_)
                 .mergeFrom(value).buildPartial();
@@ -2167,19 +2294,170 @@ public final class Global {
           }
           onChanged();
         } else {
-          if (payloadCase_ == 6) {
+          if (payloadCase_ == 5) {
             responseBuilder_.mergeFrom(value);
           }
           responseBuilder_.setMessage(value);
+        }
+        payloadCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
+       */
+      public Builder clearResponse() {
+        if (responseBuilder_ == null) {
+          if (payloadCase_ == 5) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 5) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          responseBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
+       */
+      public global.Global.Response.Builder getResponseBuilder() {
+        return getResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
+       */
+      public global.Global.ResponseOrBuilder getResponseOrBuilder() {
+        if ((payloadCase_ == 5) && (responseBuilder_ != null)) {
+          return responseBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 5) {
+            return (global.Global.Response) payload_;
+          }
+          return global.Global.Response.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .Response response = 5;</code>
+       *
+       * <pre>
+       * Global File Response -( contains the READ's result)
+       * </pre>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          global.Global.Response, global.Global.Response.Builder, global.Global.ResponseOrBuilder> 
+          getResponseFieldBuilder() {
+        if (responseBuilder_ == null) {
+          if (!(payloadCase_ == 5)) {
+            payload_ = global.Global.Response.getDefaultInstance();
+          }
+          responseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              global.Global.Response, global.Global.Response.Builder, global.Global.ResponseOrBuilder>(
+                  (global.Global.Response) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 5;
+        return responseBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilder<
+          global.Global.WhoIsLeader, global.Global.WhoIsLeader.Builder, global.Global.WhoIsLeaderOrBuilder> whoIsClusterLeaderBuilder_;
+      /**
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+       */
+      public boolean hasWhoIsClusterLeader() {
+        return payloadCase_ == 6;
+      }
+      /**
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+       */
+      public global.Global.WhoIsLeader getWhoIsClusterLeader() {
+        if (whoIsClusterLeaderBuilder_ == null) {
+          if (payloadCase_ == 6) {
+            return (global.Global.WhoIsLeader) payload_;
+          }
+          return global.Global.WhoIsLeader.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 6) {
+            return whoIsClusterLeaderBuilder_.getMessage();
+          }
+          return global.Global.WhoIsLeader.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+       */
+      public Builder setWhoIsClusterLeader(global.Global.WhoIsLeader value) {
+        if (whoIsClusterLeaderBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          whoIsClusterLeaderBuilder_.setMessage(value);
         }
         payloadCase_ = 6;
         return this;
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
        */
-      public Builder clearResponse() {
-        if (responseBuilder_ == null) {
+      public Builder setWhoIsClusterLeader(
+          global.Global.WhoIsLeader.Builder builderForValue) {
+        if (whoIsClusterLeaderBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          whoIsClusterLeaderBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+       */
+      public Builder mergeWhoIsClusterLeader(global.Global.WhoIsLeader value) {
+        if (whoIsClusterLeaderBuilder_ == null) {
+          if (payloadCase_ == 6 &&
+              payload_ != global.Global.WhoIsLeader.getDefaultInstance()) {
+            payload_ = global.Global.WhoIsLeader.newBuilder((global.Global.WhoIsLeader) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 6) {
+            whoIsClusterLeaderBuilder_.mergeFrom(value);
+          }
+          whoIsClusterLeaderBuilder_.setMessage(value);
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
+       */
+      public Builder clearWhoIsClusterLeader() {
+        if (whoIsClusterLeaderBuilder_ == null) {
           if (payloadCase_ == 6) {
             payloadCase_ = 0;
             payload_ = null;
@@ -2190,48 +2468,183 @@ public final class Global {
             payloadCase_ = 0;
             payload_ = null;
           }
-          responseBuilder_.clear();
+          whoIsClusterLeaderBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
        */
-      public global.Global.Response.Builder getResponseBuilder() {
-        return getResponseFieldBuilder().getBuilder();
+      public global.Global.WhoIsLeader.Builder getWhoIsClusterLeaderBuilder() {
+        return getWhoIsClusterLeaderFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
        */
-      public global.Global.ResponseOrBuilder getResponseOrBuilder() {
-        if ((payloadCase_ == 6) && (responseBuilder_ != null)) {
-          return responseBuilder_.getMessageOrBuilder();
+      public global.Global.WhoIsLeaderOrBuilder getWhoIsClusterLeaderOrBuilder() {
+        if ((payloadCase_ == 6) && (whoIsClusterLeaderBuilder_ != null)) {
+          return whoIsClusterLeaderBuilder_.getMessageOrBuilder();
         } else {
           if (payloadCase_ == 6) {
-            return (global.Global.Response) payload_;
+            return (global.Global.WhoIsLeader) payload_;
           }
-          return global.Global.Response.getDefaultInstance();
+          return global.Global.WhoIsLeader.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .Response response = 6;</code>
+       * <code>optional .WhoIsLeader whoIsClusterLeader = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          global.Global.Response, global.Global.Response.Builder, global.Global.ResponseOrBuilder> 
-          getResponseFieldBuilder() {
-        if (responseBuilder_ == null) {
+          global.Global.WhoIsLeader, global.Global.WhoIsLeader.Builder, global.Global.WhoIsLeaderOrBuilder> 
+          getWhoIsClusterLeaderFieldBuilder() {
+        if (whoIsClusterLeaderBuilder_ == null) {
           if (!(payloadCase_ == 6)) {
-            payload_ = global.Global.Response.getDefaultInstance();
+            payload_ = global.Global.WhoIsLeader.getDefaultInstance();
           }
-          responseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              global.Global.Response, global.Global.Response.Builder, global.Global.ResponseOrBuilder>(
-                  (global.Global.Response) payload_,
+          whoIsClusterLeaderBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              global.Global.WhoIsLeader, global.Global.WhoIsLeader.Builder, global.Global.WhoIsLeaderOrBuilder>(
+                  (global.Global.WhoIsLeader) payload_,
                   getParentForChildren(),
                   isClean());
           payload_ = null;
         }
         payloadCase_ = 6;
-        return responseBuilder_;
+        return whoIsClusterLeaderBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilder<
+          global.Global.LeaderInfo, global.Global.LeaderInfo.Builder, global.Global.LeaderInfoOrBuilder> clusterLeaderInfoBuilder_;
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public boolean hasClusterLeaderInfo() {
+        return payloadCase_ == 7;
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public global.Global.LeaderInfo getClusterLeaderInfo() {
+        if (clusterLeaderInfoBuilder_ == null) {
+          if (payloadCase_ == 7) {
+            return (global.Global.LeaderInfo) payload_;
+          }
+          return global.Global.LeaderInfo.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 7) {
+            return clusterLeaderInfoBuilder_.getMessage();
+          }
+          return global.Global.LeaderInfo.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public Builder setClusterLeaderInfo(global.Global.LeaderInfo value) {
+        if (clusterLeaderInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          clusterLeaderInfoBuilder_.setMessage(value);
+        }
+        payloadCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public Builder setClusterLeaderInfo(
+          global.Global.LeaderInfo.Builder builderForValue) {
+        if (clusterLeaderInfoBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          clusterLeaderInfoBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public Builder mergeClusterLeaderInfo(global.Global.LeaderInfo value) {
+        if (clusterLeaderInfoBuilder_ == null) {
+          if (payloadCase_ == 7 &&
+              payload_ != global.Global.LeaderInfo.getDefaultInstance()) {
+            payload_ = global.Global.LeaderInfo.newBuilder((global.Global.LeaderInfo) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 7) {
+            clusterLeaderInfoBuilder_.mergeFrom(value);
+          }
+          clusterLeaderInfoBuilder_.setMessage(value);
+        }
+        payloadCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public Builder clearClusterLeaderInfo() {
+        if (clusterLeaderInfoBuilder_ == null) {
+          if (payloadCase_ == 7) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 7) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          clusterLeaderInfoBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public global.Global.LeaderInfo.Builder getClusterLeaderInfoBuilder() {
+        return getClusterLeaderInfoFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      public global.Global.LeaderInfoOrBuilder getClusterLeaderInfoOrBuilder() {
+        if ((payloadCase_ == 7) && (clusterLeaderInfoBuilder_ != null)) {
+          return clusterLeaderInfoBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 7) {
+            return (global.Global.LeaderInfo) payload_;
+          }
+          return global.Global.LeaderInfo.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .LeaderInfo clusterLeaderInfo = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          global.Global.LeaderInfo, global.Global.LeaderInfo.Builder, global.Global.LeaderInfoOrBuilder> 
+          getClusterLeaderInfoFieldBuilder() {
+        if (clusterLeaderInfoBuilder_ == null) {
+          if (!(payloadCase_ == 7)) {
+            payload_ = global.Global.LeaderInfo.getDefaultInstance();
+          }
+          clusterLeaderInfoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              global.Global.LeaderInfo, global.Global.LeaderInfo.Builder, global.Global.LeaderInfoOrBuilder>(
+                  (global.Global.LeaderInfo) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 7;
+        return clusterLeaderInfoBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:GlobalMessage)
@@ -2282,13 +2695,21 @@ public final class Global {
         getFilenameBytes();
 
     /**
-     * <code>optional int32 chunkCount = 5;</code>
+     * <code>optional int32 totalNoOfChunks = 5;</code>
+     *
+     * <pre>
+     *total number of chunks of a requested file
+     * </pre>
      */
-    boolean hasChunkCount();
+    boolean hasTotalNoOfChunks();
     /**
-     * <code>optional int32 chunkCount = 5;</code>
+     * <code>optional int32 totalNoOfChunks = 5;</code>
+     *
+     * <pre>
+     *total number of chunks of a requested file
+     * </pre>
      */
-    int getChunkCount();
+    int getTotalNoOfChunks();
   }
   /**
    * Protobuf type {@code File}
@@ -2360,7 +2781,7 @@ public final class Global {
             }
             case 40: {
               bitField0_ |= 0x00000008;
-              chunkCount_ = input.readInt32();
+              totalNoOfChunks_ = input.readInt32();
               break;
             }
           }
@@ -2475,26 +2896,34 @@ public final class Global {
       }
     }
 
-    public static final int CHUNKCOUNT_FIELD_NUMBER = 5;
-    private int chunkCount_;
+    public static final int TOTALNOOFCHUNKS_FIELD_NUMBER = 5;
+    private int totalNoOfChunks_;
     /**
-     * <code>optional int32 chunkCount = 5;</code>
+     * <code>optional int32 totalNoOfChunks = 5;</code>
+     *
+     * <pre>
+     *total number of chunks of a requested file
+     * </pre>
      */
-    public boolean hasChunkCount() {
+    public boolean hasTotalNoOfChunks() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional int32 chunkCount = 5;</code>
+     * <code>optional int32 totalNoOfChunks = 5;</code>
+     *
+     * <pre>
+     *total number of chunks of a requested file
+     * </pre>
      */
-    public int getChunkCount() {
-      return chunkCount_;
+    public int getTotalNoOfChunks() {
+      return totalNoOfChunks_;
     }
 
     private void initFields() {
       chunkId_ = 0;
       data_ = com.google.protobuf.ByteString.EMPTY;
       filename_ = "";
-      chunkCount_ = 0;
+      totalNoOfChunks_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2523,7 +2952,7 @@ public final class Global {
         output.writeBytes(3, getFilenameBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(5, chunkCount_);
+        output.writeInt32(5, totalNoOfChunks_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2548,7 +2977,7 @@ public final class Global {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, chunkCount_);
+          .computeInt32Size(5, totalNoOfChunks_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2673,7 +3102,7 @@ public final class Global {
         bitField0_ = (bitField0_ & ~0x00000002);
         filename_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
-        chunkCount_ = 0;
+        totalNoOfChunks_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -2718,7 +3147,7 @@ public final class Global {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.chunkCount_ = chunkCount_;
+        result.totalNoOfChunks_ = totalNoOfChunks_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2746,8 +3175,8 @@ public final class Global {
           filename_ = other.filename_;
           onChanged();
         }
-        if (other.hasChunkCount()) {
-          setChunkCount(other.getChunkCount());
+        if (other.hasTotalNoOfChunks()) {
+          setTotalNoOfChunks(other.getTotalNoOfChunks());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -2923,34 +3352,50 @@ public final class Global {
         return this;
       }
 
-      private int chunkCount_ ;
+      private int totalNoOfChunks_ ;
       /**
-       * <code>optional int32 chunkCount = 5;</code>
+       * <code>optional int32 totalNoOfChunks = 5;</code>
+       *
+       * <pre>
+       *total number of chunks of a requested file
+       * </pre>
        */
-      public boolean hasChunkCount() {
+      public boolean hasTotalNoOfChunks() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>optional int32 chunkCount = 5;</code>
+       * <code>optional int32 totalNoOfChunks = 5;</code>
+       *
+       * <pre>
+       *total number of chunks of a requested file
+       * </pre>
        */
-      public int getChunkCount() {
-        return chunkCount_;
+      public int getTotalNoOfChunks() {
+        return totalNoOfChunks_;
       }
       /**
-       * <code>optional int32 chunkCount = 5;</code>
+       * <code>optional int32 totalNoOfChunks = 5;</code>
+       *
+       * <pre>
+       *total number of chunks of a requested file
+       * </pre>
        */
-      public Builder setChunkCount(int value) {
+      public Builder setTotalNoOfChunks(int value) {
         bitField0_ |= 0x00000008;
-        chunkCount_ = value;
+        totalNoOfChunks_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 chunkCount = 5;</code>
+       * <code>optional int32 totalNoOfChunks = 5;</code>
+       *
+       * <pre>
+       *total number of chunks of a requested file
+       * </pre>
        */
-      public Builder clearChunkCount() {
+      public Builder clearTotalNoOfChunks() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        chunkCount_ = 0;
+        totalNoOfChunks_ = 0;
         onChanged();
         return this;
       }
@@ -2971,52 +3416,96 @@ public final class Global {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string requestId = 4;</code>
+     * <code>required string requestId = 4;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     boolean hasRequestId();
     /**
-     * <code>optional string requestId = 4;</code>
+     * <code>required string requestId = 4;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     java.lang.String getRequestId();
     /**
-     * <code>optional string requestId = 4;</code>
+     * <code>required string requestId = 4;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     com.google.protobuf.ByteString
         getRequestIdBytes();
 
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     boolean hasRequestType();
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     global.Global.RequestType getRequestType();
 
     /**
      * <code>optional string fileName = 2;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is READ/DELETE
+     * </pre>
      */
     boolean hasFileName();
     /**
      * <code>optional string fileName = 2;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is READ/DELETE
+     * </pre>
      */
     java.lang.String getFileName();
     /**
      * <code>optional string fileName = 2;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is READ/DELETE
+     * </pre>
      */
     com.google.protobuf.ByteString
         getFileNameBytes();
 
     /**
      * <code>optional .File file = 3;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is WRITE/UPDATE
+     * </pre>
      */
     boolean hasFile();
     /**
      * <code>optional .File file = 3;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is WRITE/UPDATE
+     * </pre>
      */
     global.Global.File getFile();
     /**
      * <code>optional .File file = 3;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is WRITE/UPDATE
+     * </pre>
      */
     global.Global.FileOrBuilder getFileOrBuilder();
   }
@@ -3182,13 +3671,21 @@ public final class Global {
     public static final int REQUESTID_FIELD_NUMBER = 4;
     private java.lang.Object requestId_;
     /**
-     * <code>optional string requestId = 4;</code>
+     * <code>required string requestId = 4;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     public boolean hasRequestId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string requestId = 4;</code>
+     * <code>required string requestId = 4;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     public java.lang.String getRequestId() {
       java.lang.Object ref = requestId_;
@@ -3205,7 +3702,11 @@ public final class Global {
       }
     }
     /**
-     * <code>optional string requestId = 4;</code>
+     * <code>required string requestId = 4;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     public com.google.protobuf.ByteString
         getRequestIdBytes() {
@@ -3225,12 +3726,20 @@ public final class Global {
     private global.Global.RequestType requestType_;
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     public boolean hasRequestType() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     public global.Global.RequestType getRequestType() {
       return requestType_;
@@ -3239,12 +3748,20 @@ public final class Global {
     public static final int FILENAME_FIELD_NUMBER = 2;
     /**
      * <code>optional string fileName = 2;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is READ/DELETE
+     * </pre>
      */
     public boolean hasFileName() {
       return payloadCase_ == 2;
     }
     /**
      * <code>optional string fileName = 2;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is READ/DELETE
+     * </pre>
      */
     public java.lang.String getFileName() {
       java.lang.Object ref = "";
@@ -3265,6 +3782,10 @@ public final class Global {
     }
     /**
      * <code>optional string fileName = 2;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is READ/DELETE
+     * </pre>
      */
     public com.google.protobuf.ByteString
         getFileNameBytes() {
@@ -3288,12 +3809,20 @@ public final class Global {
     public static final int FILE_FIELD_NUMBER = 3;
     /**
      * <code>optional .File file = 3;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is WRITE/UPDATE
+     * </pre>
      */
     public boolean hasFile() {
       return payloadCase_ == 3;
     }
     /**
      * <code>optional .File file = 3;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is WRITE/UPDATE
+     * </pre>
      */
     public global.Global.File getFile() {
       if (payloadCase_ == 3) {
@@ -3303,6 +3832,10 @@ public final class Global {
     }
     /**
      * <code>optional .File file = 3;</code>
+     *
+     * <pre>
+     * Will be Sent when requestType is WRITE/UPDATE
+     * </pre>
      */
     public global.Global.FileOrBuilder getFileOrBuilder() {
       if (payloadCase_ == 3) {
@@ -3321,6 +3854,10 @@ public final class Global {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
+      if (!hasRequestId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       if (!hasRequestType()) {
         memoizedIsInitialized = 0;
         return false;
@@ -3589,6 +4126,10 @@ public final class Global {
       }
 
       public final boolean isInitialized() {
+        if (!hasRequestId()) {
+          
+          return false;
+        }
         if (!hasRequestType()) {
           
           return false;
@@ -3638,13 +4179,21 @@ public final class Global {
 
       private java.lang.Object requestId_ = "";
       /**
-       * <code>optional string requestId = 4;</code>
+       * <code>required string requestId = 4;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public boolean hasRequestId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string requestId = 4;</code>
+       * <code>required string requestId = 4;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public java.lang.String getRequestId() {
         java.lang.Object ref = requestId_;
@@ -3661,7 +4210,11 @@ public final class Global {
         }
       }
       /**
-       * <code>optional string requestId = 4;</code>
+       * <code>required string requestId = 4;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public com.google.protobuf.ByteString
           getRequestIdBytes() {
@@ -3677,7 +4230,11 @@ public final class Global {
         }
       }
       /**
-       * <code>optional string requestId = 4;</code>
+       * <code>required string requestId = 4;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public Builder setRequestId(
           java.lang.String value) {
@@ -3690,7 +4247,11 @@ public final class Global {
         return this;
       }
       /**
-       * <code>optional string requestId = 4;</code>
+       * <code>required string requestId = 4;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public Builder clearRequestId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -3699,7 +4260,11 @@ public final class Global {
         return this;
       }
       /**
-       * <code>optional string requestId = 4;</code>
+       * <code>required string requestId = 4;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public Builder setRequestIdBytes(
           com.google.protobuf.ByteString value) {
@@ -3715,18 +4280,30 @@ public final class Global {
       private global.Global.RequestType requestType_ = global.Global.RequestType.READ;
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public boolean hasRequestType() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public global.Global.RequestType getRequestType() {
         return requestType_;
       }
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public Builder setRequestType(global.Global.RequestType value) {
         if (value == null) {
@@ -3739,6 +4316,10 @@ public final class Global {
       }
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public Builder clearRequestType() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -3749,12 +4330,20 @@ public final class Global {
 
       /**
        * <code>optional string fileName = 2;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is READ/DELETE
+       * </pre>
        */
       public boolean hasFileName() {
         return payloadCase_ == 2;
       }
       /**
        * <code>optional string fileName = 2;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is READ/DELETE
+       * </pre>
        */
       public java.lang.String getFileName() {
         java.lang.Object ref = "";
@@ -3777,6 +4366,10 @@ public final class Global {
       }
       /**
        * <code>optional string fileName = 2;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is READ/DELETE
+       * </pre>
        */
       public com.google.protobuf.ByteString
           getFileNameBytes() {
@@ -3798,6 +4391,10 @@ public final class Global {
       }
       /**
        * <code>optional string fileName = 2;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is READ/DELETE
+       * </pre>
        */
       public Builder setFileName(
           java.lang.String value) {
@@ -3811,6 +4408,10 @@ public final class Global {
       }
       /**
        * <code>optional string fileName = 2;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is READ/DELETE
+       * </pre>
        */
       public Builder clearFileName() {
         if (payloadCase_ == 2) {
@@ -3822,6 +4423,10 @@ public final class Global {
       }
       /**
        * <code>optional string fileName = 2;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is READ/DELETE
+       * </pre>
        */
       public Builder setFileNameBytes(
           com.google.protobuf.ByteString value) {
@@ -3838,12 +4443,20 @@ public final class Global {
           global.Global.File, global.Global.File.Builder, global.Global.FileOrBuilder> fileBuilder_;
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public boolean hasFile() {
         return payloadCase_ == 3;
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public global.Global.File getFile() {
         if (fileBuilder_ == null) {
@@ -3860,6 +4473,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public Builder setFile(global.Global.File value) {
         if (fileBuilder_ == null) {
@@ -3876,6 +4493,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public Builder setFile(
           global.Global.File.Builder builderForValue) {
@@ -3890,6 +4511,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public Builder mergeFile(global.Global.File value) {
         if (fileBuilder_ == null) {
@@ -3912,6 +4537,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public Builder clearFile() {
         if (fileBuilder_ == null) {
@@ -3931,12 +4560,20 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public global.Global.File.Builder getFileBuilder() {
         return getFileFieldBuilder().getBuilder();
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       public global.Global.FileOrBuilder getFileOrBuilder() {
         if ((payloadCase_ == 3) && (fileBuilder_ != null)) {
@@ -3950,6 +4587,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 3;</code>
+       *
+       * <pre>
+       * Will be Sent when requestType is WRITE/UPDATE
+       * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
           global.Global.File, global.Global.File.Builder, global.Global.FileOrBuilder> 
@@ -3985,34 +4626,62 @@ public final class Global {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string requestId = 5;</code>
+     * <code>required string requestId = 5;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     boolean hasRequestId();
     /**
-     * <code>optional string requestId = 5;</code>
+     * <code>required string requestId = 5;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     java.lang.String getRequestId();
     /**
-     * <code>optional string requestId = 5;</code>
+     * <code>required string requestId = 5;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     com.google.protobuf.ByteString
         getRequestIdBytes();
 
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     boolean hasRequestType();
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     global.Global.RequestType getRequestType();
 
     /**
      * <code>optional bool success = 2;</code>
+     *
+     * <pre>
+     *true When requested action is successfully (READ for now)
+     * </pre>
      */
     boolean hasSuccess();
     /**
      * <code>optional bool success = 2;</code>
+     *
+     * <pre>
+     *true When requested action is successfully (READ for now)
+     * </pre>
      */
     boolean getSuccess();
 
@@ -4031,16 +4700,54 @@ public final class Global {
 
     /**
      * <code>optional .File file = 4;</code>
+     *
+     * <pre>
+     *Will be sent When READ/DELETE is success 
+     * </pre>
      */
     boolean hasFile();
     /**
      * <code>optional .File file = 4;</code>
+     *
+     * <pre>
+     *Will be sent When READ/DELETE is success 
+     * </pre>
      */
     global.Global.File getFile();
     /**
      * <code>optional .File file = 4;</code>
+     *
+     * <pre>
+     *Will be sent When READ/DELETE is success 
+     * </pre>
      */
     global.Global.FileOrBuilder getFileOrBuilder();
+
+    /**
+     * <code>optional string fileName = 6;</code>
+     *
+     * <pre>
+     *Will be sent When WRITE/UPDATE is success
+     * </pre>
+     */
+    boolean hasFileName();
+    /**
+     * <code>optional string fileName = 6;</code>
+     *
+     * <pre>
+     *Will be sent When WRITE/UPDATE is success
+     * </pre>
+     */
+    java.lang.String getFileName();
+    /**
+     * <code>optional string fileName = 6;</code>
+     *
+     * <pre>
+     *Will be sent When WRITE/UPDATE is success
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getFileNameBytes();
   }
   /**
    * Protobuf type {@code Response}
@@ -4142,6 +4849,12 @@ public final class Global {
               requestId_ = bs;
               break;
             }
+            case 50: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              payloadCase_ = 6;
+              payload_ = bs;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4188,6 +4901,7 @@ public final class Global {
         implements com.google.protobuf.Internal.EnumLite {
       FAILURE(3),
       FILE(4),
+      FILENAME(6),
       PAYLOAD_NOT_SET(0);
       private int value = 0;
       private PayloadCase(int value) {
@@ -4197,6 +4911,7 @@ public final class Global {
         switch (value) {
           case 3: return FAILURE;
           case 4: return FILE;
+          case 6: return FILENAME;
           case 0: return PAYLOAD_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -4216,13 +4931,21 @@ public final class Global {
     public static final int REQUESTID_FIELD_NUMBER = 5;
     private java.lang.Object requestId_;
     /**
-     * <code>optional string requestId = 5;</code>
+     * <code>required string requestId = 5;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     public boolean hasRequestId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string requestId = 5;</code>
+     * <code>required string requestId = 5;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     public java.lang.String getRequestId() {
       java.lang.Object ref = requestId_;
@@ -4239,7 +4962,11 @@ public final class Global {
       }
     }
     /**
-     * <code>optional string requestId = 5;</code>
+     * <code>required string requestId = 5;</code>
+     *
+     * <pre>
+     * UUID which maps to a client request
+     * </pre>
      */
     public com.google.protobuf.ByteString
         getRequestIdBytes() {
@@ -4259,12 +4986,20 @@ public final class Global {
     private global.Global.RequestType requestType_;
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     public boolean hasRequestType() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required .RequestType requestType = 1;</code>
+     *
+     * <pre>
+     *READ for now
+     * </pre>
      */
     public global.Global.RequestType getRequestType() {
       return requestType_;
@@ -4274,12 +5009,20 @@ public final class Global {
     private boolean success_;
     /**
      * <code>optional bool success = 2;</code>
+     *
+     * <pre>
+     *true When requested action is successfully (READ for now)
+     * </pre>
      */
     public boolean hasSuccess() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>optional bool success = 2;</code>
+     *
+     * <pre>
+     *true When requested action is successfully (READ for now)
+     * </pre>
      */
     public boolean getSuccess() {
       return success_;
@@ -4314,12 +5057,20 @@ public final class Global {
     public static final int FILE_FIELD_NUMBER = 4;
     /**
      * <code>optional .File file = 4;</code>
+     *
+     * <pre>
+     *Will be sent When READ/DELETE is success 
+     * </pre>
      */
     public boolean hasFile() {
       return payloadCase_ == 4;
     }
     /**
      * <code>optional .File file = 4;</code>
+     *
+     * <pre>
+     *Will be sent When READ/DELETE is success 
+     * </pre>
      */
     public global.Global.File getFile() {
       if (payloadCase_ == 4) {
@@ -4329,12 +5080,77 @@ public final class Global {
     }
     /**
      * <code>optional .File file = 4;</code>
+     *
+     * <pre>
+     *Will be sent When READ/DELETE is success 
+     * </pre>
      */
     public global.Global.FileOrBuilder getFileOrBuilder() {
       if (payloadCase_ == 4) {
          return (global.Global.File) payload_;
       }
       return global.Global.File.getDefaultInstance();
+    }
+
+    public static final int FILENAME_FIELD_NUMBER = 6;
+    /**
+     * <code>optional string fileName = 6;</code>
+     *
+     * <pre>
+     *Will be sent When WRITE/UPDATE is success
+     * </pre>
+     */
+    public boolean hasFileName() {
+      return payloadCase_ == 6;
+    }
+    /**
+     * <code>optional string fileName = 6;</code>
+     *
+     * <pre>
+     *Will be sent When WRITE/UPDATE is success
+     * </pre>
+     */
+    public java.lang.String getFileName() {
+      java.lang.Object ref = "";
+      if (payloadCase_ == 6) {
+        ref = payload_;
+      }
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8() && (payloadCase_ == 6)) {
+          payload_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string fileName = 6;</code>
+     *
+     * <pre>
+     *Will be sent When WRITE/UPDATE is success
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getFileNameBytes() {
+      java.lang.Object ref = "";
+      if (payloadCase_ == 6) {
+        ref = payload_;
+      }
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (payloadCase_ == 6) {
+          payload_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private void initFields() {
@@ -4348,6 +5164,10 @@ public final class Global {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
+      if (!hasRequestId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       if (!hasRequestType()) {
         memoizedIsInitialized = 0;
         return false;
@@ -4386,6 +5206,9 @@ public final class Global {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(5, getRequestIdBytes());
       }
+      if (payloadCase_ == 6) {
+        output.writeBytes(6, getFileNameBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4414,6 +5237,10 @@ public final class Global {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(5, getRequestIdBytes());
+      }
+      if (payloadCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getFileNameBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4594,6 +5421,9 @@ public final class Global {
             result.payload_ = fileBuilder_.build();
           }
         }
+        if (payloadCase_ == 6) {
+          result.payload_ = payload_;
+        }
         result.bitField0_ = to_bitField0_;
         result.payloadCase_ = payloadCase_;
         onBuilt();
@@ -4631,6 +5461,12 @@ public final class Global {
             mergeFile(other.getFile());
             break;
           }
+          case FILENAME: {
+            payloadCase_ = 6;
+            payload_ = other.payload_;
+            onChanged();
+            break;
+          }
           case PAYLOAD_NOT_SET: {
             break;
           }
@@ -4640,6 +5476,10 @@ public final class Global {
       }
 
       public final boolean isInitialized() {
+        if (!hasRequestId()) {
+          
+          return false;
+        }
         if (!hasRequestType()) {
           
           return false;
@@ -4695,13 +5535,21 @@ public final class Global {
 
       private java.lang.Object requestId_ = "";
       /**
-       * <code>optional string requestId = 5;</code>
+       * <code>required string requestId = 5;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public boolean hasRequestId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string requestId = 5;</code>
+       * <code>required string requestId = 5;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public java.lang.String getRequestId() {
         java.lang.Object ref = requestId_;
@@ -4718,7 +5566,11 @@ public final class Global {
         }
       }
       /**
-       * <code>optional string requestId = 5;</code>
+       * <code>required string requestId = 5;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public com.google.protobuf.ByteString
           getRequestIdBytes() {
@@ -4734,7 +5586,11 @@ public final class Global {
         }
       }
       /**
-       * <code>optional string requestId = 5;</code>
+       * <code>required string requestId = 5;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public Builder setRequestId(
           java.lang.String value) {
@@ -4747,7 +5603,11 @@ public final class Global {
         return this;
       }
       /**
-       * <code>optional string requestId = 5;</code>
+       * <code>required string requestId = 5;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public Builder clearRequestId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -4756,7 +5616,11 @@ public final class Global {
         return this;
       }
       /**
-       * <code>optional string requestId = 5;</code>
+       * <code>required string requestId = 5;</code>
+       *
+       * <pre>
+       * UUID which maps to a client request
+       * </pre>
        */
       public Builder setRequestIdBytes(
           com.google.protobuf.ByteString value) {
@@ -4772,18 +5636,30 @@ public final class Global {
       private global.Global.RequestType requestType_ = global.Global.RequestType.READ;
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public boolean hasRequestType() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public global.Global.RequestType getRequestType() {
         return requestType_;
       }
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public Builder setRequestType(global.Global.RequestType value) {
         if (value == null) {
@@ -4796,6 +5672,10 @@ public final class Global {
       }
       /**
        * <code>required .RequestType requestType = 1;</code>
+       *
+       * <pre>
+       *READ for now
+       * </pre>
        */
       public Builder clearRequestType() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -4807,18 +5687,30 @@ public final class Global {
       private boolean success_ ;
       /**
        * <code>optional bool success = 2;</code>
+       *
+       * <pre>
+       *true When requested action is successfully (READ for now)
+       * </pre>
        */
       public boolean hasSuccess() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>optional bool success = 2;</code>
+       *
+       * <pre>
+       *true When requested action is successfully (READ for now)
+       * </pre>
        */
       public boolean getSuccess() {
         return success_;
       }
       /**
        * <code>optional bool success = 2;</code>
+       *
+       * <pre>
+       *true When requested action is successfully (READ for now)
+       * </pre>
        */
       public Builder setSuccess(boolean value) {
         bitField0_ |= 0x00000004;
@@ -4828,6 +5720,10 @@ public final class Global {
       }
       /**
        * <code>optional bool success = 2;</code>
+       *
+       * <pre>
+       *true When requested action is successfully (READ for now)
+       * </pre>
        */
       public Builder clearSuccess() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -4975,12 +5871,20 @@ public final class Global {
           global.Global.File, global.Global.File.Builder, global.Global.FileOrBuilder> fileBuilder_;
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public boolean hasFile() {
         return payloadCase_ == 4;
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public global.Global.File getFile() {
         if (fileBuilder_ == null) {
@@ -4997,6 +5901,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public Builder setFile(global.Global.File value) {
         if (fileBuilder_ == null) {
@@ -5013,6 +5921,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public Builder setFile(
           global.Global.File.Builder builderForValue) {
@@ -5027,6 +5939,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public Builder mergeFile(global.Global.File value) {
         if (fileBuilder_ == null) {
@@ -5049,6 +5965,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public Builder clearFile() {
         if (fileBuilder_ == null) {
@@ -5068,12 +5988,20 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public global.Global.File.Builder getFileBuilder() {
         return getFileFieldBuilder().getBuilder();
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       public global.Global.FileOrBuilder getFileOrBuilder() {
         if ((payloadCase_ == 4) && (fileBuilder_ != null)) {
@@ -5087,6 +6015,10 @@ public final class Global {
       }
       /**
        * <code>optional .File file = 4;</code>
+       *
+       * <pre>
+       *Will be sent When READ/DELETE is success 
+       * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
           global.Global.File, global.Global.File.Builder, global.Global.FileOrBuilder> 
@@ -5106,6 +6038,117 @@ public final class Global {
         return fileBuilder_;
       }
 
+      /**
+       * <code>optional string fileName = 6;</code>
+       *
+       * <pre>
+       *Will be sent When WRITE/UPDATE is success
+       * </pre>
+       */
+      public boolean hasFileName() {
+        return payloadCase_ == 6;
+      }
+      /**
+       * <code>optional string fileName = 6;</code>
+       *
+       * <pre>
+       *Will be sent When WRITE/UPDATE is success
+       * </pre>
+       */
+      public java.lang.String getFileName() {
+        java.lang.Object ref = "";
+        if (payloadCase_ == 6) {
+          ref = payload_;
+        }
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (payloadCase_ == 6) {
+            if (bs.isValidUtf8()) {
+              payload_ = s;
+            }
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string fileName = 6;</code>
+       *
+       * <pre>
+       *Will be sent When WRITE/UPDATE is success
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getFileNameBytes() {
+        java.lang.Object ref = "";
+        if (payloadCase_ == 6) {
+          ref = payload_;
+        }
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          if (payloadCase_ == 6) {
+            payload_ = b;
+          }
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string fileName = 6;</code>
+       *
+       * <pre>
+       *Will be sent When WRITE/UPDATE is success
+       * </pre>
+       */
+      public Builder setFileName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  payloadCase_ = 6;
+        payload_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string fileName = 6;</code>
+       *
+       * <pre>
+       *Will be sent When WRITE/UPDATE is success
+       * </pre>
+       */
+      public Builder clearFileName() {
+        if (payloadCase_ == 6) {
+          payloadCase_ = 0;
+          payload_ = null;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional string fileName = 6;</code>
+       *
+       * <pre>
+       *Will be sent When WRITE/UPDATE is success
+       * </pre>
+       */
+      public Builder setFileNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  payloadCase_ = 6;
+        payload_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Response)
     }
 
@@ -5115,6 +6158,1146 @@ public final class Global {
     }
 
     // @@protoc_insertion_point(class_scope:Response)
+  }
+
+  public interface WhoIsLeaderOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:WhoIsLeader)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string requesterIp = 1;</code>
+     */
+    boolean hasRequesterIp();
+    /**
+     * <code>required string requesterIp = 1;</code>
+     */
+    java.lang.String getRequesterIp();
+    /**
+     * <code>required string requesterIp = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getRequesterIpBytes();
+
+    /**
+     * <code>required int32 requesterPort = 2;</code>
+     */
+    boolean hasRequesterPort();
+    /**
+     * <code>required int32 requesterPort = 2;</code>
+     */
+    int getRequesterPort();
+  }
+  /**
+   * Protobuf type {@code WhoIsLeader}
+   */
+  public static final class WhoIsLeader extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:WhoIsLeader)
+      WhoIsLeaderOrBuilder {
+    // Use WhoIsLeader.newBuilder() to construct.
+    private WhoIsLeader(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private WhoIsLeader(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final WhoIsLeader defaultInstance;
+    public static WhoIsLeader getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public WhoIsLeader getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private WhoIsLeader(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              requesterIp_ = bs;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              requesterPort_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return global.Global.internal_static_WhoIsLeader_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return global.Global.internal_static_WhoIsLeader_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              global.Global.WhoIsLeader.class, global.Global.WhoIsLeader.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<WhoIsLeader> PARSER =
+        new com.google.protobuf.AbstractParser<WhoIsLeader>() {
+      public WhoIsLeader parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new WhoIsLeader(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<WhoIsLeader> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int REQUESTERIP_FIELD_NUMBER = 1;
+    private java.lang.Object requesterIp_;
+    /**
+     * <code>required string requesterIp = 1;</code>
+     */
+    public boolean hasRequesterIp() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string requesterIp = 1;</code>
+     */
+    public java.lang.String getRequesterIp() {
+      java.lang.Object ref = requesterIp_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          requesterIp_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string requesterIp = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getRequesterIpBytes() {
+      java.lang.Object ref = requesterIp_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        requesterIp_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REQUESTERPORT_FIELD_NUMBER = 2;
+    private int requesterPort_;
+    /**
+     * <code>required int32 requesterPort = 2;</code>
+     */
+    public boolean hasRequesterPort() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required int32 requesterPort = 2;</code>
+     */
+    public int getRequesterPort() {
+      return requesterPort_;
+    }
+
+    private void initFields() {
+      requesterIp_ = "";
+      requesterPort_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasRequesterIp()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasRequesterPort()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getRequesterIpBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, requesterPort_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getRequesterIpBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, requesterPort_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static global.Global.WhoIsLeader parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static global.Global.WhoIsLeader parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static global.Global.WhoIsLeader parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static global.Global.WhoIsLeader parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static global.Global.WhoIsLeader parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static global.Global.WhoIsLeader parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static global.Global.WhoIsLeader parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static global.Global.WhoIsLeader parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static global.Global.WhoIsLeader parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static global.Global.WhoIsLeader parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(global.Global.WhoIsLeader prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code WhoIsLeader}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:WhoIsLeader)
+        global.Global.WhoIsLeaderOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return global.Global.internal_static_WhoIsLeader_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return global.Global.internal_static_WhoIsLeader_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                global.Global.WhoIsLeader.class, global.Global.WhoIsLeader.Builder.class);
+      }
+
+      // Construct using global.Global.WhoIsLeader.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        requesterIp_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        requesterPort_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return global.Global.internal_static_WhoIsLeader_descriptor;
+      }
+
+      public global.Global.WhoIsLeader getDefaultInstanceForType() {
+        return global.Global.WhoIsLeader.getDefaultInstance();
+      }
+
+      public global.Global.WhoIsLeader build() {
+        global.Global.WhoIsLeader result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public global.Global.WhoIsLeader buildPartial() {
+        global.Global.WhoIsLeader result = new global.Global.WhoIsLeader(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.requesterIp_ = requesterIp_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.requesterPort_ = requesterPort_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof global.Global.WhoIsLeader) {
+          return mergeFrom((global.Global.WhoIsLeader)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(global.Global.WhoIsLeader other) {
+        if (other == global.Global.WhoIsLeader.getDefaultInstance()) return this;
+        if (other.hasRequesterIp()) {
+          bitField0_ |= 0x00000001;
+          requesterIp_ = other.requesterIp_;
+          onChanged();
+        }
+        if (other.hasRequesterPort()) {
+          setRequesterPort(other.getRequesterPort());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasRequesterIp()) {
+          
+          return false;
+        }
+        if (!hasRequesterPort()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        global.Global.WhoIsLeader parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (global.Global.WhoIsLeader) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object requesterIp_ = "";
+      /**
+       * <code>required string requesterIp = 1;</code>
+       */
+      public boolean hasRequesterIp() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string requesterIp = 1;</code>
+       */
+      public java.lang.String getRequesterIp() {
+        java.lang.Object ref = requesterIp_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            requesterIp_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string requesterIp = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getRequesterIpBytes() {
+        java.lang.Object ref = requesterIp_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          requesterIp_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string requesterIp = 1;</code>
+       */
+      public Builder setRequesterIp(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        requesterIp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string requesterIp = 1;</code>
+       */
+      public Builder clearRequesterIp() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        requesterIp_ = getDefaultInstance().getRequesterIp();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string requesterIp = 1;</code>
+       */
+      public Builder setRequesterIpBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        requesterIp_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int requesterPort_ ;
+      /**
+       * <code>required int32 requesterPort = 2;</code>
+       */
+      public boolean hasRequesterPort() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required int32 requesterPort = 2;</code>
+       */
+      public int getRequesterPort() {
+        return requesterPort_;
+      }
+      /**
+       * <code>required int32 requesterPort = 2;</code>
+       */
+      public Builder setRequesterPort(int value) {
+        bitField0_ |= 0x00000002;
+        requesterPort_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 requesterPort = 2;</code>
+       */
+      public Builder clearRequesterPort() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        requesterPort_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:WhoIsLeader)
+    }
+
+    static {
+      defaultInstance = new WhoIsLeader(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:WhoIsLeader)
+  }
+
+  public interface LeaderInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:LeaderInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string leaderIp = 1;</code>
+     */
+    boolean hasLeaderIp();
+    /**
+     * <code>required string leaderIp = 1;</code>
+     */
+    java.lang.String getLeaderIp();
+    /**
+     * <code>required string leaderIp = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getLeaderIpBytes();
+
+    /**
+     * <code>required int32 leaderPort = 2;</code>
+     */
+    boolean hasLeaderPort();
+    /**
+     * <code>required int32 leaderPort = 2;</code>
+     */
+    int getLeaderPort();
+  }
+  /**
+   * Protobuf type {@code LeaderInfo}
+   */
+  public static final class LeaderInfo extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:LeaderInfo)
+      LeaderInfoOrBuilder {
+    // Use LeaderInfo.newBuilder() to construct.
+    private LeaderInfo(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private LeaderInfo(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final LeaderInfo defaultInstance;
+    public static LeaderInfo getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public LeaderInfo getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private LeaderInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              leaderIp_ = bs;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              leaderPort_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return global.Global.internal_static_LeaderInfo_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return global.Global.internal_static_LeaderInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              global.Global.LeaderInfo.class, global.Global.LeaderInfo.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<LeaderInfo> PARSER =
+        new com.google.protobuf.AbstractParser<LeaderInfo>() {
+      public LeaderInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new LeaderInfo(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LeaderInfo> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int LEADERIP_FIELD_NUMBER = 1;
+    private java.lang.Object leaderIp_;
+    /**
+     * <code>required string leaderIp = 1;</code>
+     */
+    public boolean hasLeaderIp() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string leaderIp = 1;</code>
+     */
+    public java.lang.String getLeaderIp() {
+      java.lang.Object ref = leaderIp_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          leaderIp_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string leaderIp = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getLeaderIpBytes() {
+      java.lang.Object ref = leaderIp_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        leaderIp_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LEADERPORT_FIELD_NUMBER = 2;
+    private int leaderPort_;
+    /**
+     * <code>required int32 leaderPort = 2;</code>
+     */
+    public boolean hasLeaderPort() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required int32 leaderPort = 2;</code>
+     */
+    public int getLeaderPort() {
+      return leaderPort_;
+    }
+
+    private void initFields() {
+      leaderIp_ = "";
+      leaderPort_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasLeaderIp()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasLeaderPort()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getLeaderIpBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, leaderPort_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getLeaderIpBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, leaderPort_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static global.Global.LeaderInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static global.Global.LeaderInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static global.Global.LeaderInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static global.Global.LeaderInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static global.Global.LeaderInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static global.Global.LeaderInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static global.Global.LeaderInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static global.Global.LeaderInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static global.Global.LeaderInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static global.Global.LeaderInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(global.Global.LeaderInfo prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code LeaderInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:LeaderInfo)
+        global.Global.LeaderInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return global.Global.internal_static_LeaderInfo_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return global.Global.internal_static_LeaderInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                global.Global.LeaderInfo.class, global.Global.LeaderInfo.Builder.class);
+      }
+
+      // Construct using global.Global.LeaderInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        leaderIp_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        leaderPort_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return global.Global.internal_static_LeaderInfo_descriptor;
+      }
+
+      public global.Global.LeaderInfo getDefaultInstanceForType() {
+        return global.Global.LeaderInfo.getDefaultInstance();
+      }
+
+      public global.Global.LeaderInfo build() {
+        global.Global.LeaderInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public global.Global.LeaderInfo buildPartial() {
+        global.Global.LeaderInfo result = new global.Global.LeaderInfo(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.leaderIp_ = leaderIp_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.leaderPort_ = leaderPort_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof global.Global.LeaderInfo) {
+          return mergeFrom((global.Global.LeaderInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(global.Global.LeaderInfo other) {
+        if (other == global.Global.LeaderInfo.getDefaultInstance()) return this;
+        if (other.hasLeaderIp()) {
+          bitField0_ |= 0x00000001;
+          leaderIp_ = other.leaderIp_;
+          onChanged();
+        }
+        if (other.hasLeaderPort()) {
+          setLeaderPort(other.getLeaderPort());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasLeaderIp()) {
+          
+          return false;
+        }
+        if (!hasLeaderPort()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        global.Global.LeaderInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (global.Global.LeaderInfo) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object leaderIp_ = "";
+      /**
+       * <code>required string leaderIp = 1;</code>
+       */
+      public boolean hasLeaderIp() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string leaderIp = 1;</code>
+       */
+      public java.lang.String getLeaderIp() {
+        java.lang.Object ref = leaderIp_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            leaderIp_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string leaderIp = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getLeaderIpBytes() {
+        java.lang.Object ref = leaderIp_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          leaderIp_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string leaderIp = 1;</code>
+       */
+      public Builder setLeaderIp(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        leaderIp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string leaderIp = 1;</code>
+       */
+      public Builder clearLeaderIp() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        leaderIp_ = getDefaultInstance().getLeaderIp();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string leaderIp = 1;</code>
+       */
+      public Builder setLeaderIpBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        leaderIp_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int leaderPort_ ;
+      /**
+       * <code>required int32 leaderPort = 2;</code>
+       */
+      public boolean hasLeaderPort() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required int32 leaderPort = 2;</code>
+       */
+      public int getLeaderPort() {
+        return leaderPort_;
+      }
+      /**
+       * <code>required int32 leaderPort = 2;</code>
+       */
+      public Builder setLeaderPort(int value) {
+        bitField0_ |= 0x00000002;
+        leaderPort_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 leaderPort = 2;</code>
+       */
+      public Builder clearLeaderPort() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        leaderPort_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:LeaderInfo)
+    }
+
+    static {
+      defaultInstance = new LeaderInfo(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:LeaderInfo)
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
@@ -5142,6 +7325,16 @@ public final class Global {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Response_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_WhoIsLeader_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_WhoIsLeader_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_LeaderInfo_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_LeaderInfo_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -5151,25 +7344,29 @@ public final class Global {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014global.proto\032\014common.proto\"^\n\014GlobalHe" +
+      "\n\014global.proto\032\014common.proto\"H\n\014GlobalHe" +
       "ader\022\022\n\ncluster_id\030\001 \002(\005\022\014\n\004time\030\002 \002(\003\022\026" +
-      "\n\016destination_id\030\010 \001(\005\022\024\n\010max_hops\030\n \001(\005" +
-      ":\002-1\"\273\001\n\rGlobalMessage\022#\n\014globalHeader\030\001" +
-      " \002(\0132\r.GlobalHeader\022\016\n\004ping\030\002 \001(\010H\000\022\021\n\007m" +
-      "essage\030\003 \001(\tH\000\022\033\n\007failure\030\004 \001(\0132\010.Failur" +
-      "eH\000\022\033\n\007request\030\005 \001(\0132\010.RequestH\000\022\035\n\010resp" +
-      "onse\030\006 \001(\0132\t.ResponseH\000B\t\n\007payload\"K\n\004Fi" +
-      "le\022\017\n\007chunkId\030\001 \001(\005\022\014\n\004data\030\002 \001(\014\022\020\n\010fil" +
-      "ename\030\003 \002(\t\022\022\n\nchunkCount\030\005 \001(\005\"u\n\007Reque",
-      "st\022\021\n\trequestId\030\004 \001(\t\022!\n\013requestType\030\001 \002" +
+      "\n\016destination_id\030\010 \001(\005\"\364\001\n\rGlobalMessage" +
+      "\022#\n\014globalHeader\030\001 \002(\0132\r.GlobalHeader\022\016\n" +
+      "\004ping\030\002 \001(\010H\000\022\021\n\007message\030\003 \001(\tH\000\022\033\n\007requ" +
+      "est\030\004 \001(\0132\010.RequestH\000\022\035\n\010response\030\005 \001(\0132" +
+      "\t.ResponseH\000\022*\n\022whoIsClusterLeader\030\006 \001(\013" +
+      "2\014.WhoIsLeaderH\000\022(\n\021clusterLeaderInfo\030\007 " +
+      "\001(\0132\013.LeaderInfoH\000B\t\n\007payload\"P\n\004File\022\017\n" +
+      "\007chunkId\030\001 \001(\005\022\014\n\004data\030\002 \001(\014\022\020\n\010filename",
+      "\030\003 \002(\t\022\027\n\017totalNoOfChunks\030\005 \001(\005\"u\n\007Reque" +
+      "st\022\021\n\trequestId\030\004 \002(\t\022!\n\013requestType\030\001 \002" +
       "(\0162\014.RequestType\022\022\n\010fileName\030\002 \001(\tH\000\022\025\n\004" +
-      "file\030\003 \001(\0132\005.FileH\000B\t\n\007payload\"\220\001\n\010Respo" +
-      "nse\022\021\n\trequestId\030\005 \001(\t\022!\n\013requestType\030\001 " +
+      "file\030\003 \001(\0132\005.FileH\000B\t\n\007payload\"\244\001\n\010Respo" +
+      "nse\022\021\n\trequestId\030\005 \002(\t\022!\n\013requestType\030\001 " +
       "\002(\0162\014.RequestType\022\017\n\007success\030\002 \001(\010\022\033\n\007fa" +
       "ilure\030\003 \001(\0132\010.FailureH\000\022\025\n\004file\030\004 \001(\0132\005." +
-      "FileH\000B\t\n\007payload*:\n\013RequestType\022\010\n\004READ" +
-      "\020\001\022\t\n\005WRITE\020\002\022\n\n\006UPDATE\020\003\022\n\n\006DELETE\020\004B\n\n" +
-      "\006globalH\001"
+      "FileH\000\022\022\n\010fileName\030\006 \001(\tH\000B\t\n\007payload\"9\n" +
+      "\013WhoIsLeader\022\023\n\013requesterIp\030\001 \002(\t\022\025\n\rreq" +
+      "uesterPort\030\002 \002(\005\"2\n\nLeaderInfo\022\020\n\010leader",
+      "Ip\030\001 \002(\t\022\022\n\nleaderPort\030\002 \002(\005*:\n\013RequestT" +
+      "ype\022\010\n\004READ\020\001\022\t\n\005WRITE\020\002\022\n\n\006UPDATE\020\003\022\n\n\006" +
+      "DELETE\020\004B\n\n\006globalH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5189,19 +7386,19 @@ public final class Global {
     internal_static_GlobalHeader_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_GlobalHeader_descriptor,
-        new java.lang.String[] { "ClusterId", "Time", "DestinationId", "MaxHops", });
+        new java.lang.String[] { "ClusterId", "Time", "DestinationId", });
     internal_static_GlobalMessage_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_GlobalMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_GlobalMessage_descriptor,
-        new java.lang.String[] { "GlobalHeader", "Ping", "Message", "Failure", "Request", "Response", "Payload", });
+        new java.lang.String[] { "GlobalHeader", "Ping", "Message", "Request", "Response", "WhoIsClusterLeader", "ClusterLeaderInfo", "Payload", });
     internal_static_File_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_File_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_File_descriptor,
-        new java.lang.String[] { "ChunkId", "Data", "Filename", "ChunkCount", });
+        new java.lang.String[] { "ChunkId", "Data", "Filename", "TotalNoOfChunks", });
     internal_static_Request_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Request_fieldAccessorTable = new
@@ -5213,7 +7410,19 @@ public final class Global {
     internal_static_Response_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Response_descriptor,
-        new java.lang.String[] { "RequestId", "RequestType", "Success", "Failure", "File", "Payload", });
+        new java.lang.String[] { "RequestId", "RequestType", "Success", "Failure", "File", "FileName", "Payload", });
+    internal_static_WhoIsLeader_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_WhoIsLeader_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_WhoIsLeader_descriptor,
+        new java.lang.String[] { "RequesterIp", "RequesterPort", });
+    internal_static_LeaderInfo_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_LeaderInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_LeaderInfo_descriptor,
+        new java.lang.String[] { "LeaderIp", "LeaderPort", });
     pipe.common.Common.getDescriptor();
   }
 

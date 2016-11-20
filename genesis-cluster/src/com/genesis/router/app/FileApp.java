@@ -186,8 +186,7 @@ public class FileApp implements CommListener {
 	public static void main(String[] args) {
 		String host = "localhost";
 		//String host = "169.254.148.24";
-		//169.254.148.24
-		//String host = "169.254.97.102";
+		//String host = "169.254.203.11";
 		
 		int port = 4668;
 		
