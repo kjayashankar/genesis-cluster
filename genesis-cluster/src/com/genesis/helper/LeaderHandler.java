@@ -34,6 +34,7 @@ public class LeaderHandler extends ParentHandler {
 
 	@Override
 	public void handleMessage(WorkMessage msg, Channel channel) {
+		logger.info("Leader handler message :: \n"+ msg);
 		if(msg.hasBeat())
 			handleBeat(msg, channel);
 		else if(msg.hasDragon()){
