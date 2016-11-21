@@ -1,8 +1,8 @@
 package com.genesis.helper;
 
-import com.genesis.router.server.CommandHandler;
 import com.genesis.router.server.ServerState;
 
+import global.Global.GlobalMessage;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -12,7 +12,6 @@ import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
-import routing.Pipe.CommandMessage;
 
 public class GlobalInit extends ChannelInitializer<SocketChannel> {
 	boolean compress = false;
@@ -44,7 +43,7 @@ public class GlobalInit extends ChannelInitializer<SocketChannel> {
 		pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(67108864, 0, 4, 0, 4));
 
 		// decoder must be first
-		pipeline.addLast("protobufDecoder", new ProtobufDecoder(CommandMessage.getDefaultInstance()));
+		pipeline.addLast("protobufDecoder", new ProtobufDecoder(GlobalMessage.getDefaultInstance()));
 		pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
 		pipeline.addLast("protobufEncoder", new ProtobufEncoder());
 
