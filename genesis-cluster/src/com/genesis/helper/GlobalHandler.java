@@ -3,6 +3,7 @@ package com.genesis.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.db.handlers.DBUtils;
 import com.genesis.resource.ResourceUtil;
 import com.genesis.router.server.ServerState;
 
@@ -29,9 +30,9 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 	}
 	
 	@Override
-	protected void channelRead0(ChannelHandlerContext arg0, GlobalMessage arg1) throws Exception {
+	protected void channelRead0(ChannelHandlerContext ctx, GlobalMessage msg) throws Exception {
 		logger.info("received global message");
-		
+		handleMessage(msg,ctx.channel());		
 	}
 	
 	protected void handleMessage(GlobalMessage msg,Channel channel){
@@ -56,6 +57,18 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 			}
 			else{
 				//may be in other cluster?
+				state.getgMon().pushMessagesIntoCluster(msg);
+			}
+		}
+		
+		else if(msg.hasRequest()){
+			if(DBUtils.isfileExist(msg.getRequest().getFileName())){
+				// we have the file
+				// process it and put the global message into queue
+				GlobalMessage.Builder responseMsg = null;
+				state.getGlobalOutboundQueue().put(responseMsg.build());
+			}
+			else{
 				state.getgMon().pushMessagesIntoCluster(msg);
 			}
 		}

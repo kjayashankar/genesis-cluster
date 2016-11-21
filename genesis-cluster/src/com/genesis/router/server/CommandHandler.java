@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.db.handlers.DBUtils;
 import com.genesis.queues.Queue;
 import com.genesis.resource.ResourceUtil;
 
@@ -68,49 +69,27 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 
 		if(msg.hasReqMsg()){
 			//create a task of it and submit to the inbound along with the channel
-			Task.Builder myTask = Task.newBuilder();
-			myTask.setCommandMessage(msg);
-			myTask.setSeqId(myTask.getSeqId());
-			myTask.setSeriesId(myTask.getSeriesId());
-
-			WorkMessage workMessage = ResourceUtil.buildWorkMessageFromTask(myTask.build(), state);
-			inboundQueue.put(workMessage, channel);
 			
-			logger.info("Client Message added to the Inbound Queue.");
-		}
-		
-		else {
-			//transform into global message and 
-			//push it to the outbound global queue for the post processing
-			Node origin = msg.getHeader().getOrigin();
-			String id = UUID.randomUUID().toString();
-			state.moderator.put(id, channel);
-			state.getEmon().updateMooderator(id,origin);
-		}
-		/*
-		PrintUtil.printCommand(msg);
-
-		try {
-			// TODO How can you implement this without if-else statements?
-			if (msg.hasPing()) {
-				logger.info("ping from " + msg.getHeader().getOrigin());
-			} else if (msg.hasMessage()) {
-				logger.info(msg.getMessage());
-			} else {
+			String fileName = msg.getReqMsg().getKey();
+			if(DBUtils.isfileExist(fileName)){
+				Task.Builder myTask = Task.newBuilder();
+				myTask.setCommandMessage(msg);
+				myTask.setSeqId(myTask.getSeqId());
+				myTask.setSeriesId(myTask.getSeriesId());
+	
+				WorkMessage workMessage = ResourceUtil.buildWorkMessageFromTask(myTask.build(), state);
+				inboundQueue.put(workMessage, channel);
+				
+				logger.info("Client Message added to the Inbound Queue.");
 			}
-
-		} catch (Exception e) {
-			// TODO add logging
-			Failure.Builder eb = Failure.newBuilder();
-			eb.setId(state.getConf().getNodeId());
-			eb.setRefId(msg.getHeader().getOrigin().getId());
-			eb.setMessage(e.getMessage());
-			CommandMessage.Builder rb = CommandMessage.newBuilder(msg);
-			rb.setErr(eb);
-			channel.write(rb.build());
+			else {
+				String id = UUID.randomUUID().toString();
+				state.getgMon().forwardRequest(id,msg);
+				Node origin = msg.getHeader().getOrigin();
+				state.moderator.put(id, channel);
+				state.getEmon().updateMooderator(id,origin);
+			}
 		}
-
-		System.out.flush();*/
 	}
 
 	/**
