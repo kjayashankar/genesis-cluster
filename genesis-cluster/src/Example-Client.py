@@ -6,14 +6,13 @@ import pipe_pb2
 
 
 def request_ping():
+    print "Start request_ping() executing"
 
-    cmsg = common_pb2.Header()
-    cmsg.Header.node_id = 1
-    cmsg.Header.time = 1000
-    cmsg.Header.destination = -1
     cm = pipe_pb2.CommandMessage()
-    cm.Header = cmsg
-    cm.ping = "true"
+    cm.header.node_id=1
+    cm.header.time=10000
+    cm.header.destination=2
+    cm.ping = True
     print "request_ping() executing"
 
     pingr = cm.SerializeToString()
@@ -23,7 +22,7 @@ def request_ping():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # host = socket.gethostname() # Testing on own computer
     # port = 5570 # Public Port
-    s.connect(("127.0.0.1", "4168"))
+    s.connect(("127.0.0.1", 4668))
     # Prepending the length field and sending
     s.sendall(packed_len + pingr)
     s.close()

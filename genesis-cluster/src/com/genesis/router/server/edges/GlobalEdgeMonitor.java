@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.genesis.helper.GlobalInit;
+import com.genesis.router.container.GlobalConf;
+import com.genesis.router.container.GlobalConf.RoutingEntry;
 import com.genesis.router.server.ServerState;
 
 import global.Global.File;
@@ -29,7 +31,7 @@ public class GlobalEdgeMonitor {
 		this.state = state;
 		
 		if (state.getGlobalConf().getRouting() != null) {
-			for (com.genesis.router.container.GlobalConf.RoutingEntry e : state.getGlobalConf().getRouting()) {
+			for (RoutingEntry e : state.getGlobalConf().getRouting()) {
 				globalOutboud.addNode(e.getClusterId(), e.getHost(), e.getPort());
 			}
 		}
@@ -107,6 +109,11 @@ public class GlobalEdgeMonitor {
 				}
 			}
 		}
+	}
+
+	public void setConf(GlobalConf globalConf) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

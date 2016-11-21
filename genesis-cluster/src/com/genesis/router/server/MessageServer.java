@@ -98,6 +98,7 @@ public class MessageServer {
 		// We always start the worker in the background
 		Thread cthread = new Thread(comm);
 		cthread.start();
+		state.setGlobalConf(globalConf);
 		StartGlobalCommunication global = new StartGlobalCommunication(globalConf,state);
 		Thread globalThread = new Thread(global);
 		
