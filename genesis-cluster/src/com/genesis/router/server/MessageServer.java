@@ -30,6 +30,7 @@ import com.genesis.monitors.Flooder;
 import com.genesis.monitors.NetworkMonitor;
 import com.genesis.monitors.QueueMonitor;
 import com.genesis.monitors.StealerThread;
+import com.genesis.queues.workers.GlobalOutWorker;
 import com.genesis.queues.workers.ThreadPool;
 import com.genesis.router.container.GlobalConf;
 import com.genesis.router.container.RoutingConf;
@@ -81,6 +82,8 @@ public class MessageServer {
 				
 				QueueMonitor qMon = new QueueMonitor(conf.getWorkerThreads(),state,new SimpleBalancer());
 				state.setQueueMonitor(qMon);
+				
+				
 	}
 	
 	public MessageServer(RoutingConf conf) {
@@ -98,10 +101,14 @@ public class MessageServer {
 		// We always start the worker in the background
 		Thread cthread = new Thread(comm);
 		cthread.start();
+		
 		StartGlobalCommunication global = new StartGlobalCommunication(globalConf,state);
 		Thread globalThread = new Thread(global);
-		
 		globalThread.start();
+		
+		GlobalOutWorker worker = new GlobalOutWorker(state);
+		worker.run();
+		
 		StartCommandCommunication comm2 = new StartCommandCommunication(conf);
 		logger.info("Command starting");
 		if (background) {

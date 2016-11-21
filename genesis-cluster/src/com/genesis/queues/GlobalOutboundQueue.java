@@ -27,4 +27,7 @@ public class GlobalOutboundQueue {
 			e.printStackTrace();
 		}
 	}
+	public int size(){
+		return globalOutboundQueue.size();
+	}
 }
