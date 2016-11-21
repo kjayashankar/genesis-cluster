@@ -57,6 +57,9 @@ public class LeaderHandler extends ParentHandler {
 		else if(msg.hasTask()){
 			handleTask(msg,channel);
 		}
+		else if(msg.hasModerator()){
+			handleModerator(msg,channel);
+		}
 		
 	}
 	

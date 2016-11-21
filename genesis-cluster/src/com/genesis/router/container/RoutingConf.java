@@ -34,11 +34,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RoutingConf {
 	private int nodeId;
 	private int commandPort;
+	private int globalPort;
 	private int workPort;
 	private boolean internalNode = true;
 	private int heartbeatDt = 2000;
 	private List<RoutingEntry> routing;
 	private int workerThreads ;
+	public int getGlobalPort() {
+		return globalPort;
+	}
+
+	public void setGlobalPort(int globalPort) {
+		this.globalPort = globalPort;
+	}
+
+	public List<RoutingEntry> getGlobal() {
+		return global;
+	}
+
+	public void setGlobal(List<RoutingEntry> global) {
+		this.global = global;
+	}
+
 	private String myHost;
 	private List<RoutingEntry> global;
 

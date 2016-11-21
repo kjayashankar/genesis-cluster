@@ -108,4 +108,9 @@ public class ParentHandler implements ServerHandler{
 		state.getQueueMonitor().getInboundQueue().put(wm, channel);
 		logger.info("added to my inbound queue");
 	}
+	
+	public void handleModerator(WorkMessage wm, Channel channel) {
+		state.getEmon().handleModerator(wm);
+	}
+	
 }

@@ -15,18 +15,18 @@
  */
 package com.genesis.router.server;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.genesis.monitors.QueueMonitor;
 import com.genesis.queues.Queue;
 import com.genesis.resource.ResourceUtil;
-import com.genesis.router.container.RoutingConf;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import pipe.common.Common.Failure;
+import pipe.common.Common.Node;
 import pipe.work.Work.Task;
 import pipe.work.Work.WorkMessage;
 import routing.Pipe.CommandMessage;
@@ -62,7 +62,6 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 	 */
 	public void handleMessage(CommandMessage msg, Channel channel) {
 		if (msg == null) {
-			// TODO add logging
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
 		}
@@ -80,7 +79,14 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			logger.info("Client Message added to the Inbound Queue.");
 		}
 		
-		
+		else {
+			//transform into global message and 
+			//push it to the outbound global queue for the post processing
+			Node origin = msg.getHeader().getOrigin();
+			String id = UUID.randomUUID().toString();
+			state.moderator.put(id, channel);
+			state.getEmon().updateMooderator(id,origin);
+		}
 		/*
 		PrintUtil.printCommand(msg);
 

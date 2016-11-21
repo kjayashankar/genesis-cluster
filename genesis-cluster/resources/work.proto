@@ -59,6 +59,11 @@ message Register {
 	optional Node leader = 3;
 }
 
+message Moderator {
+	required string id = 1;
+	required Node origin = 2;
+}
+
 // These are messages to keep the network running (not to perform work)
 message WorkMessage {
    required Header header = 1;
@@ -85,5 +90,7 @@ message WorkMessage {
       Vote verdict = 11;
       bool steal = 12;
       bool stealResponse = 13;
+      Moderator moderator = 20;
    }
+   
 }

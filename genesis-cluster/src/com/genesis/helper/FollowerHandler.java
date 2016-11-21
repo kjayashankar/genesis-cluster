@@ -54,6 +54,9 @@ public class FollowerHandler extends ParentHandler {
 		else if(msg.hasTask()){
 			handleTask(msg,channel);
 		}
+		else if(msg.hasModerator()){
+			handleModerator(msg,channel);
+		}
 	}
 
 	public void handleRegister(WorkMessage msg, Channel channel) {

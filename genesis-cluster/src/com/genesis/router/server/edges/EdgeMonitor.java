@@ -29,11 +29,13 @@ import com.genesis.monitors.QueueMonitor;
 import com.genesis.queues.Queue;
 import com.genesis.resource.ResourceUtil;
 import com.genesis.router.container.RoutingConf.RoutingEntry;
+import com.genesis.router.server.CommandInit;
 import com.genesis.router.server.STATE;
 import com.genesis.router.server.ServerState;
 import com.genesis.router.server.WorkInit;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -244,7 +246,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			logger.info("leader is not found , i'm going to wait for 4 more ticks");
 			leaderStatus++;
 		}
-		if(leaderStatus > 7){
+		if(leaderStatus > 2){
 			leaderStatus = 0;
 			candidateRetry = 0;
 			LeaderStatus lStatus= eMonitor.init(thisNode);
@@ -621,7 +623,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		
 	}
 
-	private void createPermanentChannel(EdgeInfo ei) {
+	private Channel createPermanentChannel(EdgeInfo ei) {
 		if(!ei.isActive()) {
 			try{
 				logger.info("trying to connect to node " + ei.getRef());
@@ -637,10 +639,36 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 				
 				ei.setChannel(channel.channel());
 				ei.setActive(channel.channel().isActive());
+				return ei.getChannel();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
+		return null;
+	}
+	
+	private Channel createCommandChannel(EdgeInfo ei) {
+		if(!ei.isActive()) {
+			try{
+				logger.info("trying to connect to node " + ei.getRef());
+				EventLoopGroup group = new NioEventLoopGroup();
+				CommandInit si = new CommandInit(state, false);
+				Bootstrap b = new Bootstrap();
+				b.group(group).channel(NioSocketChannel.class).handler(si);
+				b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+				b.option(ChannelOption.TCP_NODELAY, true);
+				b.option(ChannelOption.SO_KEEPALIVE, true);
+				
+				ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
+				
+				ei.setChannel(channel.channel());
+				ei.setActive(channel.channel().isActive());
+				return ei.getChannel();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	
@@ -738,6 +766,36 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			}
 			else {
 				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());
+			}
+		}
+		
+	}
+
+	public void updateMooderator(String id, Node origin) {
+		
+		for(EdgeInfo ei : this.outboundEdges.map.values()) {
+			if(ei.getChannel() != null && ei.isActive()){
+				WorkMessage wm = ResourceUtil.buildMooderatorMessage(ei,id,origin,thisNode);
+				ei.getChannel().writeAndFlush(wm);
+			}
+		}
+	}
+
+	public void handleModerator(WorkMessage wm) {
+		if(thisNode.getRef() != wm.getHeader().getOrigin().getId()){
+			Channel channel = 
+					createCommandChannel(ResourceUtil.nodeToEdge(wm.getModerator().getOrigin()));
+			if(channel != null) {
+				state.moderator.put(wm.getModerator().getId(), channel);
+			}
+			else {
+				logger.info("error in creating a moderator channel to client");
+			}
+			for(EdgeInfo ei : this.outboundEdges.map.values()) {
+				if(ei.getChannel() != null && ei.isActive()){
+					logger.info("passing on the moderator message");
+					ei.getChannel().writeAndFlush(wm);
+				}
 			}
 		}
 		

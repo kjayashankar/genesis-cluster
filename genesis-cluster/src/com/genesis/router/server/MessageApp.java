@@ -39,8 +39,9 @@ public class MessageApp {
 		
 		
 		File cf = new File(args[0]);
+		File gf = new File(args[1]);
 		try {
-			MessageServer svr = new MessageServer(cf);
+			MessageServer svr = new MessageServer(cf,gf);
 			svr.startServer();
 		} catch (Exception e) {
 			e.printStackTrace();

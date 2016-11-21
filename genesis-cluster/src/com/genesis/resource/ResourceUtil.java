@@ -7,9 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.genesis.router.client.CommInit;
-import com.genesis.router.server.CommandInit;
 import com.genesis.router.server.ServerState;
-import com.genesis.router.server.WorkInit;
 import com.genesis.router.server.edges.EdgeInfo;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -17,15 +15,13 @@ import com.message.ClientMessage.ChunkInfo;
 import com.message.ClientMessage.RequestMessage;
 import com.message.ClientMessage.ResponseMessage;
 
+import global.Global.GlobalMessage;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import pipe.common.Common.Failure;
 import pipe.common.Common.Header;
@@ -35,10 +31,10 @@ import pipe.election.Election.LeaderStatus.LeaderQuery;
 import pipe.election.Election.LeaderStatus.LeaderState;
 import pipe.work.Work.DragonBeat;
 import pipe.work.Work.Heartbeat;
+import pipe.work.Work.Moderator;
 import pipe.work.Work.NodeLinks;
 import pipe.work.Work.Register;
 import pipe.work.Work.Task;
-import pipe.work.Work.Task.Builder;
 import pipe.work.Work.Vote;
 import pipe.work.Work.Vote.Verdict;
 import pipe.work.Work.WorkMessage;
@@ -448,6 +444,32 @@ public class ResourceUtil {
 		}
 		return null;
 		
+	}
+
+	public static WorkMessage buildMooderatorMessage(EdgeInfo ei, String id, Node origin, EdgeInfo thisNode) {
+		
+		Header.Builder hb = Header.newBuilder();
+		hb.setOrigin(edgeToNode(thisNode));
+		hb.setDestination(ei.getRef());
+		hb.setTime(System.currentTimeMillis());
+		
+		WorkMessage.Builder wb = WorkMessage.newBuilder();
+		
+		wb.setSecret(1001);
+		wb.setHeader(hb);
+		
+		Moderator.Builder moderator = Moderator.newBuilder();
+		moderator.setId(id);
+		moderator.setOrigin(origin);
+		
+		wb.setModerator(moderator.build());
+		
+		return wb.build();
+	}
+
+	public static CommandMessage convertIntoCommand(GlobalMessage msg) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

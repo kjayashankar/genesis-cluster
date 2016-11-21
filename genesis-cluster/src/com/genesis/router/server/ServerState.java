@@ -1,12 +1,15 @@
 package com.genesis.router.server;
 
 import java.net.SocketAddress;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.genesis.monitors.NetworkMonitor;
 import com.genesis.monitors.QueueMonitor;
+import com.genesis.router.container.GlobalConf;
 import com.genesis.router.container.RoutingConf;
 import com.genesis.router.server.edges.EdgeMonitor;
+import com.genesis.router.server.edges.GlobalEdgeMonitor;
 
 import io.netty.channel.Channel;
 
@@ -16,11 +19,32 @@ public class ServerState {
 	private EdgeMonitor emon;
 	private NetworkMonitor networkmon;
 	private QueueMonitor queueMonitor;
+	public HashMap<String,Channel> moderator = new HashMap<String,Channel>();
 	private ConcurrentHashMap<String, SocketAddress> keySocketMappings = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<SocketAddress, Channel> addressChannelMappings = new ConcurrentHashMap<>();
 	
-	public STATE state = STATE.ORPHAN; 
+	public STATE state = STATE.ORPHAN;
+	private GlobalEdgeMonitor gMon; 
+	private GlobalConf globalConf;
 	
+	
+	
+	public GlobalConf getGlobalConf() {
+		return globalConf;
+	}
+
+	public void setGlobalConf(GlobalConf globalConf) {
+		this.globalConf = globalConf;
+	}
+
+	public GlobalEdgeMonitor getgMon() {
+		return gMon;
+	}
+
+	public void setgMon(GlobalEdgeMonitor gMon) {
+		this.gMon = gMon;
+	}
+
 	public ConcurrentHashMap<String, SocketAddress> getKeySocketMappings(){
 		
 		if(keySocketMappings!=null){
@@ -71,6 +95,10 @@ public class ServerState {
 			return new ConcurrentHashMap<>();
 		}
 		
+	}
+
+	public void setGlobalMonitor(GlobalEdgeMonitor gMon) {
+		this.gMon = gMon;		
 	}
 
 }

@@ -1,3 +1,4 @@
+
 option optimize_for = SPEED;
 option java_package = "global";
 import "common.proto";
@@ -21,8 +22,7 @@ message GlobalMessage {
 		Response response = 5; // Global File Response -( contains the READ's result)
 		WhoIsLeader whoIsClusterLeader = 6; 
 		LeaderInfo clusterLeaderInfo =7; 
-		
-}
+		}
 }
 
 message File {
@@ -37,7 +37,6 @@ enum RequestType {
 	READ = 1;
 	WRITE = 2; 
 	UPDATE = 3;
-	DELETE = 4;
 }
 
 message Request {
@@ -61,7 +60,7 @@ message Response {
 		oneof payload {
 		Failure failure = 3;
 		File file = 4; //Will be sent When READ/DELETE is success 
-		string fileName = 5; //Will be sent When WRITE/UPDATE is success
+		string fileName = 6; //Will be sent When WRITE/UPDATE is success
 		}
 }
 

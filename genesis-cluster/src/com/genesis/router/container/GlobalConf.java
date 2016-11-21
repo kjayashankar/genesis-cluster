@@ -12,13 +12,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GlobalConf {
 	
-	private String globalPort;
+	private int globalPort;
 
 	private String globalHost;
 	
 	private List<RoutingEntry> routing;
 	
-	private String clusterId;
+	private int clusterId;
 	
 	
 	public HashMap<String, Integer> asHashMap() {
@@ -41,17 +41,6 @@ public class GlobalConf {
 		routing.add(entry);
 	}
 	
-	
-	public String getGlobalPort ()
-	{
-	    return globalPort;
-	}
-	
-	public void setGlobalPort (String globalPort)
-	{
-	    this.globalPort = globalPort;
-	}
-	
 	public String getGlobalHost ()
 	{
 	    return globalHost;
@@ -72,16 +61,22 @@ public class GlobalConf {
 	    this.routing = routing;
 	}
 	
-	public String getClusterId ()
-	{
-	    return clusterId;
-	}
-	
-	public void setClusterId (String clusterId)
-	{
-	    this.clusterId = clusterId;
+
+public int getGlobalPort() {
+		return globalPort;
 	}
 
+	public void setGlobalPort(int globalPort) {
+		this.globalPort = globalPort;
+	}
+
+	public int getClusterId() {
+		return clusterId;
+	}
+
+	public void setClusterId(int clusterId) {
+		this.clusterId = clusterId;
+	}
 
 
 @XmlRootElement(name = "entry")
