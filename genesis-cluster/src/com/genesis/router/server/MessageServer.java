@@ -102,12 +102,14 @@ public class MessageServer {
 		Thread cthread = new Thread(comm);
 		cthread.start();
 		state.setGlobalConf(globalConf);
+		
+		
+		GlobalOutWorker worker = new GlobalOutWorker(state);
+		worker.start();
+		
 		StartGlobalCommunication global = new StartGlobalCommunication(globalConf,state);
 		Thread globalThread = new Thread(global);
 		globalThread.start();
-		
-		GlobalOutWorker worker = new GlobalOutWorker(state);
-		worker.run();
 		
 		StartCommandCommunication comm2 = new StartCommandCommunication(conf);
 		logger.info("Command starting");
@@ -145,6 +147,7 @@ public class MessageServer {
 
 					b.group(bossGroup, workerGroup);
 					b.channel(NioServerSocketChannel.class);
+					
 					b.option(ChannelOption.SO_BACKLOG, 100);
 					b.option(ChannelOption.TCP_NODELAY, true);
 					b.option(ChannelOption.SO_KEEPALIVE, true);

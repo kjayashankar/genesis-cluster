@@ -88,7 +88,7 @@ public class InboundQueue implements Queue{
 	
 	public boolean process(){
 		if(inbound.size() == 0) {
-			logger.info("inbound queue size is 0, process other queues, may be lazy ?");
+			//logger.info("inbound queue size is 0, process other queues, may be lazy ?");
 			return false;
 		}
 		

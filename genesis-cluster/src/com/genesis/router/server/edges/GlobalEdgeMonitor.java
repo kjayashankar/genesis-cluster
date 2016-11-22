@@ -41,7 +41,7 @@ public class GlobalEdgeMonitor {
 		for(EdgeInfo ei: globalOutboud.map.values()) {
 			if(ei.getChannel() != null && ei.isActive()){
 				ei.getChannel().writeAndFlush(global);
-				break;
+				//break;
 			}
 			else{
 				try{
@@ -69,12 +69,16 @@ public class GlobalEdgeMonitor {
 	public void forwardRequest(String id, CommandMessage msg) {
 		GlobalMessage.Builder wm = GlobalMessage.newBuilder();
 		GlobalHeader.Builder header = GlobalHeader.newBuilder();
+		
 		header.setTime(System.currentTimeMillis());
 		header.setDestinationId(0);
 		header.setClusterId(state.getGlobalConf().getClusterId());
+		
 		wm.setGlobalHeader(header);
+		
 		Request.Builder request = Request.newBuilder();
 		request.setRequestId(id);
+		
 		File.Builder file = File.newBuilder();
 		logger.info("file name decoded as "+msg.getReqMsg().getKey());
 		file.setFilename(msg.getReqMsg().getKey());
@@ -101,6 +105,7 @@ public class GlobalEdgeMonitor {
 					if(channel != null) {
 						ei.setChannel(channel.channel());
 						ei.setActive(channel.channel().isActive());
+						Thread.sleep(50);
 						channel.channel().writeAndFlush(wm.build());
 					}
 				}
@@ -111,9 +116,37 @@ public class GlobalEdgeMonitor {
 		}
 	}
 
-	public void setConf(GlobalConf globalConf) {
+	public void sendPing(GlobalMessage msg) {
 		// TODO Auto-generated method stub
-		
+		logger.info("received ping ========================="+msg.getPing());
+		logger.info("forwarding the ping to other clusters ==========================");
+		for(EdgeInfo ei : globalOutboud.map.values()){
+			if(ei.getChannel() != null && ei.isActive()){
+				ei.getChannel().writeAndFlush(msg);
+			}
+			else{
+				try{
+					logger.info("trying to connect to node " + ei.getRef());
+					EventLoopGroup group = new NioEventLoopGroup();
+					GlobalInit si = new GlobalInit(state, false);
+					Bootstrap b = new Bootstrap();
+					b.group(group).channel(NioSocketChannel.class).handler(si);
+					b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+					b.option(ChannelOption.TCP_NODELAY, true);
+					b.option(ChannelOption.SO_KEEPALIVE, true);
+					
+					ChannelFuture channel = b.connect(ei.getHost(), ei.getPort()).syncUninterruptibly();
+					if(channel != null) {
+						ei.setChannel(channel.channel());
+						ei.setActive(channel.channel().isActive());
+						Thread.sleep(50);
+						channel.channel().writeAndFlush(msg);
+					}	
+				}
+				catch(Exception e){
+					logger.info("Error connecting to the other lcuster node");
+				}
+			}
+		}
 	}
-	
 }

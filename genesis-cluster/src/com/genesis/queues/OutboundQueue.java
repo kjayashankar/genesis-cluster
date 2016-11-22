@@ -59,7 +59,7 @@ public class OutboundQueue implements Queue{
 	
 	public boolean process(){
 		if(outbound.size() == 0) {
-			logger.info("outbound queue size is 0, process other queues, may be lazy ?");
+			//logger.info("outbound queue size is 0, process other queues, may be lazy ?");
 			return false;
 		}
 		WorkChannel t = get();

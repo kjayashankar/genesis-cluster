@@ -17,6 +17,7 @@ import com.message.ClientMessage.ResponseMessage;
 import global.Global.File;
 import global.Global.GlobalHeader;
 import global.Global.GlobalMessage;
+import global.Global.RequestType;
 import global.Global.Response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,13 +44,22 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 	}
 	
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, GlobalMessage msg) throws Exception {
-		logger.info("received global message");
-		handleMessage(msg,ctx.channel());		
+	protected void channelRead0(ChannelHandlerContext ctx, GlobalMessage msg)  {
+		try{
+			logger.info("received global message "+msg);
+			handleMessage(msg,ctx.channel());		
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	protected void handleMessage(GlobalMessage msg,Channel channel){
-		if(msg.hasResponse()){
+		if(msg.hasPing()){
+			logger.info("received ping");
+			state.getgMon().sendPing(msg);
+		}
+		else if(msg.hasResponse()){
 			if(state.getGlobalConf().getClusterId() == msg.getGlobalHeader().getDestinationId()){
 				// my cluster request;
 				String uuid = msg.getResponse().getRequestId();
@@ -78,7 +88,7 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 			if(DBUtils.isfileExist(msg.getRequest().getFileName())){
 				// we have the file
 				// process it and put the global message into queue
-				
+				//logger.info("message is ");
 				
 				Map<Integer, byte[]> keyMap = redisClient.get(msg.getRequest().getFileName());
 				
@@ -89,9 +99,9 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 					for(Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
 						
 						GlobalHeader.Builder gh = GlobalHeader.newBuilder();
-						gh.setClusterId(state.getGlobalConf().getClusterId());
+						gh.setClusterId(msg.getGlobalHeader().getClusterId());
 						gh.setTime(System.currentTimeMillis());
-						//gh.setDestination();
+						gh.setDestinationId(msg.getGlobalHeader().getDestinationId());
 						
 						File.Builder fb = File.newBuilder();
 						fb.setFilename(msg.getRequest().getFileName());
@@ -100,8 +110,7 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 						fb.setData(ByteString.copyFrom(entry.getValue()));
 						
 						Response.Builder res = Response.newBuilder();
-						res.setRequestType(msg.getRequest().getRequestType());
-						res.setFile(fb);
+						res.setRequestType(RequestType.READ);
 						res.setRequestId(msg.getRequest().getRequestId());
 						res.setSuccess(true);
 						
@@ -109,9 +118,12 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 					
 						GlobalMessage.Builder responseMsg = GlobalMessage.newBuilder();
 						responseMsg.setGlobalHeader(gh);
+						logger.info("response === " +res.getRequestId());
+						res.setFile(fb);
 						responseMsg.setResponse(res);
-						
-						state.getGlobalOutboundQueue().put(responseMsg.build());
+						//logger.info("response msg "+responseMsg.build());
+						channel.writeAndFlush(responseMsg.build());
+						//state.getGlobalOutboundQueue().put(responseMsg.build());
 						
 					
 					}
@@ -122,6 +134,7 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 				state.getgMon().pushMessagesIntoCluster(msg);
 			}
 		}
+		
 	}
 
 	

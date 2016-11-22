@@ -184,11 +184,11 @@ public class FileApp implements CommListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String host = "localhost";
+		//String host = "10.250.210.182";
 		//String host = "169.254.148.24";
-		//String host = "169.254.203.11";
+		String host = "169.254.203.31";
 		
-		int port = 4668;
+		int port = 4168;
 		
 		if (args.length == 0) {
 			System.out.println("usage: server <config file>");
@@ -202,6 +202,7 @@ public class FileApp implements CommListener {
 			MessageClient mc = new MessageClient(host, port,cf);
 			
 			FileApp fa = new FileApp(mc);
+			System.out.println(args[1]);
 			fa.clientFileOperation(args[1]);
 			
 			System.out.println("\n** exiting in 10 seconds. **");

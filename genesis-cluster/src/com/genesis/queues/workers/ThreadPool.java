@@ -8,7 +8,7 @@ import com.genesis.router.server.ServerState;
 public class ThreadPool {
 
 	private List<Worker> workerGroup;
-	private long seconds; 
+	private long waitSeconds; 
 	private int size;
 	private int workerIndex = 0;
 	private ServerState state;
@@ -18,14 +18,10 @@ public class ThreadPool {
 		this.state = state;
 		workerGroup = new ArrayList<Worker>(size);
 	}
-	
-	public void setThreadPause(long seconds){
-		this.seconds = seconds;
-	}
-	
+
 	public void init(){
 		for(int index = 0 ; index < size ; index ++) {
-			Worker threadWorker = new Worker(state,seconds,index);
+			Worker threadWorker = new Worker(state,waitSeconds,index);
 			workerGroup.add(threadWorker);
 		}
 	}
@@ -36,6 +32,11 @@ public class ThreadPool {
 			thread[index] = new Thread(workerGroup.get(index));
 			thread[index].start();
 		}
+	}
+	
+	
+	public void setThreadPause(long seconds){
+		this.waitSeconds = seconds;
 	}
 	
 	public Worker getWorker(){

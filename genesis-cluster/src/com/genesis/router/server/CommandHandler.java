@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.genesis.db.handlers.DBUtils;
 import com.genesis.queues.Queue;
 import com.genesis.resource.ResourceUtil;
+import com.message.ClientMessage.Operation;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -66,8 +67,21 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
 		}
+		
+		if(msg.hasReqMsg() && msg.getReqMsg().getOperation() == Operation.POST){
+			Task.Builder myTask = Task.newBuilder();
+			myTask.setCommandMessage(msg);
+			myTask.setSeqId(myTask.getSeqId());
+			myTask.setSeriesId(myTask.getSeriesId());
 
-		if(msg.hasReqMsg()){
+			WorkMessage workMessage = ResourceUtil.buildWorkMessageFromTask(myTask.build(), state);
+			inboundQueue.put(workMessage, channel);
+			
+			logger.info("Client Message added to the Inbound Queue.");
+			return;
+		}
+		// it's a get
+		else if(msg.hasReqMsg()){
 			//create a task of it and submit to the inbound along with the channel
 			
 			String fileName = msg.getReqMsg().getKey();

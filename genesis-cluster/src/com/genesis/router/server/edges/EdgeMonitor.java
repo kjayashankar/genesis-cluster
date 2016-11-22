@@ -159,6 +159,10 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						if(failedInNodes.map != null && failedInNodes.map.size() > 0)
 							reportInNodeFailure();
 						currentStats();
+						if(inboundEdges.map.isEmpty() && outboundEdges.map.isEmpty()){
+							logger.info("rogue node");
+							state.state = STATE.FOLLOWER;
+						}
 						break;
 					}
 					case VOTED:{
