@@ -67,7 +67,6 @@ public class RedisDBServiceImpl implements IDBService {
 	
 	@Override
 	public boolean containsKey(String key) {
-		// TODO Auto-generated method stub
 		
 		try {
 			return redis.exists(serialize(key))? true:false;
@@ -77,7 +76,26 @@ public class RedisDBServiceImpl implements IDBService {
 		return false;
 	}
 
-
+	
+	public boolean containsKeyAndSequence(String key, int seqID) {
+		
+		boolean keySeqExists = false;
+		try {
+			if (containsKey(key)) {
+				byte[] parsedKey = serialize(key);
+				byte[] parseChunkId = serialize(seqID);
+				if (redis.hexists(parsedKey, parseChunkId)) {
+					keySeqExists = true;
+					return keySeqExists;
+				}
+				
+			}
+			
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return false;
+	}
 
 	/**
 	 * Retrieves data stored at the key
@@ -87,7 +105,6 @@ public class RedisDBServiceImpl implements IDBService {
 	 */
 	@Override
 	public Map<Integer, byte[]> get(String key) {
-		// TODO Auto-generated method stub
 		Map<Integer, byte[]> chunkDataMap = new HashMap<Integer, byte[]>();
 		try {
 			if (containsKey(key)) {
@@ -99,11 +116,7 @@ public class RedisDBServiceImpl implements IDBService {
 				
 				logger.info("In database keys :::\n\n"+ chunkDataMap.size()+"\n\n");
 				
-				//Map<Integer, byte[]> keyMap = get(key);
-				/*logger.info("KeyMap is :: ");
-				for (Map.Entry<Integer, byte[]> entry: chunkDataMap.entrySet()){
-					//logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
-				}*/
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,7 +132,6 @@ public class RedisDBServiceImpl implements IDBService {
 	 */
 	@Override
 	public List<Integer> getChunkIDs(String key) {
-		// TODO Auto-generated method stub
 		List<Integer> chunkIDs = new ArrayList<Integer>();
 		try {
 			if (containsKey(key)) {
@@ -136,28 +148,23 @@ public class RedisDBServiceImpl implements IDBService {
 	}
 
 	/** 
-	 * 
+	 * For updating a file
 	 * 
 	 */
 	@Override
 	public boolean put(String key, int chunkID, byte[] value) {
-		// TODO Auto-generated method stub
+		//TODO handle is file is smaller.
 		boolean done = false;
 		try {
 			if (containsKey(key)) {
 				byte[] parsedKey = serialize(key);
 				byte[] parseChunkId = serialize(chunkID);
 				if (redis.hexists(parsedKey, parseChunkId)) {
+					//Does on hash level
 					redis.hset(parsedKey, parseChunkId, value);
 					done = true;
-					
-					/*Map<Integer, byte[]> keyMap = get(key);
-					logger.info("Updated Values are :: ");
-					for (Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
-						logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
-					}*/
 				}
-				//display the updated contents of the map now
+			
 				
 				
 				
@@ -183,19 +190,16 @@ public class RedisDBServiceImpl implements IDBService {
 
 	@Override
 	public String post(String key, int chunkID, byte[] value) {
-		// TODO Auto-generated method stub
 		if (key == null || value == null) {
 			return null;
 		}
 		try {
-			redis.hset(serialize(key), serialize(chunkID), value);
+			if(containsKeyAndSequence(key, chunkID)){
+				logger.info("Key already present will not update existing one. Please use PUT operation yo modify.");
+			}else{
+				redis.hset(serialize(key), serialize(chunkID), value);
+			}
 			
-			//Display stored values in the map
-			/*Map<Integer, byte[]> keyMap = get(key);
-			logger.info("Stored Values in the Map :: ");
-			for (Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
-				logger.info(entry.getKey()+ ", "+ new String(entry.getValue(), "UTF-8"));
-			}*/
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -205,7 +209,6 @@ public class RedisDBServiceImpl implements IDBService {
 
 
 	public String post(byte[] value) {
-		// TODO Auto-generated method stub
 		if (value == null) {
 			return null;
 		}
@@ -217,7 +220,6 @@ public class RedisDBServiceImpl implements IDBService {
 
 	@Override
 	public boolean delete(String key) {
-		// TODO Auto-generated method stub
 		
 		boolean isDeleted = false;
 		Map<Integer, byte[]> removedMap = new HashMap<Integer, byte[]>();

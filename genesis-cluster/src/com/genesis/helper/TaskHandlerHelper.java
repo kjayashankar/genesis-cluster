@@ -150,23 +150,23 @@ public class TaskHandlerHelper {
 				switch (msg.getReqMsg().getOperation()){
 					
 				case GET: 
-					logger.info("Key is inside get "+requestMessage.getKey());
+					//logger.info("Key is inside get "+requestMessage.getKey());
 					logger.info("----- Getting key from DataBase ----" + requestMessage.getKey());
 					Map<Integer, byte[]> keyMap = redisClient.get(requestMessage.getKey());
-					logger.info("Key size retrieved is ::: "+keyMap.size()+ "\n\n");
+					
 					if(keyMap.isEmpty()){
 						CommandMessage failureMsg = ResourceUtil.createResponseFailureMessage(msg, state);
 						logger.info("Sending failure message");
 						 doMessageForwardingToClient(failureMsg, channel);
 					} else {
-						logger.info("TaskHandlerHelper: handleDBOperations() Sending message for conversion n sending");
-						logger.info("TaskHandlerHelper: handleDBOperations() GetMap total size"+ keyMap.size());
+						
+						logger.info("TaskHandlerHelper: handleDBOperations(): GET giving message back to the client-- total count of messages "+ keyMap.size());
 						
 						for(Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
 							
 							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state);
 							doMessageForwardingToClient(returnMsg, channel);
-							//channel.write(returnMsg);
+							
 						}
 					}
 					/*Map<Integer, byte[]> keyMapMongo = mongoDBServiceImpl.get(requestMessage.getKey());
@@ -187,7 +187,9 @@ public class TaskHandlerHelper {
 					logger.info("Key is inside put "+requestMessage.getKey());
 					logger.info("----- Updating key into DataBase ----");
 					boolean updateKey = redisClient.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
-					logger.info("---- Key received  ----"+ updateKey);
+					
+					logger.info("---- PUT: key stored" +updateKey+ " for Sequence ----"+ requestMessage.getSeqNo());
+					
 					
 					/*boolean updateKeyMongo = mongoDBServiceImpl.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key received  ----"+ updateKeyMongo);*/
@@ -197,8 +199,9 @@ public class TaskHandlerHelper {
 					
 					logger.info("----- Storing key into DataBase ----");
 					String keyStored = redisClient.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
-					logger.info("---- Key stored ----"+ keyStored);
 					
+					logger.info("---- POST: key stored" +keyStored+ " for Sequence ----"+ requestMessage.getSeqNo());
+				
 					/*String keyStoredMongo = mongoDBServiceImpl.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key stored ----"+ keyStoredMongo);*/
 					break;
