@@ -33,25 +33,21 @@ public class QueueMonitor {
 	}
 	
 	public Queue getQueue(){
-		if(state != null && !idleStatus() ){
-			if(flag == 0){
-				flag++;
-				return inboundQueue;
-			}
-			else {
-				flag--;
-				return outboundQueue;
-			}
-		}
-		else if( state != null) {
+		if(state != null && idleStatus() ){
 			return lazyQueue;
 		}
-		//default inbound queue;
-		return inboundQueue;
+		if(flag == 0){
+			flag++;
+			return inboundQueue;
+		}
+		else {
+			flag--;
+			return outboundQueue;
+		}
 	}
 	
 	private boolean idleStatus() {
-		return false;
+		return outboundQueue.getSize() == 0 && inboundQueue.getSize() == 0 ;
 	}
 
 	public void clearFlags(){

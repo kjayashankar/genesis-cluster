@@ -59,9 +59,6 @@ public class FollowerHandler extends ParentHandler {
 	}
 
 	public void handleRegister(WorkMessage msg, Channel channel) {
-
-		logger.debug("newbie msg "+msg);
-
 		state.getEmon().replaceOutNode(ResourceUtil.nodeToEdge(msg.getHeader().getOrigin()),
 				ResourceUtil.nodeToEdge(msg.getRegister().getDestNode()));
 	}

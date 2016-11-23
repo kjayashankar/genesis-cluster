@@ -32,7 +32,7 @@ public class ParentHandler implements ServerHandler{
 	public void handleTask(WorkMessage msg, Channel channel) {
 		
 		if(msg.getTask().getType() == TaskType.LAZYTASK){
-			state.getQueueMonitor().getInboundQueue().put(msg, null);
+			state.getQueueMonitor().getLazyQueue().put(msg, null);
 		}
 	}
 
@@ -89,7 +89,6 @@ public class ParentHandler implements ServerHandler{
 			Failure.Builder eb = Failure.newBuilder();
 			eb.setId(state.getConf().getNodeId());
 			eb.setRefId(wm.getHeader().getNodeId());
-			eb.setMessage("No stealing needed");
 			WorkMessage.Builder rb = WorkMessage.newBuilder(wm);
 			rb.setErr(eb);
 			return rb.build();

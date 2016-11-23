@@ -63,10 +63,11 @@ public class LazyQueue implements Queue {
 		}
 		WorkChannel t = get();
 		WorkMessage work = t.getWorkMessage();
-		logger.info("processed lazy task +++ " +work);
+		logger.info("processing lazy task +++ " +work);
 		processed ++;
-		
+		// Get data while replicating it and send it to this method
 		state.getEmon().updateAndBoradCast(work.getTask());
+		
 		return true;
 	}
 
@@ -78,11 +79,13 @@ public class LazyQueue implements Queue {
 	
 	@Override
 	public int numEnqueued() {
+		// TODO Auto-generated method stub
 		return lazy.size();
 	}
 
 	@Override
 	public int numProcessed() {
+		// TODO Auto-generated method stub
 		return processed;
 	}
 

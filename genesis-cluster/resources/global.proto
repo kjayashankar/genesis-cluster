@@ -1,8 +1,8 @@
 
 option optimize_for = SPEED;
 option java_package = "global";
-
 import "common.proto";
+
 //Contains the cluster information of the requester Note: While forwarding the Global Message Please Don't change the DestinationId
 message GlobalHeader { 
 	//Own Cluster Id
@@ -74,4 +74,3 @@ message LeaderInfo{
 	required string leaderIp =1;
 	required int32 leaderPort =2;
 }
-

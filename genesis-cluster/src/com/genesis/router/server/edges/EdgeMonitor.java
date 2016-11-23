@@ -34,7 +34,6 @@ import com.genesis.router.server.STATE;
 import com.genesis.router.server.ServerState;
 import com.genesis.router.server.WorkInit;
 import com.google.protobuf.ByteString;
-import com.message.ClientMessage.Operation;
 import com.message.ClientMessage.RequestMessage;
 
 import io.netty.bootstrap.Bootstrap;
@@ -710,42 +709,35 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 	
 	private boolean shouldStealTask() {
-		
-		if(qMon.getInboundQueue().getSize() < 1)
-			return true;
-		
-		return false;
+		{
+			//if(qMon.getInboundQueue().getSize() < 2)
+				return true;
+		}
+		//return false;
 	}
 	
-	public void sendToLazyQueue(Task t) {
-		RequestMessage oldReq = t.getCommandMessage().getReqMsg();
-		Header.Builder header = Header.newBuilder(t.getCommandMessage().getHeader());
+	public void sendToLazyQueue(Task oldTask, ByteString data) {
+		
+		Node me = ResourceUtil.edgeToNode(thisNode);
+		Task.Builder newTask = oldTask.newBuilder();
+		newTask.setType(TaskType.LAZYTASK);
+		newTask.setSeqId(oldTask.getSeqId());
+		newTask.setSeriesId(oldTask.getSeriesId());
 		CommandMessage.Builder cmd = CommandMessage.newBuilder();
+		//newTask.setCommandMessage(t.getCommandMessage());
+		RequestMessage.Builder reqMsg = RequestMessage.newBuilder();
+		reqMsg.setData(data);
+		reqMsg.setKey(oldTask.getCommandMessage().getReqMsg().getKey());
+		reqMsg.setOperation(oldTask.getCommandMessage().getReqMsg().getOperation());
+		reqMsg.setSeqNo(oldTask.getCommandMessage().getReqMsg().getSeqNo());
+		cmd.setReqMsg(reqMsg.build());
+		cmd.setHeader(oldTask.getCommandMessage().getHeader());
+		newTask.addProcessed(me);
+		newTask.setCommandMessage(cmd.build());
 		
-		RequestMessage.Builder req = RequestMessage.newBuilder();
-		req.setOperation(oldReq.getOperation());
-		req.setKey(oldReq.getKey());
-		byte[] data = oldReq.getData().toByteArray();
-		req.setData(ByteString.copyFrom(data));
-		req.setSeqNo(oldReq.getSeqNo());
-		
-		cmd.setHeader(header.build());
-		cmd.setReqMsg(req.build());
-		
-		Task.Builder myTask = Task.newBuilder();
-		myTask.setCommandMessage(cmd.build());
-		myTask.setSeqId(t.getSeqId());
-		myTask.setSeriesId(t.getSeriesId());
-		myTask.addProcessed(ResourceUtil.edgeToNode(thisNode));
-		WorkMessage workMessage = ResourceUtil.buildWorkMessageFromTask(myTask.build(), state);
-		if(lazyQ == null ){
-			logger.error("lazy queue not yet initialized");
-			return ;
-		}
 		for(EdgeInfo ei : this.outboundEdges.map.values()) {
 			if(ei.getChannel() != null && ei.isActive()) {
-				qMon.getOutboundQueue().put(workMessage,ei.getChannel());
-				//qMon.getOutboundQueue().put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
+				ei.getChannel().writeAndFlush(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask));
 			}
 			else {
 				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());
@@ -762,12 +754,31 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		return null;
 	}
 
-	public void updateAndBoradCast(Task task) {
+	public void updateAndBoradCast(Task oldTask,ByteString data) {
 		
 		Node me = ResourceUtil.edgeToNode(thisNode);
-		Task.Builder newTask = task.newBuilder();
+		Task.Builder newTask = oldTask.newBuilder();
+		newTask.setType(TaskType.LAZYTASK);
+		newTask.setSeqId(oldTask.getSeqId());
+		newTask.setSeriesId(oldTask.getSeriesId());
+		CommandMessage.Builder cmd = CommandMessage.newBuilder();
+		//newTask.setCommandMessage(t.getCommandMessage());
+		RequestMessage.Builder reqMsg = RequestMessage.newBuilder();
+		reqMsg.setData(data);
+		reqMsg.setKey(oldTask.getCommandMessage().getReqMsg().getKey());
+		reqMsg.setOperation(oldTask.getCommandMessage().getReqMsg().getOperation());
+		reqMsg.setSeqNo(oldTask.getCommandMessage().getReqMsg().getSeqNo());
+		cmd.setReqMsg(reqMsg.build());
+		cmd.setHeader(oldTask.getCommandMessage().getHeader());
+		newTask.addProcessed(me);
+		newTask.setCommandMessage(cmd.build());
 		
-		List<Node> nodeList = newTask.getProcessedList();
+		
+		/*
+		Node me = ResourceUtil.edgeToNode(thisNode);
+		Task.Builder newTask = task.newBuilder();
+		*/
+		List<Node> nodeList = oldTask.getProcessedList();
 		Set<Integer> nodeIds = new TreeSet<Integer>();
 		for(Node search : nodeList) {
 			nodeIds.add(search.getId());
@@ -777,15 +788,12 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		nodeList.add(me);
 		newTask.addAllProcessed(nodeList);
 		
-		if(lazyQ == null ){
-			logger.error("lazy queue not yet initialized");
-			return ;
-		}
+		
 		for(EdgeInfo ei : this.outboundEdges.map.values()) {
 			if(!nodeIds.contains(ei.getRef()) && 
 					ei.getChannel() != null && ei.isActive()) {
 				
-				qMon.getOutboundQueue().put(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask), ei.getChannel());
+				ei.getChannel().writeAndFlush(ResourceUtil.wrapIntoWorkMessage(thisNode,ei.getRef(),newTask));
 			}
 			else {
 				logger.error("lazying delayed because of inactive channel to node "+ei.getRef());

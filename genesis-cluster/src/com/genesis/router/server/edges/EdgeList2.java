@@ -51,7 +51,7 @@ public class EdgeList2 {
 
 		if (!hasNode(ref)) {
 			EdgeInfo ei = new EdgeInfo(ref, host, port);
-			map.put(ref+"1", ei);
+			map.put(host, ei);
 			return ei;
 		} else
 			return null;

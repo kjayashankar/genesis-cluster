@@ -10,6 +10,7 @@ import com.genesis.resource.ResourceUtil;
 import com.genesis.router.server.ServerState;
 import com.genesis.router.server.edges.EdgeInfo;
 import com.genesis.router.server.tasks.Rebalancer;
+import com.google.protobuf.ByteString;
 import com.message.ClientMessage.Operation;
 
 import io.netty.channel.Channel;
@@ -18,7 +19,6 @@ import pipe.common.Common.Node;
 import pipe.work.Work.Task;
 import pipe.work.Work.TaskType;
 import pipe.work.Work.WorkMessage;
-import pipe.work.Work.WorkMessage.Builder;
 import routing.Pipe.CommandMessage;
 
 public class InboundQueue implements Queue{
@@ -88,9 +88,8 @@ public class InboundQueue implements Queue{
 	}
 	
 	public boolean process(){
-		logger.info("inbound queue");
 		if(inbound.size() == 0) {
-			logger.info("inbound queue size is 0, process other queues, may be lazy ?");
+			//logger.info("inbound queue size is 0, process other queues, may be lazy ?");
 			return false;
 		}
 		
@@ -98,6 +97,7 @@ public class InboundQueue implements Queue{
 		
 		WorkChannel t = get();
 		WorkMessage work = t.getWorkMessage();
+		ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
 		WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
 		//Perform the processing for client request here
 		logger.info("Initiating processing for inbound message");
@@ -105,7 +105,7 @@ public class InboundQueue implements Queue{
 		TaskType type = work.getTask().getType();
 		// Into Lazy queue for the first time
 		if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
-			state.getEmon().sendToLazyQueue(duplicate.getTask());
+			state.getEmon().sendToLazyQueue(duplicate.getTask(),data);
 		// Already a lazy task, no need to check eligibility, just update header and broadcast
 		
 		processed ++;
@@ -115,7 +115,7 @@ public class InboundQueue implements Queue{
 	private boolean isEligible(WorkMessage work) {
 		CommandMessage cmd = work.getTask().getCommandMessage();
 		Operation op = cmd.getReqMsg().getOperation() ;
-		if(op == Operation.POST || op == Operation.PUT || op == Operation.DEL )
+		if(op == Operation.POST || op == Operation.PUT)
 				return true;
 		return false;
 	}
