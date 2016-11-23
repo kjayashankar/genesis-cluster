@@ -80,7 +80,7 @@ public class FileApp implements CommListener {
 		long st = System.currentTimeMillis(), ft = 0;
 		for (int n = 0; n < N; n++) {
 			//mc.clientRequest();
-			mc.post("First_One", 1, ByteString.copyFromUtf8("For the First chunk info is stored"));
+			//mc.post("First_One", 1, ByteString.copyFromUtf8("For the First chunk info is stored"));
 			//mc.post("First_One", 2, ByteString.copyFromUtf8("For the Second chunk info is stored"));
 			//mc.get("First_One");
 			//mc.put("First_One", 2, ByteString.copyFromUtf8("For the Second chunk info is thirdly a bit"));
@@ -129,11 +129,11 @@ public class FileApp implements CommListener {
 
 				responseList.add(msg.getResMsg());
 
-				//noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
+				noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
 				
 				logger.info(" --- "+ responseList.size() + ", noOfChunks " + noOfChunks);
 				
-				if (chunkData  !=0 && responseList.size() == chunkData) {
+				if (noOfChunks  !=0 && responseList.size() == noOfChunks) {
 				logger.info("Complete response is now received."); 	
 				
 					Collections.sort(responseList, new Comparator<ResponseMessage>() {
@@ -278,17 +278,17 @@ public class FileApp implements CommListener {
 					
 					logger.info("Post Messages chunkSize is "+ noOfChunks + ", filePath "+ filePath);
 					mc.postChunkInfo(key, noOfChunks, fileSize, "POST");
-					//for (int i = 0; i < noOfChunks; i++) {
+					
 						List<ByteString> dataList = FileConversion.readAndConvert(filePath);
 		
 						int seqNo = 1;
 						
 						for (ByteString data : dataList) {
-							mc.post(key, seqNo++, data);
+							mc.post(key, seqNo++, data, "POST");
 						}
 						
 						logger.info("total no. to be retreived ... "+ seqNo);
-					//}
+					
 					break;
 
 		case "PUT":
@@ -309,7 +309,7 @@ public class FileApp implements CommListener {
 				seqNo = 1;
 				
 				for (ByteString data : dataList) {
-					mc.post(key, seqNo++, data);
+					mc.post(key, seqNo++, data, "PUT");
 				}
 				
 				logger.info("total no. of chunks created ... "+ seqNo);
@@ -318,6 +318,7 @@ public class FileApp implements CommListener {
 
 
 		case "DELETE":
+			logger.info("FileName DELETE operation invoked:");
 			mc.delete(key);
 			
 			break;

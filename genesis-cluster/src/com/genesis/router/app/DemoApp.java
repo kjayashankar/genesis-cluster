@@ -74,7 +74,7 @@ public class DemoApp implements CommListener {
 		long st = System.currentTimeMillis(), ft = 0;
 		for (int n = 0; n < N; n++) {
 			//mc.clientRequest();
-			mc.post("First_One", 1, ByteString.copyFromUtf8("For the First chunk info is stored"));
+			//mc.post("First_One", 1, ByteString.copyFromUtf8("For the First chunk info is stored"));
 			//mc.post("First_One", 2, ByteString.copyFromUtf8("For the Second chunk info is stored"));
 			//mc.get("First_One");
 			//mc.put("First_One", 2, ByteString.copyFromUtf8("For the Second chunk info is thirdly a bit"));

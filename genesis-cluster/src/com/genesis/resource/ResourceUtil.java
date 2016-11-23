@@ -275,14 +275,14 @@ public class ResourceUtil {
 		
 		try {
 				if(seqNo == 0){
-					logger.info("RU:createResponseCommandMessage Getting chunk seq.");
+					logger.info("RU:createResponseCommandMessage Getting chunk seq."+ seqNo);
 					resMsg.setChunkInfo(ChunkInfo.parseFrom(data));
 				} else {
-					logger.info("RU:createResponseCommandMessage Getting data seq.");
+					logger.info("RU:createResponseCommandMessage Getting data seq." + seqNo);
 					resMsg.setData(ByteString.copyFrom(data));
 				}
 				
-			} catch (InvalidProtocolBufferException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		

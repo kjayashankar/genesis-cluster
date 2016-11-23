@@ -210,7 +210,7 @@ public class MessageClient {
 		}
 	}
 	
-	public void post(String key, int sequenceNo, ByteString data) {
+	public void post(String key, int sequenceNo, ByteString data, String op) {
 		Header.Builder hb = buildHeader();
 
 		CommandMessage.Builder cb = CommandMessage.newBuilder();
@@ -219,8 +219,10 @@ public class MessageClient {
 		RequestMessage.Builder reqMsg = RequestMessage.newBuilder();
 		reqMsg.setData(data);
 		reqMsg.setKey(key);
-		
-		reqMsg.setOperation(Operation.POST);
+			if("POST".equals(op))
+				reqMsg.setOperation(Operation.POST);
+			else if ("PUT".equals(op))
+				reqMsg.setOperation(Operation.PUT);
 		
 		reqMsg.setSeqNo(sequenceNo);
 		
@@ -285,16 +287,21 @@ public class MessageClient {
 		}
 	}
 
-	public void postChunkInfo(String key, int seqSize, long size) {
+	public void postChunkInfo(String key, int seqSize, long size, String op) {
 		Header.Builder hb = buildHeader();
 
 		CommandMessage.Builder cb = CommandMessage.newBuilder();
 		cb.setHeader(hb);
 
 		RequestMessage.Builder qb = RequestMessage.newBuilder();
-		qb.setOperation(Operation.POST);
+		
+		if(!"".equals(op) && op.equals("PUT"))
+			qb.setOperation(Operation.PUT);
+		else if(op.equals("POST"))
+			qb.setOperation(Operation.POST);
+		
 		qb.setKey(key);
-		qb.setSeqNo(seqSize);
+		qb.setSeqNo(0);
 
 		ChunkInfo.Builder mb = ChunkInfo.newBuilder();
 		mb.setNoOfChunks(seqSize);
