@@ -116,7 +116,7 @@ public class FileApp implements CommListener {
 		if (msg.getResMsg().getOperation() == Operation.GET) {
 			
 			//noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
-			
+			int chunks = msg.getResMsg().getChunkInfo().getNoOfChunks();
 			logger.info("Beginning to read message... ");
 			logger.info("It has no of chunks...");
 			if (msg.getResMsg().hasChunkInfo()) {
@@ -134,7 +134,7 @@ public class FileApp implements CommListener {
 				//if(chunkData ==0)
 					noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
 				
-				if (responseList.size() == noOfChunks) {
+				if (responseList.size() == chunks) {
 				logger.info("Complete response is now received."); 	
 				
 					Collections.sort(responseList, new Comparator<ResponseMessage>() {
@@ -186,7 +186,7 @@ public class FileApp implements CommListener {
 	public static void main(String[] args) {
 		//String host = "10.250.210.182";
 		//String host = "169.254.148.24";
-		String host = "169.254.203.31";
+		String host = "127.0.0.1";
 		
 		int port = 4168;
 		

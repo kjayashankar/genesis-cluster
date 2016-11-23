@@ -32,14 +32,13 @@ public class ParentHandler implements ServerHandler{
 	public void handleTask(WorkMessage msg, Channel channel) {
 		
 		if(msg.getTask().getType() == TaskType.LAZYTASK){
-			state.getQueueMonitor().getLazyQueue().put(msg, null);
+			state.getQueueMonitor().getInboundQueue().put(msg, null);
 		}
 	}
 
 	@Override
 	public void handleBeat(WorkMessage msg, Channel channel) {
 		// TODO Auto-generated method stub
-		logger.info("heart beat received :" +msg);
 		state.getEmon().updateHeartBeat(msg.getHeader().getOrigin(),
 				msg.getHeader().getTime(),msg.getState());
 	}
@@ -62,7 +61,6 @@ public class ParentHandler implements ServerHandler{
 	}
 
 	public void handleDragonL2(WorkMessage msg, Channel channel) {
-		logger.debug("Dragon L2 "+msg);
 		NetworkMonitor nmon = NetworkMonitor.getInstance();
 		DragonBeat dragon = msg.getDragon(); 
 		List<NodeLinks> links = dragon.getNodelinksList();
@@ -76,23 +74,18 @@ public class ParentHandler implements ServerHandler{
 		DragonBeat dragon = msg.getDragon();	 
 		List<NodeLinks> links = new ArrayList<NodeLinks>();
 		links.addAll(dragon.getNodelinksList());
-		logger.debug("L1 links received : "+links);
 		links.add(state.getEmon().prepareDragonBeatMsg());
-		logger.debug("L1 links received and transmitted : "+links);	
 		state.getEmon().passOnDragon("L1",links,nmon.getOutCheckSum());
 	}
 	
 	public WorkMessage handleSteal(WorkMessage wm){
-		logger.info("received a steal request from node "+wm.getHeader().getNodeId());
 		WorkMessage returnWorkMessage = state.getQueueMonitor().getInboundQueue().rebalance();
 		if(returnWorkMessage != null){
 			WorkMessage.Builder tempWork = WorkMessage.newBuilder(returnWorkMessage);
 			tempWork.setStealResponse(true);
-			logger.info("gave my task");
 			return tempWork.build();
 		}
 		else{
-			logger.error("no tasks to give it to steal!");
 			Failure.Builder eb = Failure.newBuilder();
 			eb.setId(state.getConf().getNodeId());
 			eb.setRefId(wm.getHeader().getNodeId());
@@ -104,9 +97,7 @@ public class ParentHandler implements ServerHandler{
 	}
 	
 	public void handleStealResponse(WorkMessage wm, Channel channel) {
-		logger.info("got a steal response task");
 		state.getQueueMonitor().getInboundQueue().put(wm, channel);
-		logger.info("added to my inbound queue");
 	}
 	
 	public void handleModerator(WorkMessage wm, Channel channel) {

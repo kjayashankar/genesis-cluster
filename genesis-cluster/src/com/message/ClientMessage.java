@@ -26,9 +26,9 @@ public final class ClientMessage {
      */
     PUT(2, 3),
     /**
-     * <code>DELETE = 4;</code>
+     * <code>DEL = 4;</code>
      */
-    DELETE(3, 4),
+    DEL(3, 4),
     /**
      * <code>STEAL = 5;</code>
      */
@@ -48,9 +48,9 @@ public final class ClientMessage {
      */
     public static final int PUT_VALUE = 3;
     /**
-     * <code>DELETE = 4;</code>
+     * <code>DEL = 4;</code>
      */
-    public static final int DELETE_VALUE = 4;
+    public static final int DEL_VALUE = 4;
     /**
      * <code>STEAL = 5;</code>
      */
@@ -64,7 +64,7 @@ public final class ClientMessage {
         case 1: return GET;
         case 2: return POST;
         case 3: return PUT;
-        case 4: return DELETE;
+        case 4: return DEL;
         case 5: return STEAL;
         default: return null;
       }
@@ -3259,9 +3259,9 @@ public final class ClientMessage {
       "success\030\n \001(\010\022\013\n\003key\030\013 \001(\t\022\020\n\010chunk_no\030\014" +
       " \001(\005\022\022\n\nstatus_msg\030\r \001(\t\022\033\n\007failure\030\024 \001(" +
       "\0132\010.FailureH\000\022\016\n\004data\030\023 \001(\014H\000\022\037\n\tchunkIn",
-      "fo\030\022 \001(\0132\n.ChunkInfoH\000B\t\n\007payload*>\n\tOpe" +
-      "ration\022\007\n\003GET\020\001\022\010\n\004POST\020\002\022\007\n\003PUT\020\003\022\n\n\006DE" +
-      "LETE\020\004\022\t\n\005STEAL\020\005B\r\n\013com.message"
+      "fo\030\022 \001(\0132\n.ChunkInfoH\000B\t\n\007payload*;\n\tOpe" +
+      "ration\022\007\n\003GET\020\001\022\010\n\004POST\020\002\022\007\n\003PUT\020\003\022\007\n\003DE" +
+      "L\020\004\022\t\n\005STEAL\020\005B\r\n\013com.message"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

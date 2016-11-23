@@ -12,6 +12,7 @@ import com.genesis.router.server.edges.EdgeInfo;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.message.ClientMessage.ChunkInfo;
+import com.message.ClientMessage.Operation;
 import com.message.ClientMessage.RequestMessage;
 import com.message.ClientMessage.ResponseMessage;
 
@@ -469,7 +470,34 @@ public class ResourceUtil {
 
 	public static CommandMessage convertIntoCommand(GlobalMessage msg) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
+		Header.Builder hb = Header.newBuilder();
+		hb.setOrigin(Node.newBuilder().build());
+		hb.setDestination(0);
+		hb.setTime(System.currentTimeMillis());
+		
+		
+		ResponseMessage.Builder resMsg = ResponseMessage.newBuilder();
+		
+		
+		
+		resMsg.setSuccess(true);
+		resMsg.setOperation(Operation.GET);
+		resMsg.setKey(msg.getResponse().getFile().getFilename());
+		resMsg.setChunkNo(msg.getResponse().getFile().getChunkId());
+		ChunkInfo.Builder chunks = ChunkInfo.newBuilder();
+		chunks.setNoOfChunks(msg.getResponse().getFile().getTotalNoOfChunks());
+		resMsg.setChunkInfo(chunks);
+		
+		
+		
+		resCmdMessage.setHeader(hb);
+		resCmdMessage.setResMsg(resMsg);
+		
+		
+		return resCmdMessage.build();
+		
 	}
 	
 }

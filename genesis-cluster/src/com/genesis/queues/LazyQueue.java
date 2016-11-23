@@ -67,7 +67,6 @@ public class LazyQueue implements Queue {
 		processed ++;
 		
 		state.getEmon().updateAndBoradCast(work.getTask());
-		
 		return true;
 	}
 
@@ -79,13 +78,11 @@ public class LazyQueue implements Queue {
 	
 	@Override
 	public int numEnqueued() {
-		// TODO Auto-generated method stub
 		return lazy.size();
 	}
 
 	@Override
 	public int numProcessed() {
-		// TODO Auto-generated method stub
 		return processed;
 	}
 

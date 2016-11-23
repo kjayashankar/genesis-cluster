@@ -25,14 +25,14 @@ public class GlobalEdgeMonitor {
 
 	private static Logger logger = LoggerFactory.getLogger("global edge monitor");
 	private ServerState state;
-	private EdgeList globalOutboud = new EdgeList();	
+	private EdgeList2 globalOutboud = new EdgeList2();	
 	
 	public GlobalEdgeMonitor(ServerState state) {
 		this.state = state;
 		
 		if (state.getGlobalConf().getRouting() != null) {
 			for (RoutingEntry e : state.getGlobalConf().getRouting()) {
-				globalOutboud.addNode(e.getClusterId(), e.getHost(), e.getPort());
+				globalOutboud.addNode(e.getClusterId()+globalOutboud.map.size(), e.getHost(), e.getPort());
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public class GlobalEdgeMonitor {
 		GlobalHeader.Builder header = GlobalHeader.newBuilder();
 		
 		header.setTime(System.currentTimeMillis());
-		header.setDestinationId(0);
+		header.setDestinationId(state.getGlobalConf().getClusterId());
 		header.setClusterId(state.getGlobalConf().getClusterId());
 		
 		wm.setGlobalHeader(header);

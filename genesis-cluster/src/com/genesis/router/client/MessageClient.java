@@ -198,7 +198,7 @@ public class MessageClient {
 		cb.setHeader(hb);
 
 		RequestMessage.Builder reqMsg = RequestMessage.newBuilder();
-		reqMsg.setOperation(Operation.DELETE);
+		reqMsg.setOperation(Operation.DEL);
 		reqMsg.setKey(key);
 
 		cb.setReqMsg(reqMsg);

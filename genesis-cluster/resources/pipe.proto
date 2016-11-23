@@ -5,7 +5,7 @@ import "common.proto";
 import "clientMessage.proto";
 
 message CommandMessage {
-   required Header header = 1;
+   optional Header header = 1;
 
     oneof payload {
   

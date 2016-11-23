@@ -202,7 +202,7 @@ public class TaskHandlerHelper {
 					/*String keyStoredMongo = mongoDBServiceImpl.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key stored ----"+ keyStoredMongo);*/
 					break;
-				case DELETE:
+				case DEL:
 					
 					logger.info("----- deleting key from DataBase ----");
 					boolean deletedKey = redisClient.delete(requestMessage.getKey());

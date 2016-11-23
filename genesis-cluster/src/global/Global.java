@@ -25,6 +25,10 @@ public final class Global {
      * <code>UPDATE = 3;</code>
      */
     UPDATE(2, 3),
+    /**
+     * <code>DELETE = 4;</code>
+     */
+    DELETE(3, 4),
     ;
 
     /**
@@ -39,6 +43,10 @@ public final class Global {
      * <code>UPDATE = 3;</code>
      */
     public static final int UPDATE_VALUE = 3;
+    /**
+     * <code>DELETE = 4;</code>
+     */
+    public static final int DELETE_VALUE = 4;
 
 
     public final int getNumber() { return value; }
@@ -48,6 +56,7 @@ public final class Global {
         case 1: return READ;
         case 2: return WRITE;
         case 3: return UPDATE;
+        case 4: return DELETE;
         default: return null;
       }
     }
@@ -7355,9 +7364,9 @@ public final class Global {
       "FileH\000\022\022\n\010fileName\030\006 \001(\tH\000B\t\n\007payload\"9\n" +
       "\013WhoIsLeader\022\023\n\013requesterIp\030\001 \002(\t\022\025\n\rreq" +
       "uesterPort\030\002 \002(\005\"2\n\nLeaderInfo\022\020\n\010leader",
-      "Ip\030\001 \002(\t\022\022\n\nleaderPort\030\002 \002(\005*.\n\013RequestT" +
-      "ype\022\010\n\004READ\020\001\022\t\n\005WRITE\020\002\022\n\n\006UPDATE\020\003B\n\n\006" +
-      "globalH\001"
+      "Ip\030\001 \002(\t\022\022\n\nleaderPort\030\002 \002(\005*:\n\013RequestT" +
+      "ype\022\010\n\004READ\020\001\022\t\n\005WRITE\020\002\022\n\n\006UPDATE\020\003\022\n\n\006" +
+      "DELETE\020\004B\n\n\006globalH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
