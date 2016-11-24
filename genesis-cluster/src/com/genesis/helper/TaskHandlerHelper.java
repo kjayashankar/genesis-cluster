@@ -164,7 +164,7 @@ public class TaskHandlerHelper {
 						
 						for(Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
 							
-							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state);
+							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state, keyMap.size());
 							doMessageForwardingToClient(returnMsg, channel);
 							
 						}

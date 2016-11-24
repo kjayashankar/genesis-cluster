@@ -17,7 +17,7 @@ import com.google.protobuf.ByteString;
  */
 public class FileConversion {
 
-	private static int chunkSize = 1024*1024/2; //1 Mb kept for now.
+	private static int chunkSize = 1024*1024; //1 Mb kept for now.
 	
 	public static int getBytesAvailable(BufferedInputStream bcs){
 		int bytesNo =0;
