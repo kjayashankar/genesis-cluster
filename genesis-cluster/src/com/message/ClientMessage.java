@@ -1805,6 +1805,15 @@ public final class ClientMessage {
     int getChunkNo();
 
     /**
+     * <code>optional int32 no_of_chunks = 15;</code>
+     */
+    boolean hasNoOfChunks();
+    /**
+     * <code>optional int32 no_of_chunks = 15;</code>
+     */
+    int getNoOfChunks();
+
+    /**
      * <code>optional string status_msg = 13;</code>
      */
     boolean hasStatusMsg();
@@ -1954,8 +1963,13 @@ public final class ClientMessage {
             }
             case 106: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               statusMsg_ = bs;
+              break;
+            }
+            case 120: {
+              bitField0_ |= 0x00000010;
+              noOfChunks_ = input.readInt32();
               break;
             }
             case 146: {
@@ -2149,13 +2163,28 @@ public final class ClientMessage {
       return chunkNo_;
     }
 
+    public static final int NO_OF_CHUNKS_FIELD_NUMBER = 15;
+    private int noOfChunks_;
+    /**
+     * <code>optional int32 no_of_chunks = 15;</code>
+     */
+    public boolean hasNoOfChunks() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional int32 no_of_chunks = 15;</code>
+     */
+    public int getNoOfChunks() {
+      return noOfChunks_;
+    }
+
     public static final int STATUS_MSG_FIELD_NUMBER = 13;
     private java.lang.Object statusMsg_;
     /**
      * <code>optional string status_msg = 13;</code>
      */
     public boolean hasStatusMsg() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
      * <code>optional string status_msg = 13;</code>
@@ -2285,6 +2314,7 @@ public final class ClientMessage {
       success_ = false;
       key_ = "";
       chunkNo_ = 0;
+      noOfChunks_ = 0;
       statusMsg_ = "";
     }
     private byte memoizedIsInitialized = -1;
@@ -2324,8 +2354,11 @@ public final class ClientMessage {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeInt32(12, chunkNo_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(13, getStatusMsgBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeInt32(15, noOfChunks_);
       }
       if (payloadCase_ == 18) {
         output.writeMessage(18, (com.message.ClientMessage.ChunkInfo) payload_);
@@ -2362,9 +2395,13 @@ public final class ClientMessage {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(12, chunkNo_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(13, getStatusMsgBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(15, noOfChunks_);
       }
       if (payloadCase_ == 18) {
         size += com.google.protobuf.CodedOutputStream
@@ -2504,8 +2541,10 @@ public final class ClientMessage {
         bitField0_ = (bitField0_ & ~0x00000004);
         chunkNo_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
-        statusMsg_ = "";
+        noOfChunks_ = 0;
         bitField0_ = (bitField0_ & ~0x00000010);
+        statusMsg_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         payloadCase_ = 0;
         payload_ = null;
         return this;
@@ -2554,6 +2593,10 @@ public final class ClientMessage {
         result.chunkNo_ = chunkNo_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
+        }
+        result.noOfChunks_ = noOfChunks_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
         }
         result.statusMsg_ = statusMsg_;
         if (payloadCase_ == 20) {
@@ -2604,8 +2647,11 @@ public final class ClientMessage {
         if (other.hasChunkNo()) {
           setChunkNo(other.getChunkNo());
         }
+        if (other.hasNoOfChunks()) {
+          setNoOfChunks(other.getNoOfChunks());
+        }
         if (other.hasStatusMsg()) {
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000020;
           statusMsg_ = other.statusMsg_;
           onChanged();
         }
@@ -2855,12 +2901,44 @@ public final class ClientMessage {
         return this;
       }
 
+      private int noOfChunks_ ;
+      /**
+       * <code>optional int32 no_of_chunks = 15;</code>
+       */
+      public boolean hasNoOfChunks() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 no_of_chunks = 15;</code>
+       */
+      public int getNoOfChunks() {
+        return noOfChunks_;
+      }
+      /**
+       * <code>optional int32 no_of_chunks = 15;</code>
+       */
+      public Builder setNoOfChunks(int value) {
+        bitField0_ |= 0x00000010;
+        noOfChunks_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 no_of_chunks = 15;</code>
+       */
+      public Builder clearNoOfChunks() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        noOfChunks_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object statusMsg_ = "";
       /**
        * <code>optional string status_msg = 13;</code>
        */
       public boolean hasStatusMsg() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
        * <code>optional string status_msg = 13;</code>
@@ -2903,7 +2981,7 @@ public final class ClientMessage {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000020;
         statusMsg_ = value;
         onChanged();
         return this;
@@ -2912,7 +2990,7 @@ public final class ClientMessage {
        * <code>optional string status_msg = 13;</code>
        */
       public Builder clearStatusMsg() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         statusMsg_ = getDefaultInstance().getStatusMsg();
         onChanged();
         return this;
@@ -2925,7 +3003,7 @@ public final class ClientMessage {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000020;
         statusMsg_ = value;
         onChanged();
         return this;
@@ -3333,14 +3411,14 @@ public final class ClientMessage {
       "no\030\010 \001(\005\022\024\n\014no_of_chunks\030\017 \001(\005\022\035\n\tchunkI" +
       "nfo\030\020 \001(\0132\n.ChunkInfo\"A\n\tChunkInfo\022\024\n\014no" +
       "_of_chunks\030\017 \002(\005\022\020\n\010seq_size\030\002 \001(\003\022\014\n\004ti" +
-      "me\030\003 \001(\003\"\315\001\n\017ResponseMessage\022\035\n\toperatio" +
+      "me\030\003 \001(\003\"\343\001\n\017ResponseMessage\022\035\n\toperatio" +
       "n\030\t \001(\0162\n.Operation\022\017\n\007success\030\n \001(\010\022\013\n\003" +
-      "key\030\013 \001(\t\022\020\n\010chunk_no\030\014 \001(\005\022\022\n\nstatus_ms" +
-      "g\030\r \001(\t\022\033\n\007failure\030\024 \001(\0132\010.FailureH\000\022\016\n\004",
-      "data\030\023 \001(\014H\000\022\037\n\tchunkInfo\030\022 \001(\0132\n.ChunkI" +
-      "nfoH\000B\t\n\007payload*;\n\tOperation\022\007\n\003GET\020\001\022\010" +
-      "\n\004POST\020\002\022\007\n\003PUT\020\003\022\007\n\003DEL\020\004\022\t\n\005STEAL\020\005B\r\n" +
-      "\013com.message"
+      "key\030\013 \001(\t\022\020\n\010chunk_no\030\014 \001(\005\022\024\n\014no_of_chu" +
+      "nks\030\017 \001(\005\022\022\n\nstatus_msg\030\r \001(\t\022\033\n\007failure",
+      "\030\024 \001(\0132\010.FailureH\000\022\016\n\004data\030\023 \001(\014H\000\022\037\n\tch" +
+      "unkInfo\030\022 \001(\0132\n.ChunkInfoH\000B\t\n\007payload*;" +
+      "\n\tOperation\022\007\n\003GET\020\001\022\010\n\004POST\020\002\022\007\n\003PUT\020\003\022" +
+      "\007\n\003DEL\020\004\022\t\n\005STEAL\020\005B\r\n\013com.message"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3372,7 +3450,7 @@ public final class ClientMessage {
     internal_static_ResponseMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_ResponseMessage_descriptor,
-        new java.lang.String[] { "Operation", "Success", "Key", "ChunkNo", "StatusMsg", "Failure", "Data", "ChunkInfo", "Payload", });
+        new java.lang.String[] { "Operation", "Success", "Key", "ChunkNo", "NoOfChunks", "StatusMsg", "Failure", "Data", "ChunkInfo", "Payload", });
     pipe.common.Common.getDescriptor();
   }
 
