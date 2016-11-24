@@ -20,6 +20,8 @@ message RequestMessage {
 	
 	optional int32 seq_no = 8;	
 	
+	optional int32 no_of_chunks = 15;
+	
 	optional ChunkInfo chunkInfo = 16;
 	
 }
