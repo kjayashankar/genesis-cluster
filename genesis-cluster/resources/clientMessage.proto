@@ -39,6 +39,8 @@ message ResponseMessage {
 	optional string key = 11;
 
 	optional int32 chunk_no = 12;
+	
+	optional int32 no_of_chunks = 15;
 
 	optional string status_msg = 13;
 	
