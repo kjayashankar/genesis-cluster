@@ -210,7 +210,7 @@ public class MessageClient {
 		}
 	}
 	
-	public void post(String key, int sequenceNo, ByteString data, String op) {
+	public void post(String key, int sequenceNo, ByteString data, String op, int noOfChunks) {
 		Header.Builder hb = buildHeader();
 
 		CommandMessage.Builder cb = CommandMessage.newBuilder();
@@ -218,6 +218,7 @@ public class MessageClient {
 
 		RequestMessage.Builder reqMsg = RequestMessage.newBuilder();
 		reqMsg.setData(data);
+		reqMsg.setNoOfChunks(noOfChunks);
 		reqMsg.setKey(key);
 			if("POST".equals(op))
 				reqMsg.setOperation(Operation.POST);

@@ -15,7 +15,11 @@ import com.message.ClientMessage.ChunkInfo;
 import com.message.ClientMessage.RequestMessage;
 import com.message.ClientMessage.ResponseMessage;
 
+import global.Global.File;
+import global.Global.GlobalHeader;
 import global.Global.GlobalMessage;
+import global.Global.RequestType;
+import global.Global.Response;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -258,7 +262,7 @@ public class ResourceUtil {
 	}
 	
 
-	public static CommandMessage createResponseCommandMessage(CommandMessage commandMessage, byte[] data, int seqNo, ServerState state){
+	public static CommandMessage createResponseCommandMessage(CommandMessage commandMessage, byte[] data, int seqNo, ServerState state, int noOfChunks){
 		
 		//logger.info("creating command message");
 		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
@@ -272,7 +276,11 @@ public class ResourceUtil {
 		resMsg.setOperation(reqMsg.getOperation());
 		resMsg.setKey(reqMsg.getKey());
 		resMsg.setChunkNo(seqNo);
+		resMsg.setNoOfChunks(noOfChunks);
+		resMsg.setData(ByteString.copyFrom(data));
 		
+		
+		/*
 		try {
 				if(seqNo == 0){
 					logger.info("RU:createResponseCommandMessage Getting chunk seq."+ seqNo);
@@ -284,7 +292,7 @@ public class ResourceUtil {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 		
 		resCmdMessage.setHeader(hb);
 		resCmdMessage.setResMsg(resMsg);
@@ -295,6 +303,27 @@ public class ResourceUtil {
 	
 	
 	public static CommandMessage createResponseFailureMessage(CommandMessage commandMessage, ServerState state){
+		//logger.info("Creating failure message ");
+		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
+		
+		Header.Builder hb = buildHeader(commandMessage, state);
+		
+		ResponseMessage.Builder resMsg = ResponseMessage.newBuilder();
+		Failure.Builder fb = Failure.newBuilder();
+		fb.setMessage("Key not found in the database");
+		fb.setId(11);
+
+		resMsg.setSuccess(false);
+		resMsg.setFailure(fb);
+		
+		
+		resCmdMessage.setHeader(hb);
+		resCmdMessage.setResMsg(resMsg);
+		
+		return resCmdMessage.build();
+	}
+	
+	public static CommandMessage createglobalFailureMessage(CommandMessage commandMessage, ServerState state){
 		//logger.info("Creating failure message ");
 		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
 		
@@ -470,6 +499,38 @@ public class ResourceUtil {
 	public static CommandMessage convertIntoCommand(GlobalMessage msg) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public static GlobalMessage createGlobalResponseMessage(GlobalMessage msg, byte[] value, Integer key,
+			ServerState state, int noOfChunks) {
+		
+		logger.info("RU : creating response global message  ===> "); 
+		
+				GlobalHeader.Builder gh = GlobalHeader.newBuilder();
+				gh.setClusterId(msg.getGlobalHeader().getClusterId());
+				gh.setTime(System.currentTimeMillis());
+				gh.setDestinationId(msg.getGlobalHeader().getDestinationId());
+				
+				File.Builder fb = File.newBuilder();
+				fb.setFilename(msg.getRequest().getFileName());
+				fb.setChunkId(key);
+				fb.setTotalNoOfChunks(noOfChunks);
+				fb.setData(ByteString.copyFrom(value));
+				
+				Response.Builder res = Response.newBuilder();
+				res.setRequestType(msg.getRequest().getRequestType());
+				res.setRequestId(msg.getRequest().getRequestId());
+				res.setSuccess(true);
+				
+			
+				GlobalMessage.Builder responseMsg = GlobalMessage.newBuilder();
+				responseMsg.setGlobalHeader(gh);
+				logger.info("response === " +res.getRequestId());
+				res.setFile(fb);
+				responseMsg.setResponse(res);
+				//logger.info("response msg "+responseMsg.build());
+				return responseMsg.build();
+		
 	}
 	
 }

@@ -41,15 +41,12 @@ public class FileApp implements CommListener {
 	}
 
 	
-	
 	private void initMap(Map<String, Integer> keyChunkNoMap) {
 		// TODO Auto-generated method stub
-		keyChunkNoMap.put("nasa1", 4);
-		keyChunkNoMap.put("nasa2", 4);
+		//keyChunkNoMap.put("nasa1", 2);
+		//keyChunkNoMap.put("nasa2", 2);
 		
 	}
-
-
 
 	private void init(MessageClient mc) {
 		this.mc = mc;
@@ -108,33 +105,31 @@ public class FileApp implements CommListener {
 	@Override
 	public void onMessage(CommandMessage msg) {
 
-		//TODO write check for failuremsg
-
-		
-		int chunkData = 0;
 		
 		if (msg.getResMsg().getOperation() == Operation.GET) {
 			
-			//noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
 			
-			logger.info("Beginning to read message... ");
-			logger.info("It has no of chunks...");
-			if (msg.getResMsg().hasChunkInfo()) {
+			
+			noOfChunks = msg.getResMsg().getNoOfChunks();
+			logger.info("Got No. of chunks from message ======> "+ noOfChunks);
+			
+			
+			/*if (msg.getResMsg().hasChunkInfo()) {
 				chunkData = msg.getResMsg().getChunkInfo().getNoOfChunks();
 				logger.info("Got File from the server, reassembling chunks, no of chunks are : "+ chunkData);
 				
 				
-			} else {
+			} else {*/
 				ByteString data = msg.getResMsg().getData();
 
 				responseList.add(msg.getResMsg());
 
-				noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
+				//noOfChunks = keyChunkNoMap.get(msg.getResMsg().getKey());
 				
 				logger.info(" --- "+ responseList.size() + ", noOfChunks " + noOfChunks);
 				
-				if (noOfChunks  !=0 && responseList.size() == noOfChunks) {
-				logger.info("Complete response is now received."); 	
+				if (responseList.size() == noOfChunks) {
+					logger.info("Complete response is now received."); 	
 				
 					Collections.sort(responseList, new Comparator<ResponseMessage>() {
 						@Override
@@ -173,7 +168,7 @@ public class FileApp implements CommListener {
 					
 					
 				}
-			}
+			
 		}
 	}
 
@@ -189,20 +184,20 @@ public class FileApp implements CommListener {
 		
 		int port = 4568;
 		
-		if (args.length == 0) {
+		/*if (args.length == 0) {
 			System.out.println("usage: server <config file>");
 			System.exit(1);
-		}
+		}*/
 
-		File cf = new File(args[0]);
+		File cf = new File("runtime/clientConf.conf");
 		
 		
 		try {
 			MessageClient mc = new MessageClient(host, port,cf);
 			
 			FileApp fa = new FileApp(mc);
-			System.out.println(args[1]);
-			fa.clientFileOperation(args[1]);
+			System.out.println("");
+			fa.clientFileOperation(args[0]);
 			
 			System.out.println("\n** exiting in 10 seconds. **");
 			System.out.flush();
@@ -277,44 +272,54 @@ public class FileApp implements CommListener {
 					}
 					
 					logger.info("Post Messages chunkSize is "+ noOfChunks + ", filePath "+ filePath);
-					mc.postChunkInfo(key, noOfChunks, fileSize, "POST");
 					
-						List<ByteString> dataList = FileConversion.readAndConvert(filePath);
+					/* 
+					 * No need of chunk I will pass it in every message now
+					 * mc.postChunkInfo(key, noOfChunks, fileSize, "POST");
+					 */
+					
+					
+					List<ByteString> dataList = FileConversion.readAndConvert(filePath);
 		
-						int seqNo = 1;
+					int seqNo = 1;
 						
-						for (ByteString data : dataList) {
-							mc.post(key, seqNo++, data, "POST");
-						}
+					for (ByteString data : dataList) {
+						mc.post(key, seqNo++, data, "POST", noOfChunks);
+					}
 						
-						logger.info("total no. to be retreived ... "+ seqNo);
+					logger.info("total no. to be retreived ... "+ seqNo);
 					
 					break;
 
 		case "PUT":
 			
 			
-			logger.info("Performing PUT operation from client");
-			
-			if (!tempFile.exists()) {
-				throw new FileNotFoundException(filePath);
-			}
-			
-			logger.info("PUT Message chunkSize is "+ noOfChunks + ", filePath "+ filePath);
-			mc.postChunkInfo(key, noOfChunks, fileSize, "PUT");
-			//for (int i = 0; i < noOfChunks; i++) {
-				dataList = null;
-				dataList = FileConversion.readAndConvert(filePath);
-
-				seqNo = 1;
+				logger.info("Performing PUT operation from client");
 				
-				for (ByteString data : dataList) {
-					mc.post(key, seqNo++, data, "PUT");
+				if (!tempFile.exists()) {
+					throw new FileNotFoundException(filePath);
 				}
 				
+				logger.info("PUT Message chunkSize is "+ noOfChunks + ", filePath "+ filePath);
+				
+				/*
+				 * No need to send chunkInfo now in the chunkOnly
+				 * mc.postChunkInfo(key, noOfChunks, fileSize, "PUT");
+				 */
+				
+				
+				dataList = null;
+				dataList = FileConversion.readAndConvert(filePath);
+	
+				seqNo = 1;
+					
+				for (ByteString data : dataList) {
+					mc.post(key, seqNo++, data, "PUT", noOfChunks);
+				}
+					
 				logger.info("total no. of chunks created ... "+ seqNo);
-			
-			break;
+				
+				break;
 
 
 		case "DELETE":

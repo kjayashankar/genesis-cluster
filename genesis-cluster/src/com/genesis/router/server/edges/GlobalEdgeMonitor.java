@@ -70,7 +70,7 @@ public class GlobalEdgeMonitor {
 		GlobalHeader.Builder header = GlobalHeader.newBuilder();
 		
 		header.setTime(System.currentTimeMillis());
-		header.setDestinationId(0);
+		header.setDestinationId(state.getGlobalConf().getClusterId());
 		header.setClusterId(state.getGlobalConf().getClusterId());
 		
 		wm.setGlobalHeader(header);
@@ -82,6 +82,7 @@ public class GlobalEdgeMonitor {
 		logger.info("file name decoded as "+msg.getReqMsg().getKey());
 		file.setFilename(msg.getReqMsg().getKey());
 		request.setFile(file);
+		request.setFileName(msg.getReqMsg().getKey());
 		request.setRequestType(RequestType.READ);
 		wm.setRequest(request);
 		
