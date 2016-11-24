@@ -9,6 +9,8 @@ import clientMessage_pb2
 import time
 import sys
 import os
+import time
+from array import *
 from datetime import datetime
 
 class SimpleClient:
@@ -42,7 +44,9 @@ class SimpleClient:
 
 
     def getFile(self,name):
+        print("SC 45")
         cm = pipe_pb2.CommandMessage()
+        print("SC 47")
         cm.header.node_id = 6
         cm.header.origin.id = 6
         cm.header.origin.host = "127.0.0.1"
@@ -53,12 +57,14 @@ class SimpleClient:
         # b = self.chunkFile()
 
         #cm.reqMsg.data = filecontent
-        cm.reqMsg.key = "Key"
+        cm.reqMsg.key = name
         #cm.reqMsg.seq_no = msgInt
         cm.reqMsg.operation = clmsg2
         # cm.reqMsg = clmsg
         # cm.reqMsg.Value(clmsg)
+        print cm
         var = cm.SerializeToString()
+        print("SC 63")
 
         return var
 
@@ -136,6 +142,8 @@ class SimpleClient:
 
     def genChunkInfoMsg(self,filename, noofchunks,chunkid):
 
+        print("SC 144 noofchunks")
+        print noofchunks
         current_time = datetime.now().time()
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 6
@@ -162,6 +170,8 @@ class SimpleClient:
 
     def genChunkInfoPutMsg(self,filename, noofchunks,chunkid):
 
+        print("SC 172 noofchunks")
+        print noofchunks
         current_time = datetime.now().time()
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 2
@@ -188,6 +198,8 @@ class SimpleClient:
 
     def genChunkedMsg(self,filename,filecontent, noofchunks,chunkid):
 
+        print("SC 200 noofchunks")
+        print noofchunks
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 2
         cm.header.origin.id = 1
@@ -201,6 +213,7 @@ class SimpleClient:
         cm.reqMsg.key = filename
         cm.reqMsg.seq_no = chunkid
         cm.reqMsg.operation = clmsg2
+        cm.reqMsg.chunkInfo.no_of_chunks = noofchunks
         # cm.reqMsg = clmsg
         # cm.reqMsg.Value(clmsg)
         var = cm.SerializeToString()
@@ -222,6 +235,7 @@ class SimpleClient:
         cm.reqMsg.key = filename
         cm.reqMsg.seq_no = chunkid
         cm.reqMsg.operation = clmsg2
+        cm.reqMsg.chunkInfo.no_of_chunks = noofchunks
         # cm.reqMsg = clmsg
         # cm.reqMsg.Value(clmsg)
         var = cm.SerializeToString()
@@ -241,8 +255,70 @@ class SimpleClient:
         print("SC 218")
         return
 
-    def receiveMsg(self, socket, waittime):
+    def sendDataGet(self,data,host,port):
 
+        print("SC 249")
+        msg_len = struct.pack('>L', len(data))
+        print("SC 251")
+        self.sd.sendall(msg_len + data)
+        print("SC 253 Send the get request")
+
+        r = pipe_pb2.CommandMessage();
+        #my_array = array('i', r)
+        my_array = [] * 6
+        iter = 0
+        while iter<3:
+            iter+=1
+            len_buf = self.receiveMsg(self.sd, 4)
+            print("SC 255 len_buf")
+            print len_buf
+            msg_len = struct.unpack('>L', len_buf)[0]
+            msg_in = self.receiveMsg(self.sd, msg_len)
+            print("SC 259 msg_in")
+            print len(msg_in)
+            print("SC 257")
+
+            print("SC 259")
+            r.ParseFromString(msg_in)
+            #self.sd.close
+            print("SC 262 Getting the chunk id")
+            print r.resMsg.chunk_no
+            index = int(r.resMsg.chunk_no)
+            my_array.insert(index, r.resMsg.data)
+            print("SC 277 Getting the total number of chunks")
+            print r.resMsg.chunkInfo
+            totalCount = 2
+            self.sd.close
+            #if totalCount <2:
+            #    break
+            print("SC 264 printing the value of r")
+            totalCount -= 1
+            #print r
+        fileDir = os.path.dirname(os.path.realpath('__file__'))
+        path = os.path.join(fileDir, '../output/nasa2.jpg')
+        for r in my_array:
+            with open(path, "a") as outfile:
+                outfile.write(r)
+
+        return my_array
+
+
+    def receiveMsg(self, socket, n):
+        buf = ''
+        print("SC 286")
+        print("SC 296: Value of n;")
+        print n
+        while n > 0:
+            data = socket.recv(n)
+            buf += data
+            n -= len(data)
+        return buf
+
+
+
+    '''def receiveMsg(self, socket, waittime):
+
+        print("SC 269")
         socket.setblocking(0)
 
         finaldata = []
@@ -250,25 +326,44 @@ class SimpleClient:
         data = ''
 
         start_time = time.time()
+        print("start_time")
+        print start_time
+        print("waittime")
+        print waittime
+
 
         #while 1:
 
 #            if data and time.time() - start_time > waittime:
-#
- #               break
 
-  #          elif time.time() - start_time > waittime * 2:
+#                break
 
-   #             break
+ #           elif time.time() - start_time > waittime * 2:
 
+  #              break
+
+        cnt = 0
+        while 1:
+            time.sleep(2)
+            print ("waiting")
+            cnt = cnt + 1
+            print cnt
+            #if data:
+            break
+
+        data = socket.recv(4668)
         try:
-
-            data = socket.recv(8192)
-
+            print("SC 293")
+            data = socket.recv(4668)
+            print("Data : ")
+            print data
+            print("SC 291")
+            print len(data)
             if data:
 
                 finaldata.append(data)
-
+                print("SC 296 78")
+                print len(finaldata)
                 begin = time.time()
 
             else:
@@ -281,4 +376,6 @@ class SimpleClient:
 
         print(finaldata)
 
-        return ''.join(finaldata)
+        #return ''.join(finaldata)
+        return data
+        '''

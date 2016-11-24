@@ -140,30 +140,44 @@ class PythonMessageClient:
 
             elif choice1 == "3":
                 # GET
-                print("Get the file: ")
-                name = "nasa1"
+                print("PMC Get the file: ")
+                name = "nasa2"
                 print name
                 path = outputDir
                 print path
                 req = bc.getFile(name)
-                result = bc.sendData(req, host, port)
-                print("98 Printing the results\n")
-                print result
-
-                #if (result.resMsg.key == name):
-                noofchuncks = result.chunkInfo.noofchuncks
-
-                print("104 Printing no of chumks")
-                print noofchuncks
-
-                while noofchuncks != 0:
-                    print("108 Printing the key")
-                    print result.resMsg.key
-                    print("110 Printing the name")
+                print req
+                my_array = bc.sendDataGet(req, host, port)
+                print("PMC 98 Printing the results\n")
+                '''r = pipe_pb2.CommandMessage();
+                #while cnt >= 0:
+                r = pipe_pb2.CommandMessage();
+                for r in my_array:
+                    #print my_array
+                    print("PMC result.resMsg.key: ")
+                    print r.resMsg.key
+                    print("PMC name: ")
                     print name
-                    if (result.resMsg.key == name):
+                    noofchuncks = 0
+                    if (r.resMsg.key == name):
+                        noofchuncks = r.resMsg.chunkInfo.no_of_chunks
+                        print noofchuncks
+
+                    print("PMC 104 Printing no of chumks")
+
+                #noofchuncks = 2
+                #while noofchuncks != 0:
+                    print("PMC 108 Printing the key")
+                    print r.resMsg.key
+                    print("PMC 110 Printing the name")
+                    print name
+                    if (r.resMsg.key == name):
                         with open(path, "w") as outfile:
-                            outfile.write(result.resMsg.data)
+                            outfile.write(r.resMsg.data)
+                    print("PMC 171")
+                    noofchuncks -= 1
+                '''
+                forever = False
 
                 # TODO write the file
                 #continue
