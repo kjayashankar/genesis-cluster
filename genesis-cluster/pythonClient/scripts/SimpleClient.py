@@ -8,6 +8,7 @@ import struct
 import clientMessage_pb2
 import time
 import sys
+import os
 from datetime import datetime
 
 class SimpleClient:
@@ -73,7 +74,7 @@ class SimpleClient:
         # b = self.chunkFile()
 
         #cm.reqMsg.data = filecontent
-        cm.reqMsg.key = "Key"
+        cm.reqMsg.key = name
         #cm.reqMsg.seq_no = msgInt
         cm.reqMsg.operation = clmsg2
         # cm.reqMsg = clmsg
@@ -84,12 +85,26 @@ class SimpleClient:
 
     def chunkFile(self,file):
         fileChunk = []
+        print("SC 87 Chunk Input File size : ")
+        #len123 = os.path.getsize(file)
+        #print len123
         with open(file, "rb") as fileContent:
             data = fileContent.read(1024*1024)
+            print("SC 91 Chunk size : ")
+            #len123 = os.path.getsize(data)
+            #print len123
             while data:
                 fileChunk.append(data)
                 data = fileContent.read(1024*1024)
+                print("SC 96 Chunk size : ")
+                #len123 = os.path.getsize(data)
+                #print len123
         return fileChunk
+
+    def getSize(fileobject):
+        fileobject.seek(0, 2)  # move the cursor to the end of the file
+        size = fileobject.tell()
+        return size
 
     def sendMessage(self, message):
         if len(message) > 1024:
@@ -105,16 +120,47 @@ class SimpleClient:
     def genPing(self):
         print "Start request_ping() executing"
         cm = pipe_pb2.CommandMessage()
-        cm.header.node_id = 1
+        cm.header.node_id = 6
+        cm.header.origin.id = 1
+        cm.header.origin.host = "127.0.0.1"
+        cm.header.origin.port = 4668
         cm.header.time = 10000
-        cm.header.destination = 2
+        cm.header.destination = 6
         cm.ping = True
         print "request_ping() executing"
+        print cm
         pingr = cm.SerializeToString()
+        print "SC 133"
         #packed_len = struct.pack('>L', len(pingr))
         return pingr;
 
     def genChunkInfoMsg(self,filename, noofchunks,chunkid):
+
+        current_time = datetime.now().time()
+        cm = pipe_pb2.CommandMessage()
+        cm.header.node_id = 6
+        cm.header.origin.id = 1
+        cm.header.origin.host = "127.0.0.1"
+        cm.header.origin.port = 4668
+        cm.header.time = 10000
+        cm.header.destination = 6
+        clmsg2 = clientMessage_pb2.Operation.Value("POST")
+        #b = self.chunkFile()
+        #cm.reqMsg.data = filecontent
+        cm.reqMsg.key = filename
+        cm.reqMsg.seq_no = chunkid
+        cm.reqMsg.operation = clmsg2
+        cm.reqMsg.chunkInfo.no_of_chunks = noofchunks
+        cm.reqMsg.chunkInfo.seq_size = 1
+        cm.reqMsg.chunkInfo.time = 123
+        #cm.reqMsg.chunkInfo.time = current_time
+        # cm.reqMsg = clmsg
+        # cm.reqMsg.Value(clmsg)
+        var = cm.SerializeToString()
+
+        return var
+
+    def genChunkInfoPutMsg(self,filename, noofchunks,chunkid):
 
         current_time = datetime.now().time()
         cm = pipe_pb2.CommandMessage()
@@ -124,7 +170,7 @@ class SimpleClient:
         cm.header.origin.port = 4668
         cm.header.time = 10000
         cm.header.destination = 6
-        clmsg2 = clientMessage_pb2.Operation.Value("POST")
+        clmsg2 = clientMessage_pb2.Operation.Value("PUT")
         #b = self.chunkFile()
         #cm.reqMsg.data = filecontent
         cm.reqMsg.key = filename
@@ -163,8 +209,6 @@ class SimpleClient:
 
     def genChunkedPutMsg(self,filename,filecontent, noofchunks,chunkid):
 
-        msgStr = "Key"
-        msgInt = 1
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 2
         cm.header.origin.id = 1
@@ -175,8 +219,8 @@ class SimpleClient:
         clmsg2 = clientMessage_pb2.Operation.Value("PUT")
         #b = self.chunkFile()
         cm.reqMsg.data = filecontent
-        cm.reqMsg.key = msgStr
-        cm.reqMsg.seq_no = msgInt
+        cm.reqMsg.key = filename
+        cm.reqMsg.seq_no = chunkid
         cm.reqMsg.operation = clmsg2
         # cm.reqMsg = clmsg
         # cm.reqMsg.Value(clmsg)
@@ -186,21 +230,16 @@ class SimpleClient:
 
     def sendData(self,data,host,port):
 
+        print("SC 204")
         msg_len = struct.pack('>L', len(data))
-
+        print("SC 206")
         self.sd.sendall(msg_len + data)
+        print("SC 208")
 
-        len_buf = self.receiveMsg(self.sd, 4)
-
-        msg_in = self.receiveMsg(self.sd, len_buf)
-
-        r =  pipe_pb2.CommandMessage();
-
-        r.ParseFromString(msg_in)
-
-        self.sd.close
-
-        return r
+        print("SC 216")
+        #self.sd.close
+        print("SC 218")
+        return
 
     def receiveMsg(self, socket, waittime):
 
@@ -212,15 +251,15 @@ class SimpleClient:
 
         start_time = time.time()
 
-        while 1:
+        #while 1:
 
-            if data and time.time() - start_time > waittime:
+#            if data and time.time() - start_time > waittime:
+#
+ #               break
 
-                break
+  #          elif time.time() - start_time > waittime * 2:
 
-            elif time.time() - start_time > waittime * 2:
-
-                break
+   #             break
 
         try:
 

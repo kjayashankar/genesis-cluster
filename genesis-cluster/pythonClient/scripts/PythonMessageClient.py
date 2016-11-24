@@ -32,10 +32,10 @@ class PythonMessageClient:
 
         fileDir = os.path.dirname(os.path.realpath('__file__'))
         print fileDir
-        inputDir = os.path.join(fileDir, '../input/nasa1.jpg')
+        inputDir = os.path.join(fileDir, '../input/nasa2.jpg')
         inputDir = os.path.abspath(os.path.realpath(inputDir))
         print inputDir
-        outputDir = os.path.join(fileDir, '../output/nasa1.jpg')
+        outputDir = os.path.join(fileDir, '../output/nasa2.jpg')
         outputDir = os.path.abspath(os.path.realpath(outputDir))
         print outputDir
 
@@ -64,23 +64,40 @@ class PythonMessageClient:
 
                 # filename = raw_input();
                 print("SEND")
-                filename = "nasa1"
+                filename = "nasa2"
                 #print("Enter qualified pathname of file to be uploded: ");
                 # path = raw_input();
                 path = inputDir
+                print("Input File size : ")
+                #len123 = ca.getSize(path)
+                #len123 = os.path.getsize(path)
+                #print len123
+                #print "Folder = %0.1f MB" % (path / (1024 * 1024.0))
                 chunks = bc.chunkFile(path)
+                print("Chunks created : ")
+                print len(chunks)
                 noofchunks = len(chunks)
+                print("PMC 80 Calling genChunkInfoMsg")
                 chunkid = 0;
                 req = bc.genChunkInfoMsg(filename, noofchunks, chunkid);
-                result = bc.sendData(req, host, port)
+                print req
+                print("PMC 83")
+                print("PMC 84 Sending Chunk info")
+                bc.sendData(req, host, port)
                 chunkid = 1;
                 # Create & send chunk info
 
                 for chunk in chunks:
+                    print("PMC 87")
                     req = bc.genChunkedMsg(filename, chunk, noofchunks, chunkid);
+                    print("PMC 89")
                     chunkid += 1
-                    result = bc.sendData(req, host, port)
+                    print("PMC 91")
+                    print chunkid
+                    bc.sendData(req, host, port)
+                    print("PMC 93")
 
+                forever = False
 
             elif choice1 == "2":
                 # PUT
@@ -89,19 +106,37 @@ class PythonMessageClient:
                 print("Enter the name of your file: ")
 
                 # filename = raw_input();
-                print("SEND")
-                filename = "nasa1"
+                print("PUT")
+                filename = "nasa2"
                 # print("Enter qualified pathname of file to be uploded: ");
                 # path = raw_input();
                 path = inputDir
+                print path
+                print("PMC 115 ")
                 chunks = bc.chunkFile(path)
+                print("PMC 115 Chunking called")
                 noofchunks = len(chunks)
+                print noofchunks
+                print("PMC 120 Calling genChunkInfoMsg")
+                chunkid = 0;
+                req = bc.genChunkInfoPutMsg(filename, noofchunks, chunkid);
+                print req
+                print("PMC 124")
+                print("PMC 125 Sending Chunk info")
+                bc.sendData(req, host, port)
+                print("PMC 127")
 
                 chunkid = 1;
                 for chunk in chunks:
+                    print("PMC 130")
                     req = bc.genChunkedPutMsg(filename, chunk, noofchunks, chunkid);
+                    print("PMC 132")
+                    print chunkid
                     chunkid += 1
-                    result = bc.sendData(req, host, port)
+                    bc.sendData(req, host, port)
+                    print("PMC 136")
+                forever = False
+                print("PMC 138")
 
             elif choice1 == "3":
                 # GET
@@ -131,36 +166,31 @@ class PythonMessageClient:
                             outfile.write(result.resMsg.data)
 
                 # TODO write the file
-                continue
+                #continue
 
             elif choice1 == "4":
                 # DELETE
                 print("Delete the file: ")
-                name = "nasa1"
-                path = outputDir
+                name = "nasa2"
+                print name
                 req = bc.deleteFile(name)
-                result = bc.sendData(req, host, port)
-                print result
-
-                if (result.resMsg.key == name):
-                    noofchuncks = result.chunkInfo.noofchuncks
-
-                    print noofchuncks
-
-                while noofchuncks != 0:
-
-                    if (result.resMsg.key == name):
-                        with open(path, "w") as outfile:
-                            outfile.write(result.resMsg.data)
-
+                print req
+                bc.sendData(req, host, port)
+                print("PMC 179")
+                forever = False
                 # TODO write the file
-                continue
+                #continue
 
             elif choice1 == "5":
                 # PING
                 print("Ping operation start")
-                bc.genPing()
+                req = bc.genPing()
+                print req
+                print("PMC 189")
+                bc.sendData(req, host, port)
+                print("PMC 191")
                 print("Ping operation end")
+                forever = False
             else:
                 print("Wrong Selection");
         print("\nGoodbye\n");
@@ -234,6 +264,10 @@ class PythonMessageClient:
             n -= len(data)
         return buf
 
+    def getSize(fileobject):
+        fileobject.seek(0, 2)  # move the cursor to the end of the file
+        size = fileobject.tell()
+        return size
 
     def getBroadcastMsg(port):
         # listen for the broadcast from the leader"

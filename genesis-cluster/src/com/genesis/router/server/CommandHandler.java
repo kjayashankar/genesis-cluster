@@ -67,6 +67,10 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
 		}
+		 if(msg.hasPing()){
+			 logger.info("\nReceived PING from "+ msg.getHeader().getOrigin().getId());
+			 
+		 }
 		
 		if(msg.hasReqMsg() && msg.getReqMsg().getOperation() == Operation.POST){
 			Task.Builder myTask = Task.newBuilder();
