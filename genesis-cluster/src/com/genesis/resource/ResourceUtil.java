@@ -506,10 +506,10 @@ public class ResourceUtil {
 		//RequestMessage reqMsg = commandMessage.getReqMsg();
 		//TODO update the Header fields 
 		Header.Builder hb = Header.newBuilder();
-		/*hb.setNodeId(state.getConf().getNodeId());
-		hb.setOrigin(commandMessage.getHeader().getOrigin());
+		//hb.setNodeId(state.getConf().getNodeId());
+		//hb.setOrigin();
 		hb.setTime(System.currentTimeMillis());
-		hb.setDestination(commandMessage.getHeader().getNodeId());*/
+		hb.setDestination(msg.getGlobalHeader().getDestinationId());
 		
 		
 		ResponseMessage.Builder resMsg = ResponseMessage.newBuilder();
