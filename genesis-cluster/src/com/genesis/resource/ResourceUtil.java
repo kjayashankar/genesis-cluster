@@ -12,6 +12,7 @@ import com.genesis.router.server.edges.EdgeInfo;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.message.ClientMessage.ChunkInfo;
+import com.message.ClientMessage.Operation;
 import com.message.ClientMessage.RequestMessage;
 import com.message.ClientMessage.ResponseMessage;
 
@@ -498,7 +499,52 @@ public class ResourceUtil {
 
 	public static CommandMessage convertIntoCommand(GlobalMessage msg) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
+		
+		
+		//RequestMessage reqMsg = commandMessage.getReqMsg();
+		//TODO update the Header fields 
+		Header.Builder hb = Header.newBuilder();
+		/*hb.setNodeId(state.getConf().getNodeId());
+		hb.setOrigin(commandMessage.getHeader().getOrigin());
+		hb.setTime(System.currentTimeMillis());
+		hb.setDestination(commandMessage.getHeader().getNodeId());*/
+		
+		
+		ResponseMessage.Builder resMsg = ResponseMessage.newBuilder();
+		
+		resMsg.setSuccess(true);
+		switch(msg.getResponse().getRequestType()){
+		case READ:
+			resMsg.setOperation(Operation.GET);
+			break;
+			
+		case WRITE:
+			resMsg.setOperation(Operation.POST);
+			break;
+			
+		case UPDATE:
+			resMsg.setOperation(Operation.PUT);
+			break;
+		case DELETE:
+			resMsg.setOperation(Operation.DEL);
+			break;
+		
+		default:
+			System.out.println("Nothing matching was found");
+		
+		}
+	
+		resMsg.setKey(msg.getResponse().getFileName());
+		resMsg.setNoOfChunks(msg.getResponse().getFile().getTotalNoOfChunks());
+		resMsg.setData(msg.getResponse().getFile().getData());
+		
+		resCmdMessage.setHeader(hb);
+		resCmdMessage.setResMsg(resMsg);
+		
+		return resCmdMessage.build();
+		
 	}
 
 	public static GlobalMessage createGlobalResponseMessage(GlobalMessage msg, byte[] value, Integer key,
