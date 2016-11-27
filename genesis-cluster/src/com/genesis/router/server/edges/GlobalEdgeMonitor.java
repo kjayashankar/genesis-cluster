@@ -81,9 +81,30 @@ public class GlobalEdgeMonitor {
 		File.Builder file = File.newBuilder();
 		logger.info("file name decoded as "+msg.getReqMsg().getKey());
 		file.setFilename(msg.getReqMsg().getKey());
+		
+		
+		switch(msg.getReqMsg().getOperation()){
+			case POST:
+				request.setRequestType(RequestType.WRITE);
+				file.setData(msg.getReqMsg().getData());
+				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
+				break;
+		
+			case PUT:
+				request.setRequestType(RequestType.UPDATE);
+				file.setData(msg.getReqMsg().getData());
+				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
+				break;
+				
+			case DEL:
+				request.setRequestType(RequestType.DELETE);
+				break;
+			case GET:
+				request.setRequestType(RequestType.READ);
+				break;
+		}
 		request.setFile(file);
 		request.setFileName(msg.getReqMsg().getKey());
-		request.setRequestType(RequestType.READ);
 		wm.setRequest(request);
 		
 		for(EdgeInfo ei : globalOutboud.map.values()){

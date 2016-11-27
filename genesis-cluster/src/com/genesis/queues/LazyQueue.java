@@ -5,9 +5,14 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genesis.helper.TaskHandler;
+import com.genesis.resource.ResourceUtil;
 import com.genesis.router.server.ServerState;
+import com.genesis.router.server.edges.EdgeInfo;
+import com.google.protobuf.ByteString;
 
 import io.netty.channel.Channel;
+import pipe.common.Common.Node;
 import pipe.work.Work.TaskType;
 import pipe.work.Work.WorkMessage;
 
@@ -16,6 +21,8 @@ public class LazyQueue implements Queue {
 	LinkedBlockingDeque<WorkChannel> lazy;
 	
 	private ServerState state;
+	
+	private TaskHandler clientReqHandler = null;
 	
 	private int processed = 0;
 	
@@ -63,10 +70,20 @@ public class LazyQueue implements Queue {
 		}
 		WorkChannel t = get();
 		WorkMessage work = t.getWorkMessage();
+		
+		clientReqHandler = new TaskHandler(state);
+		
+		ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
+		WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
+		//Perform the processing for client request here
+		logger.info("Initiating processing for inbound message");
+		handleClientOperation(work, t.getChannel());
+		TaskType type = work.getTask().getType();
+		
 		logger.info("processing lazy task +++ " +work);
 		processed ++;
 		// Get data while replicating it and send it to this method
-		state.getEmon().updateAndBoradCast(work.getTask());
+		state.getEmon().updateAndBoradCast(work.getTask(),data);
 		
 		return true;
 	}
@@ -89,4 +106,11 @@ public class LazyQueue implements Queue {
 		return processed;
 	}
 
+	public void handleClientOperation(WorkMessage workMessage, Channel channel){
+		Node origin = workMessage.getHeader().getOrigin();
+		EdgeInfo ei = ResourceUtil.nodeToEdge(origin);
+		Channel destination = ResourceUtil.getChannel(ei);
+		clientReqHandler.handleTask(workMessage, channel);
+		
+	}
 }

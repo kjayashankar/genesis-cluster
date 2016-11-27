@@ -70,12 +70,14 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 				if(state.moderator.containsKey(uuid)){
 					Channel chn = state.moderator.get(uuid);
 				//convert into CommandRespnse Message
-					if(chn != null ){
+					if(chn != null && chn.isActive() && chn.isWritable() ){
+						logger.info("pushing into client");
 						CommandMessage response =
 						ResourceUtil.convertIntoCommand(msg);
 						chn.writeAndFlush(response);
 					}
 					else {
+						logger.info("channel is not writable");
 						//pass into loop
 					}
 				}
@@ -89,20 +91,21 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 		
 		else if(msg.hasRequest()){
 			
+			// Don't do anything, it is done.
+			if(msg.getGlobalHeader().getDestinationId() == state.getGlobalConf().getClusterId())
+				return;
 			//TODO add for all the cases! How about WRITE/UPDATE operation? Key will not be there
 			
 			logger.info("Data available is :: "+ msg.hasRequest());
 			
-			if(DBUtils.isfileExist("nasa2")){
-				
-				switch (msg.getRequest().getRequestType()){
-				
-				case READ:
-					
+			
+			switch (msg.getRequest().getRequestType()){
+			
+			case READ:
+				if(DBUtils.isfileExist(msg.getRequest().getFileName())){
+
 					logger.info("Global read for file ==> "+ msg.getRequest().getFileName());
-					
-					Map<Integer, byte[]> keyMap = redisClient.get(msg.getRequest().getFileName());
-					
+					Map<Integer, byte[]> keyMap = redisClient.get(msg.getRequest().getFileName());	
 					if(!keyMap.isEmpty()){
 						logger.info("GH: handleGlobalMesage: GET giving message back to the client\n\t\t-- total count of messages "+ keyMap.size());
 						for(Map.Entry<Integer, byte[]> entry: keyMap.entrySet()){
@@ -110,42 +113,46 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 							channel.writeAndFlush(globalReturnMsg);
 						}
 					}
-
-					break;
-				
-				case WRITE:
-					
-					//This will not write if the file is already there
-					redisClient.post(msg.getRequest().getFileName(), msg.getRequest().getFile().getChunkId(), msg.getRequest().getFile().getData().toByteArray());
-					
-					logger.info("Global WRITE for file ==> "+ msg.getRequest().getFileName() +", chunk No. "+ msg.getRequest().getFile().getChunkId());
-					
-					break;
-				
-				case UPDATE:
-					boolean keyUpdated = redisClient.put(msg.getRequest().getFileName(), msg.getRequest().getFile().getChunkId(), msg.getRequest().getFile().getData().toByteArray());
-					logger.info("Global UPDATE for file is ==> "+ keyUpdated +", chunk No. "+ msg.getRequest().getFile().getChunkId());
-					break;
-				
-				case DELETE: 
-					logger.info("Global read for file ==> "+ msg.getRequest().getFileName());
-					boolean deletedKey = redisClient.delete(msg.getRequest().getFileName());
-					logger.info("GH: handleGlobalMessage: DELETE key globally!!! "+ deletedKey);
-					break;
-					
-				default:
-					logger.info("GH: No matching cases!");
-					break;
-					
 				}
+				else{
+					state.getgMon().pushMessagesIntoCluster(msg);
+				}
+
+				break;
+			
+			case WRITE:
+				//This will not write if the file is already there
+				redisClient.post(msg.getRequest().getFileName(), msg.getRequest().getFile().getChunkId(), msg.getRequest().getFile().getData().toByteArray());
+				logger.info("Global WRITE for file ==> "+ msg.getRequest().getFileName() +", chunk No. "+ msg.getRequest().getFile().getChunkId());
+				state.getgMon().pushMessagesIntoCluster(msg);
+
+				break;
+			
+			case UPDATE:
+				boolean keyUpdated = redisClient.put(msg.getRequest().getFileName(), msg.getRequest().getFile().getChunkId(), msg.getRequest().getFile().getData().toByteArray());
+				logger.info("Global UPDATE for file is ==> "+ keyUpdated +", chunk No. "+ msg.getRequest().getFile().getChunkId());
+				state.getgMon().pushMessagesIntoCluster(msg);
+
+				break;
+			
+			case DELETE: 
+				logger.info("Global read for file ==> "+ msg.getRequest().getFileName());
+				boolean deletedKey = redisClient.delete(msg.getRequest().getFileName());
+				logger.info("GH: handleGlobalMessage: DELETE key globally!!! "+ deletedKey);
+				state.getgMon().pushMessagesIntoCluster(msg);
+
+				break;
+				
+			default:
+				logger.info("GH: No matching cases!");
+				break;
 				
 			}
-			else{
-				state.getgMon().pushMessagesIntoCluster(msg);
-			}
+			
 		}
-		
 	}
+	
+	
 
 	private void globalResponseForwarding(GlobalMessage returnMsg, Channel channel) {
 		
