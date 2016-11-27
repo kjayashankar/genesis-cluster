@@ -143,14 +143,12 @@ public class TaskHandlerHelper {
 		try {
 			RequestMessage requestMessage = msg.getReqMsg();
 			
-			//CommandMessage commandMessage =null;
-			//Task task = state.getTasks().dequeue();
 			
 			if(requestMessage!=null){
 				switch (msg.getReqMsg().getOperation()){
 					
 				case GET: 
-					//logger.info("Key is inside get "+requestMessage.getKey());
+					
 					logger.info("----- Getting key from DataBase ----" + requestMessage.getKey());
 					Map<Integer, byte[]> keyMap = redisClient.get(requestMessage.getKey());
 					
@@ -184,6 +182,11 @@ public class TaskHandlerHelper {
 					break;
 					
 				case PUT: 
+					//To release excessive memory taken up by the file.
+					if(redisClient.noOfChunksExisting(requestMessage.getKey()) > requestMessage.getNoOfChunks()){
+						redisClient.deleteExcess(requestMessage.getKey(), requestMessage.getNoOfChunks());
+					}
+					
 					logger.info("Key is inside put "+requestMessage.getKey());
 					logger.info("----- Updating key into DataBase ----");
 					boolean updateKey = redisClient.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());

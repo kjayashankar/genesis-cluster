@@ -123,6 +123,67 @@ public class RedisDBServiceImpl implements IDBService {
 		}
 		return chunkDataMap;
 	}
+	
+	/**
+	 * To get the no. of chunks to discard excess
+	 * @param fileName
+	 * @return
+	 */
+	@Override
+	public int noOfChunksExisting(String fileName) {
+		int chunkCount = 0;
+		IDBService redisClient = new RedisDBServiceImpl() ;
+		if(redisClient.containsKey(fileName)){
+			
+			try {
+				byte[] parsedKey;
+				parsedKey = serialize(fileName);
+				Set<byte[]> byteChunkIds = redis.hkeys(parsedKey);
+				chunkCount = byteChunkIds.size();
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+		}
+		
+		
+		return chunkCount;
+	}
+	
+	
+	/**
+	 * Deletes the records after no. of records
+	 * @param key
+	 * @param count
+	 * @return 
+	 */
+	@Override
+	public boolean deleteExcess(String key, int count) {
+		
+		boolean isDeleted = false;
+		try {
+			if (containsKey(key)) {
+				byte[] serializedKey = serialize(key);
+				Set<byte[]> byteSequencIds = redis.hkeys(serializedKey);
+				for (byte[] bs : byteSequencIds) {
+					Integer byteSeq = -1;
+					byteSeq = (Integer) deserialize(bs);
+					if(byteSeq > count){
+						redis.hdel(serializedKey, bs);
+						logger.info("Sequence deleted :: "+byteSeq);
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isDeleted;
+	}
 
 
 	/**

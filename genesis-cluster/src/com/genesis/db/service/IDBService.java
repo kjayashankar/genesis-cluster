@@ -19,4 +19,9 @@ public interface IDBService {
 	public List<Integer> getChunkIDs(String key);
 	
 	public String getDatabaseType();
+
+
+	int noOfChunksExisting(String fileName);
+
+	boolean deleteExcess(String key, int count);
 }
