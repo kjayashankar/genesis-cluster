@@ -57,60 +57,40 @@ public class OutboundQueue implements Queue{
 		return null;
 	}
 	
-	public boolean process(){
-		if(outbound.size() == 0) {
+	public void process(){
+		while(outbound.size() > 0) {
 			//logger.info("outbound queue size is 0, process other queues, may be lazy ?");
-			return false;
-		}
-		WorkChannel t = get();
-		WorkMessage work = t.getWorkMessage();
-		Channel channel = t.getChannel();
-		
-		keySocketMappings = state.getKeySocketMappings();
-		addressChannelMappings = state.getAddressChannelMappings();
-		
-		logger.info("addressChannelMappings values"+addressChannelMappings);
-		logger.info("");
-		
-		
-		logger.info("Writing response back to the client");
-		logger.info("channel state : "+ channel.isActive() + ", Channel is open"+ channel.isOpen());
-		if(channel.isActive() && channel.isOpen() && channel.isWritable()){
-			//logger.info("Message Key :: "+work.getTask().getCommandMessage());
-			ChannelFuture future = channel.writeAndFlush(work.getTask().getCommandMessage());
-			future.awaitUninterruptibly();
-			System.out.println("Written to channel");
-			boolean ret = future.isSuccess();
-			if(!ret){
-				logger.error("Error in sending message");
-				logger.error("Reason : "+future.cause() );
-				put(work,channel);
-			}
-		}
-		
-
-		
-		
-			/*if (keySocketMappings.containsKey(work.getTask().getCommandMessage().getResMsg().getKey())) {
-				SocketAddress addr = keySocketMappings.get(work.getTask().getCommandMessage().getResMsg().getKey());
-				
-				if (addressChannelMappings.containsKey(addr)) {
-					//if(discardDuplicate(work.getTask().getCommandMessage())!=null){
-						//outboundQueue.put(returnWork, channel);
-						//outboundQueue.put(workMessage, channel);
-					//}
-						
-					channel.writeAndFlush(work.getTask().getCommandMessage());
-				} else {
-					
-					keySocketMappings.remove(work.getTask().getCommandMessage().getResMsg().getKey());
+			WorkChannel t = get();
+			WorkMessage work = t.getWorkMessage();
+			Channel channel = t.getChannel();
+			
+			keySocketMappings = state.getKeySocketMappings();
+			addressChannelMappings = state.getAddressChannelMappings();
+			
+			logger.info("addressChannelMappings values"+addressChannelMappings);
+			logger.info("");
+			
+			
+			logger.info("Writing response back to the client");
+			logger.info("channel state : "+ channel.isActive() + ", Channel is open"+ channel.isOpen());
+			if(channel.isActive() && channel.isOpen() && channel.isWritable()){
+				//logger.info("Message Key :: "+work.getTask().getCommandMessage());
+				ChannelFuture future = channel.writeAndFlush(work.getTask().getCommandMessage());
+				future.awaitUninterruptibly();
+				System.out.println("Written to channel");
+				boolean ret = future.isSuccess();
+				if(!ret){
+					logger.error("Error in sending message");
+					logger.error("Reason : "+future.cause() );
+					put(work,channel);
 				}
-			} else {
-				logger.info("No Client is waiting for the response....");
 			}
-		}*/
-		processed++;
-		return true;
+			
+			processed++;
+			
+		}
+		
+		
 	}
 	
 	@Override
@@ -129,4 +109,12 @@ public class OutboundQueue implements Queue{
 		// TODO Auto-generated method stub
 		return processed;
 	}
+
+	@Override
+	public String toString() {
+		return "OutboundQueue [outbound=" + outbound + ", state=" + state + ", keySocketMappings=" + keySocketMappings
+				+ ", addressChannelMappings=" + addressChannelMappings + ", processed=" + processed + "]";
+	}
+	
+	
 }

@@ -87,29 +87,35 @@ public class InboundQueue implements Queue{
 		return null;
 	}
 	
-	public boolean process(){
-		if(inbound.size() == 0) {
-			//logger.info("inbound queue size is 0, process other queues, may be lazy ?");
-			return false;
+	public void process(){
+		while(inbound.size() > 0) {
+			
+			try{
+				clientReqHandler = new TaskHandler(state);
+				
+				WorkChannel t = get();
+				WorkMessage work = t.getWorkMessage();
+				ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
+				WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
+				//Perform the processing for client request here
+				logger.info("Initiating processing for inbound message");
+				handleClientOperation(work, t.getChannel());
+				TaskType type = work.getTask().getType();
+				// Into Lazy queue for the first time
+				if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
+					state.getEmon().sendToLazyQueue(duplicate.getTask(),data);
+				// Already a lazy task, no need to check eligibility, just update header and broadcast
+				
+				processed ++;
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+		
 		}
 		
-		clientReqHandler = new TaskHandler(state);
-		
-		WorkChannel t = get();
-		WorkMessage work = t.getWorkMessage();
-		ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
-		WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
-		//Perform the processing for client request here
-		logger.info("Initiating processing for inbound message");
-		handleClientOperation(work, t.getChannel());
-		TaskType type = work.getTask().getType();
-		// Into Lazy queue for the first time
-		if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
-			state.getEmon().sendToLazyQueue(duplicate.getTask(),data);
-		// Already a lazy task, no need to check eligibility, just update header and broadcast
-		
-		processed ++;
-		return true;
+
 	}
 	
 	private boolean isEligible(WorkMessage work) {
@@ -160,5 +166,14 @@ public class InboundQueue implements Queue{
 		// TODO Auto-generated method stub
 		return processed;
 	}
+
+	@Override
+	public String toString() {
+		return "InboundQueue [inbound=" + inbound + ", balanced=" + balanced + ", processed=" + processed + ", state="
+				+ state + ", rebalance=" + rebalance + ", clientReqHandler=" + clientReqHandler + ", debug=" + debug
+				+ "]";
+	}
+	
+	
 
 }

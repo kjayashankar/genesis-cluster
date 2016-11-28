@@ -302,6 +302,29 @@ public class ResourceUtil {
 		return resCmdMessage.build();
 	}
 	
+public static CommandMessage createAckMessage(CommandMessage commandMessage, ServerState state, String msg){
+		
+		//Simple response command message!
+		CommandMessage.Builder resCmdMessage = CommandMessage.newBuilder();
+		RequestMessage reqMsg = commandMessage.getReqMsg();
+		
+		Header.Builder hb = buildHeader( commandMessage, state);
+		
+		ResponseMessage.Builder resMsg = ResponseMessage.newBuilder();
+		
+		resMsg.setSuccess(true);
+		resMsg.setOperation(reqMsg.getOperation());
+		resMsg.setStatusMsg(msg);
+		resMsg.setKey(reqMsg.getKey());
+		resCmdMessage.setHeader(hb);
+		resCmdMessage.setResMsg(resMsg);
+		
+		
+		return resCmdMessage.build();
+	}
+	
+	
+	
 	
 	public static CommandMessage createResponseFailureMessage(CommandMessage commandMessage, ServerState state){
 		//logger.info("Creating failure message ");

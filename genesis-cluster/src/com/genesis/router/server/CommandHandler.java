@@ -120,6 +120,12 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 				state.getEmon().updateMooderator(id,origin);
 			}
 		}
+		if(channel!= null && channel.isActive()){
+			CommandMessage smdMesg = ResourceUtil.createAckMessage(msg, state, "Processed message at Server ==>\n\tOperation is ::"+ msg.getReqMsg().getOperation());
+			channel.writeAndFlush(smdMesg);
+		}
+			
+			
 	}
 
 	/**
