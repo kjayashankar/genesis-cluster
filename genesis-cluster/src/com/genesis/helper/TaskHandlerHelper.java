@@ -100,6 +100,7 @@ public class TaskHandlerHelper {
 			
 			WorkMessage returnWork = ResourceUtil.buildWorkMessageFromCommandMsg(msg, state);
 			
+			logger.info("\nNo. of chunks count sent is "+ msg.getResMsg().getNoOfChunks()+ "");
 			outboundQueue.put(returnWork, channel);
 			
 			Thread.sleep(1000);
@@ -135,7 +136,7 @@ public class TaskHandlerHelper {
 					
 				case GET: 
 					
-					/*
+					
 					logger.info("----- Getting key from DataBase ----" + requestMessage.getKey());
 					Map<Integer, byte[]> keyMap = redisClient.get(requestMessage.getKey());
 					
@@ -154,7 +155,8 @@ public class TaskHandlerHelper {
 							
 						}
 					}
-					*/
+					
+					/*
 					logger.info("----- Getting key from MONGODB DataBase ----" + requestMessage.getKey());
 					Map<Integer, byte[]> keyMapMongo = mongoDBServiceImpl.get(requestMessage.getKey());
 					
@@ -173,7 +175,7 @@ public class TaskHandlerHelper {
 							
 						}
 					}
-					
+					*/
 					
 					break;
 					

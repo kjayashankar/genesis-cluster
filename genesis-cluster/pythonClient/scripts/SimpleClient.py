@@ -271,6 +271,7 @@ class SimpleClient:
         while iter<noChunk:
             iter+=1
             len_buf = self.receiveMsg(self.sd, 4)
+            #print
             print("SC 255 len_buf")
             print len_buf
             msg_len = struct.unpack('>L', len_buf)[0]
@@ -314,4 +315,5 @@ class SimpleClient:
             data = socket.recv(n)
             buf += data
             n -= len(data)
+            print buf
         return buf
