@@ -30,7 +30,7 @@ class SimpleClient:
         #print("Value of port   "+self.port)
         #self.sd.connect((self.host, self.port))
         #self.sd.connect(("169.254.203.33", 4168))
-        self.sd.connect(("127.0.0.1", 4668))
+        self.sd.connect((self.host, self.port))
         print("Connected to Host:", self.host, "@ Port:", self.port)
 
 
@@ -49,8 +49,8 @@ class SimpleClient:
         print("SC 47")
         cm.header.node_id = 6
         cm.header.origin.id = 6
-        cm.header.origin.host = "127.0.0.1"
-        cm.header.origin.port = 4668
+        cm.header.origin.host = self.host
+        cm.header.origin.port = self.port
         cm.header.time = 10000
         #cm.message = name
         clmsg2 = clientMessage_pb2.Operation.Value("GET")
@@ -72,8 +72,8 @@ class SimpleClient:
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 6
         cm.header.origin.id = 6
-        cm.header.origin.host = "127.0.0.1"
-        cm.header.origin.port = 4668
+        cm.header.origin.host = self.host
+        cm.header.origin.port = self.port
         cm.header.time = 10000
         #cm.message = name
         clmsg2 = clientMessage_pb2.Operation.Value("DELETE")
@@ -128,8 +128,8 @@ class SimpleClient:
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 6
         cm.header.origin.id = 1
-        cm.header.origin.host = "127.0.0.1"
-        cm.header.origin.port = 4668
+        cm.header.origin.host = self.host
+        cm.header.origin.port = self.port
         cm.header.time = 10000
         cm.header.destination = 6
         cm.ping = True
@@ -148,8 +148,8 @@ class SimpleClient:
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 6
         cm.header.origin.id = 1
-        cm.header.origin.host = "127.0.0.1"
-        cm.header.origin.port = 4668
+        cm.header.origin.host = self.host
+        cm.header.origin.port = self.port
         cm.header.time = 10000
         cm.header.destination = 6
         clmsg2 = clientMessage_pb2.Operation.Value("POST")
@@ -176,8 +176,8 @@ class SimpleClient:
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 2
         cm.header.origin.id = 1
-        cm.header.origin.host = "127.0.0.1"
-        cm.header.origin.port = 4668
+        cm.header.origin.host = self.host
+        cm.header.origin.port = self.port
         cm.header.time = 10000
         cm.header.destination = 6
         clmsg2 = clientMessage_pb2.Operation.Value("PUT")
@@ -203,8 +203,8 @@ class SimpleClient:
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 2
         cm.header.origin.id = 1
-        cm.header.origin.host = "127.0.0.1"
-        cm.header.origin.port = 4668
+        cm.header.origin.host = self.host
+        cm.header.origin.port = self.port
         cm.header.time = 10000
         cm.header.destination = 6
         clmsg2 = clientMessage_pb2.Operation.Value("POST")
@@ -225,8 +225,8 @@ class SimpleClient:
         cm = pipe_pb2.CommandMessage()
         cm.header.node_id = 2
         cm.header.origin.id = 1
-        cm.header.origin.host = "127.0.0.1"
-        cm.header.origin.port = 4668
+        cm.header.origin.host = self.host
+        cm.header.origin.port = self.port
         cm.header.time = 10000
         cm.header.destination = 6
         clmsg2 = clientMessage_pb2.Operation.Value("PUT")
@@ -255,7 +255,7 @@ class SimpleClient:
         print("SC 218")
         return
 
-    def sendDataGet(self,data,host,port):
+    def sendDataGet(self,data,host,port, path):
 
         print("SC 249")
         msg_len = struct.pack('>L', len(data))
@@ -267,7 +267,8 @@ class SimpleClient:
         #my_array = array('i', r)
         my_array = [] * 6
         iter = 0
-        while iter<3:
+        noChunk = 2
+        while iter<noChunk:
             iter+=1
             len_buf = self.receiveMsg(self.sd, 4)
             print("SC 255 len_buf")
@@ -286,18 +287,19 @@ class SimpleClient:
             index = int(r.resMsg.chunk_no)
             my_array.insert(index, r.resMsg.data)
             print("SC 277 Getting the total number of chunks")
-            print r.resMsg.chunkInfo
-            totalCount = 2
-            self.sd.close
+            noChunk = r.resMsg.no_of_chunks
+            print noChunk
+            #totalCount = 2
+            #self.sd.close
             #if totalCount <2:
             #    break
             print("SC 264 printing the value of r")
-            totalCount -= 1
+            #totalCount -= 1
             #print r
-        fileDir = os.path.dirname(os.path.realpath('__file__'))
-        path = os.path.join(fileDir, '../output/nasa2.jpg')
+        #fileDir = os.path.dirname(os.path.realpath('__file__'))
+        #path = os.path.join(fileDir, '../output/nasa2.jpg')
         for r in my_array:
-            with open(path, "a") as outfile:
+            with open(self.path, "a") as outfile:
                 outfile.write(r)
 
         return my_array
@@ -313,69 +315,3 @@ class SimpleClient:
             buf += data
             n -= len(data)
         return buf
-
-
-
-    '''def receiveMsg(self, socket, waittime):
-
-        print("SC 269")
-        socket.setblocking(0)
-
-        finaldata = []
-
-        data = ''
-
-        start_time = time.time()
-        print("start_time")
-        print start_time
-        print("waittime")
-        print waittime
-
-
-        #while 1:
-
-#            if data and time.time() - start_time > waittime:
-
-#                break
-
- #           elif time.time() - start_time > waittime * 2:
-
-  #              break
-
-        cnt = 0
-        while 1:
-            time.sleep(2)
-            print ("waiting")
-            cnt = cnt + 1
-            print cnt
-            #if data:
-            break
-
-        data = socket.recv(4668)
-        try:
-            print("SC 293")
-            data = socket.recv(4668)
-            print("Data : ")
-            print data
-            print("SC 291")
-            print len(data)
-            if data:
-
-                finaldata.append(data)
-                print("SC 296 78")
-                print len(finaldata)
-                begin = time.time()
-
-            else:
-
-                time.sleep(0.1)
-
-        except:
-
-            pass
-
-        print(finaldata)
-
-        #return ''.join(finaldata)
-        return data
-        '''
