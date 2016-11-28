@@ -240,6 +240,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		leaderB.setHeader(header);
 		leaderB.setSecret(1002);
 		passMsg(leaderB.build());
+		initDragonBeat(1);
 		
 	}
 

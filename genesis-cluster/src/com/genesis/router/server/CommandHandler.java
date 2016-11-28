@@ -72,10 +72,10 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			 logger.info("\nReceived PING from "+ msg.getHeader().getOrigin().getId());
 			 
 		 }
-		// post/update/del request -> update me and pass it to the cluster
+		//post/update/del request -> update me and pass it to the cluster
 		if(msg.hasReqMsg() && (msg.getReqMsg().getOperation() == Operation.POST ||
 				msg.getReqMsg().getOperation() == Operation.PUT)){
-			ByteString data = msg.getReqMsg().getData();
+			byte[] data = msg.getReqMsg().getData().toByteArray();
 			Task.Builder myTask = Task.newBuilder();
 			myTask.setCommandMessage(msg);
 			myTask.setSeqId(myTask.getSeqId());
@@ -97,7 +97,7 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 		// it's a get request -> give if I have it or else pass it in loop
 		else if(msg.hasReqMsg() ){
 			//create a task of it and submit to the inbound along with the channel
-			ByteString data = msg.getReqMsg().getData();
+			byte[] data = msg.getReqMsg().getData().toByteArray();
 
 			String fileName = msg.getReqMsg().getKey();
 			if(DBUtils.isfileExist(fileName)){

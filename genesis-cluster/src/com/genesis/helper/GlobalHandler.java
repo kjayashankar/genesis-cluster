@@ -46,7 +46,7 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, GlobalMessage msg)  {
 		try{
-			logger.info("received global message "+msg);
+			logger.info("received global message ");
 			handleMessage(msg,ctx.channel());		
 		}
 		catch(Exception e){
@@ -55,9 +55,7 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 	}
 	
 	protected void handleMessage(GlobalMessage msg,Channel channel){
-		logger.info("GH: handleMessage() is :: "+ msg.hasRequest());
 		if(msg.hasPing()){
-			logger.info("GH: hasPing() is :: "+ msg.hasPing());
 			state.getgMon().sendPing(msg);
 		}
 		else if(msg.hasResponse()){
@@ -118,30 +116,30 @@ public class GlobalHandler extends SimpleChannelInboundHandler<GlobalMessage> {
 			
 			case WRITE:
 				//This will not write if the file is already there
-				if(msg.getGlobalHeader().getDestinationId() % 2 == 0) {
+				//if(msg.getGlobalHeader().getDestinationId() % 2 == 0) {
 					redisClient.post(msg.getRequest().getFile().getFilename(), msg.getRequest().getFile().getChunkId(), msg.getRequest().getFile().getData().toByteArray());
 					logger.info("Global WRITE for file ==> "+ msg.getRequest().getFileName() +", chunk No. "+ msg.getRequest().getFile().getChunkId());
-				}
+				//}
 				state.getgMon().pushMessagesIntoCluster(msg);
 				break;
 			
 			case UPDATE:
-				if(msg.getGlobalHeader().getDestinationId() % 2 == 0) {
+				//if(msg.getGlobalHeader().getDestinationId() % 2 == 0) {
 					if(redisClient.noOfChunksExisting(msg.getRequest().getFile().getFilename()) > msg.getRequest().getFile().getTotalNoOfChunks()){
 						redisClient.deleteExcess(msg.getRequest().getFile().getFilename(), msg.getRequest().getFile().getTotalNoOfChunks());
 					}
 					boolean keyUpdated = redisClient.put(msg.getRequest().getFile().getFilename(), msg.getRequest().getFile().getChunkId(), msg.getRequest().getFile().getData().toByteArray());
 					logger.info("Global UPDATE for file is ==> "+ keyUpdated +", chunk No. "+ msg.getRequest().getFile().getChunkId());
-				}
+				//}
 				state.getgMon().pushMessagesIntoCluster(msg);
 				break;
 			
 			case DELETE: 
-				if(msg.getGlobalHeader().getDestinationId() % 2 == 0) {
+				//if(msg.getGlobalHeader().getDestinationId() % 2 == 0) {
 					logger.info("Global read for file ==> "+ msg.getRequest().getFileName());
 					boolean deletedKey = redisClient.delete(msg.getRequest().getFileName());
 					logger.info("GH: handleGlobalMessage: DELETE key globally!!! "+ deletedKey);
-				}
+				//}
 				state.getgMon().pushMessagesIntoCluster(msg);
 				break;
 				

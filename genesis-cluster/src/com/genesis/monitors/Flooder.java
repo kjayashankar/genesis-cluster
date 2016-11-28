@@ -52,15 +52,16 @@ public class Flooder implements Runnable{
 			if(state != null) {
 				if(!initialized)
 					init();
-				if(state.state == STATE.LEADER && ++waitCycle % 3 == 1){
+				if(state.state == STATE.LEADER && ++waitCycle % 4 == 1){
 					state.getEmon().passMsg(leader);
 				}
-				else if(state.state == STATE.LEADER && ++waitCycle % 3 == 2) {
+				else if(state.state == STATE.LEADER && ++waitCycle % 4 == 0) {
 					state.getEmon().initDragonBeat(1);
 
 				}
-				else if(state.state == STATE.LEADER && ++waitCycle % 3 == 0){
+				else if(state.state == STATE.LEADER && ++waitCycle % 4 == 3){
 					if(nmon.nmap != null && nmon.nmap.size() > 0 ){
+						logger.info("updating routing tables");
 						List<NodeLinks> nmapOut = nmon.nmap;
 						nmon.updateNodes( new ArrayList<NodeLinks>(), 0);
 						List<NodeLinks> nodes = nmapOut;

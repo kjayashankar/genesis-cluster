@@ -180,7 +180,7 @@ public class FileApp implements CommListener {
 	public static void main(String[] args) {
 		//String host = "10.250.210.182";
 		//String host = "169.254.148.24";
-		String host = "169.254.203.51";
+		String host = "127.0.0.1";
 		
 		int port = 4168;
 		
@@ -228,29 +228,29 @@ public class FileApp implements CommListener {
 		
 		if(paramArr.length < 3){
 			logger.info("Insufficient input parameters. Expected format is :: Filename|operation|key");
-			return; 
+			//return; 
 		}
 		
 		if (paramArr[0]  == null || "".equals(paramArr[0])) {
 			logger.info("No File Name was found...");
-			return;
+			//return;
 		}
 		
-		if (paramArr[1]  == null || "".equals(paramArr[1])) {
+	/*	if (paramArr[1]  == null || "".equals(paramArr[1])) {
 			logger.info("No operation was found...");
-			return;
+			//return;
 		}
 		
 		if (paramArr[2]  == null || "".equals(paramArr[2])) {
 			logger.info("No Key was found, Will be generated and returned in the response." );
-			return;
-		}
+			//return;
+		}*/
 
-		String key = paramArr[2];
+		String key = "nasa2";
 		String fileName = paramArr[0];
 		//FileConversion fileUtil = new FileConversion(); No need made it static utility
 		
-		filePath = "src/com/genesis/file/write/"+fileName;
+		filePath = "src/com/genesis/file/write/nasa2.jpg";
 		outputFilePath = "src/com/genesis/file/write/output/"+fileName;
 		
 		File tempFile = new File(filePath);
@@ -259,7 +259,7 @@ public class FileApp implements CommListener {
 		int noOfChunks = FileConversion.noOfChunksToCreate(bufferedInputStream);
 		keyChunkNoMap.put(key, noOfChunks);
 		
-		switch (paramArr[1]) {
+		switch ("POST") {
 		case "GET":
 					logger.info("performing get from client");
 					mc.get(key);

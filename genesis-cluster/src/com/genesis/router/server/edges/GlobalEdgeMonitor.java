@@ -20,6 +20,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import pipe.work.Work.WorkMessage;
 import routing.Pipe.CommandMessage;
 
 public class GlobalEdgeMonitor {
@@ -68,7 +69,7 @@ public class GlobalEdgeMonitor {
 		}
 	}
 
-	public void forwardRequest(String id, CommandMessage msg,ByteString data) {
+	public void forwardRequest(String id, CommandMessage msg,byte[] data) {
 		GlobalMessage.Builder wm = GlobalMessage.newBuilder();
 		GlobalHeader.Builder header = GlobalHeader.newBuilder();
 		
@@ -76,7 +77,7 @@ public class GlobalEdgeMonitor {
 		header.setDestinationId(state.getGlobalConf().getClusterId());
 		header.setClusterId(state.getGlobalConf().getClusterId());
 		
-		wm.setGlobalHeader(header);
+		wm.setGlobalHeader(header.build());
 		
 		Request.Builder request = Request.newBuilder();
 		request.setRequestId(id);
@@ -89,27 +90,30 @@ public class GlobalEdgeMonitor {
 		switch(msg.getReqMsg().getOperation()){
 			case POST:
 				request.setRequestType(RequestType.WRITE);
-				file.setData(data);
+				file.setData(ByteString.copyFrom(data));
 				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
+				request.setFile(file.build());
+
 				break;
 		
 			case PUT:
 				request.setRequestType(RequestType.UPDATE);
-				file.setData(data);
+				file.setData(ByteString.copyFrom(data));
 				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
+				request.setFile(file.build());
+
 				break;
 				
 			case DEL:
 				request.setRequestType(RequestType.DELETE);
+				request.setFileName(msg.getReqMsg().getKey());
 				break;
 			case GET:
 				request.setRequestType(RequestType.READ);
+				request.setFileName(msg.getReqMsg().getKey());
 				break;
 		}
-		request.setFile(file);
-		request.setFileName(msg.getReqMsg().getKey());
-		wm.setRequest(request);
-		
+		wm.setRequest(request.build());
 		for(EdgeInfo ei : globalOutboud.map.values()){
 			if(ei.getChannel() != null && ei.isActive()){
 				state.getGlobalOutboundQueue().put(wm.build(), ei.getChannel());
