@@ -87,13 +87,12 @@ public class InboundQueue implements Queue{
 		return null;
 	}
 	
-	public boolean process(){
+	public void process(){
 		try{
 			logger.info("Initiating processing for inbound message");
 
 			while(inbound.size() > 0) {		
 				clientReqHandler = new TaskHandler(state);
-				
 				WorkChannel t = get();
 				WorkMessage work = t.getWorkMessage();
 				ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
@@ -105,8 +104,7 @@ public class InboundQueue implements Queue{
 				// Into Lazy queue for the first time
 				if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
 					state.getEmon().sendToLazyQueue(duplicate.getTask(),data);
-				// Already a lazy task, no need to check eligibility, just update header and broadcast
-				
+				// Already a lazy task, no need to check eligibility, just update header and broadcast		
 				processed ++;
 			}
 		}
@@ -115,7 +113,6 @@ public class InboundQueue implements Queue{
 			logger.error("exception "+e);
 			e.printStackTrace();
 		}
-		return false;
 	}
 	
 	private boolean isEligible(WorkMessage work) {
@@ -166,5 +163,14 @@ public class InboundQueue implements Queue{
 		// TODO Auto-generated method stub
 		return processed;
 	}
+
+	@Override
+	public String toString() {
+		return "InboundQueue [inbound=" + inbound + ", balanced=" + balanced + ", processed=" + processed + ", state="
+				+ state + ", rebalance=" + rebalance + ", clientReqHandler=" + clientReqHandler + ", debug=" + debug
+				+ "]";
+	}
+	
+	
 
 }

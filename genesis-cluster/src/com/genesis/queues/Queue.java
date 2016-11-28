@@ -12,7 +12,7 @@ public interface Queue {
 		
 	int getSize();
 	
-	boolean process();
+	void process();
 	
 	WorkMessage rebalance();
 

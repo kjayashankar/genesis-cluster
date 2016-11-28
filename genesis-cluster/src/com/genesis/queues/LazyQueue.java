@@ -63,29 +63,34 @@ public class LazyQueue implements Queue {
 		return null;
 	}
 	
-	public boolean process(){
-		if(lazy.size() == 0) {
-			logger.info("lazy queue size is 0, process other tasks ?");
-			return false;
+	public void process(){
+		if(lazy.size() > 0) {
+			logger.info("lazy queue size > 0, processing tasks");
+			try{
+				WorkChannel t = get();
+				WorkMessage work = t.getWorkMessage();
+				
+				clientReqHandler = new TaskHandler(state);
+				
+				ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
+				WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
+				//Perform the processing for client request here
+				logger.info("Initiating processing for inbound message");
+				handleClientOperation(work, t.getChannel());
+				TaskType type = work.getTask().getType();
+				
+				logger.info("processing lazy task +++ " +work);
+				processed ++;
+				// Get data while replicating it and send it to this method
+				state.getEmon().updateAndBoradCast(work.getTask(),data);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			
+			
 		}
-		WorkChannel t = get();
-		WorkMessage work = t.getWorkMessage();
 		
-		clientReqHandler = new TaskHandler(state);
-		
-		ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
-		WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
-		//Perform the processing for client request here
-		logger.info("Initiating processing for inbound message");
-		handleClientOperation(work, t.getChannel());
-		TaskType type = work.getTask().getType();
-		
-		logger.info("processing lazy task +++ " +work);
-		processed ++;
-		// Get data while replicating it and send it to this method
-		state.getEmon().updateAndBoradCast(work.getTask(),data);
-		
-		return true;
+
 	}
 
 	@Override
@@ -113,4 +118,12 @@ public class LazyQueue implements Queue {
 		clientReqHandler.handleTask(workMessage, channel);
 		
 	}
+
+	@Override
+	public String toString() {
+		return "LazyQueue [lazy=" + lazy + ", state=" + state + ", clientReqHandler=" + clientReqHandler
+				+ ", processed=" + processed + "]";
+	}
+	
+	
 }

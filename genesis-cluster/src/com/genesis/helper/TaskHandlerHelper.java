@@ -99,23 +99,6 @@ public class TaskHandlerHelper {
 			
 			outboundQueue.put(returnWork, channel);
 			
-			/*if (keySocketMappings.containsKey(msg.getResMsg().getKey())) {
-				SocketAddress addr = keySocketMappings.get(msg.getResMsg().getKey());
-				
-				if (addressChannelMappings.containsKey(addr)) {
-					if(discardDuplicate(msg)!=null){
-						outboundQueue.put(returnWork, channel);
-						//outboundQueue.put(workMessage, channel);
-					}
-						
-						//addressChannelMappings.get(addr).writeAndFlush(msg);
-				} else {
-					
-					keySocketMappings.remove(msg.getResMsg().getKey());
-				}
-			} else {
-				logger.info("No Client is waiting for the response....");
-			}*/
 			Thread.sleep(1000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,17 +150,7 @@ public class TaskHandlerHelper {
 							
 						}
 					}
-					/*Map<Integer, byte[]> keyMapMongo = mongoDBServiceImpl.get(requestMessage.getKey());
-					if(keyMapMongo.isEmpty()){
-						CommandMessage failureMsg = ResourceUtil.createResponseFailureMessage(msg, state);
-						 doMessageForwardingToClient(failureMsg, channel);
-					} else {
-						logger.info("Sending message for success get");
-						for(Map.Entry<Integer, byte[]> entry: keyMapMongo.entrySet()){
-							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state);
-							doMessageForwardingToClient(returnMsg, channel);
-						}
-					}*/
+					
 					
 					break;
 					
@@ -221,6 +194,7 @@ public class TaskHandlerHelper {
 					
 				case STEAL: 
 					//do nothing
+					break;
 					
 				default: 
 					logger.info("---- No matching operation was found ----");
