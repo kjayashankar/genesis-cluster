@@ -20,7 +20,7 @@ import common_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='clientMessage.proto',
   package='',
-  serialized_pb=_b('\n\x13\x63lientMessage.proto\x1a\x0c\x63ommon.proto\"y\n\x0eRequestMessage\x12\x1d\n\toperation\x18\x05 \x01(\x0e\x32\n.Operation\x12\x0b\n\x03key\x18\x06 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x07 \x01(\x0c\x12\x0e\n\x06seq_no\x18\x08 \x01(\x05\x12\x1d\n\tchunkInfo\x18\x10 \x01(\x0b\x32\n.ChunkInfo\"A\n\tChunkInfo\x12\x14\n\x0cno_of_chunks\x18\x0f \x02(\x05\x12\x10\n\x08seq_size\x18\x02 \x01(\x03\x12\x0c\n\x04time\x18\x03 \x01(\x03\"\xcd\x01\n\x0fResponseMessage\x12\x1d\n\toperation\x18\t \x01(\x0e\x32\n.Operation\x12\x0f\n\x07success\x18\n \x01(\x08\x12\x0b\n\x03key\x18\x0b \x01(\t\x12\x10\n\x08\x63hunk_no\x18\x0c \x01(\x05\x12\x12\n\nstatus_msg\x18\r \x01(\t\x12\x1b\n\x07\x66\x61ilure\x18\x14 \x01(\x0b\x32\x08.FailureH\x00\x12\x0e\n\x04\x64\x61ta\x18\x13 \x01(\x0cH\x00\x12\x1f\n\tchunkInfo\x18\x12 \x01(\x0b\x32\n.ChunkInfoH\x00\x42\t\n\x07payload*>\n\tOperation\x12\x07\n\x03GET\x10\x01\x12\x08\n\x04POST\x10\x02\x12\x07\n\x03PUT\x10\x03\x12\n\n\x06\x44\x45LETE\x10\x04\x12\t\n\x05STEAL\x10\x05\x42\r\n\x0b\x63om.message')
+  serialized_pb=_b('\n\x13\x63lientMessage.proto\x1a\x0c\x63ommon.proto\"\x8f\x01\n\x0eRequestMessage\x12\x1d\n\toperation\x18\x05 \x01(\x0e\x32\n.Operation\x12\x0b\n\x03key\x18\x06 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x07 \x01(\x0c\x12\x0e\n\x06seq_no\x18\x08 \x01(\x05\x12\x14\n\x0cno_of_chunks\x18\x0f \x01(\x05\x12\x1d\n\tchunkInfo\x18\x10 \x01(\x0b\x32\n.ChunkInfo\"A\n\tChunkInfo\x12\x14\n\x0cno_of_chunks\x18\x0f \x02(\x05\x12\x10\n\x08seq_size\x18\x02 \x01(\x03\x12\x0c\n\x04time\x18\x03 \x01(\x03\"\xcd\x01\n\x0fResponseMessage\x12\x1d\n\toperation\x18\t \x01(\x0e\x32\n.Operation\x12\x0f\n\x07success\x18\n \x01(\x08\x12\x0b\n\x03key\x18\x0b \x01(\t\x12\x10\n\x08\x63hunk_no\x18\x0c \x01(\x05\x12\x12\n\nstatus_msg\x18\r \x01(\t\x12\x1b\n\x07\x66\x61ilure\x18\x14 \x01(\x0b\x32\x08.FailureH\x00\x12\x0e\n\x04\x64\x61ta\x18\x13 \x01(\x0cH\x00\x12\x1f\n\tchunkInfo\x18\x12 \x01(\x0b\x32\n.ChunkInfoH\x00\x42\t\n\x07payload*;\n\tOperation\x12\x07\n\x03GET\x10\x01\x12\x08\n\x04POST\x10\x02\x12\x07\n\x03PUT\x10\x03\x12\x07\n\x03\x44\x45L\x10\x04\x12\t\n\x05STEAL\x10\x05\x42\r\n\x0b\x63om.message')
   ,
   dependencies=[common_pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -44,7 +44,7 @@ _OPERATION = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='DELETE', index=3, number=4,
+      name='DEL', index=3, number=4,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
@@ -54,8 +54,8 @@ _OPERATION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=435,
-  serialized_end=497,
+  serialized_start=458,
+  serialized_end=517,
 )
 _sym_db.RegisterEnumDescriptor(_OPERATION)
 
@@ -63,7 +63,7 @@ Operation = enum_type_wrapper.EnumTypeWrapper(_OPERATION)
 GET = 1
 POST = 2
 PUT = 3
-DELETE = 4
+DEL = 4
 STEAL = 5
 
 
@@ -104,7 +104,14 @@ _REQUESTMESSAGE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='chunkInfo', full_name='RequestMessage.chunkInfo', index=4,
+      name='no_of_chunks', full_name='RequestMessage.no_of_chunks', index=4,
+      number=15, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='chunkInfo', full_name='RequestMessage.chunkInfo', index=5,
       number=16, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -121,8 +128,8 @@ _REQUESTMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=37,
-  serialized_end=158,
+  serialized_start=38,
+  serialized_end=181,
 )
 
 
@@ -165,8 +172,8 @@ _CHUNKINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=160,
-  serialized_end=225,
+  serialized_start=183,
+  serialized_end=248,
 )
 
 
@@ -247,8 +254,8 @@ _RESPONSEMESSAGE = _descriptor.Descriptor(
       name='payload', full_name='ResponseMessage.payload',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=228,
-  serialized_end=433,
+  serialized_start=251,
+  serialized_end=456,
 )
 
 _REQUESTMESSAGE.fields_by_name['operation'].enum_type = _OPERATION

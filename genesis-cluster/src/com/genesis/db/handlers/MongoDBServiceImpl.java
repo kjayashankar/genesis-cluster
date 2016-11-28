@@ -198,7 +198,7 @@ public class MongoDBServiceImpl implements IDBService {
 			while (cursor.hasNext()) {
 				int iChunkId = 0;
 				DBObject nextDocument = cursor.next();
-				String details = nextDocument.toString();
+				//String details = nextDocument.toString();
 				iChunkId =  Integer.parseInt((String) nextDocument.get("chunkId"));
 				chunkIds.add(iChunkId);
 
@@ -215,6 +215,10 @@ public class MongoDBServiceImpl implements IDBService {
 		// TODO Auto-generated method stub
 		boolean done = false;
 		String result = "";
+		logger.info("MDSI ----- Starting data storage POST key into MongoDB DataBase  ----");
+		logger.info("MDSI 219 requestMessage.getKey() "+key);
+		logger.info("MDSI 220requestMessage.getSeqNo() "+chunkId);
+		//logger.info("MDSI 221 requestMessage.getData().toByteArray() "+value.toString());
         
         // Creating serverside mongoDB which is listening on port 27017 collisionPrevention
         
