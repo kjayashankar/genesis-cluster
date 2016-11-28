@@ -305,6 +305,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		logger.info("inbound queue size [" +qMon.getInboundQueue().getSize()+"]");
 		logger.info("Outbouond queue size ["+qMon.getOutboundQueue().getSize()+"]");
 		logger.info("Lazy queue size ["+qMon.getLazyQueue().getSize()+"]");
+		logger.info("Global outbound worker queue ["+state.getGlobalOutboundQueue().size()+"]");
 
 	}
 
@@ -700,8 +701,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 					wb.setHeader(hb);
 					wb.setSteal(true);
 					wb.setSecret(1);
-					logger.info("the steal request is being sent to node "+ei.getRef());
-					logger.info("steal msg is "+wb);
 					ei.getChannel().writeAndFlush(wb.build());
 				}
 			}
@@ -710,11 +709,10 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 	
 	private boolean shouldStealTask() {
-		{
-			//if(qMon.getInboundQueue().getSize() < 2)
-				return true;
-		}
-		//return false;
+		
+		if(qMon.getInboundQueue().getSize() < 2)
+			return true;
+		return false;
 	}
 	
 	public void sendToLazyQueue(Task oldTask, ByteString data) {

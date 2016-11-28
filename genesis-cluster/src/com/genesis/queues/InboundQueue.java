@@ -88,28 +88,34 @@ public class InboundQueue implements Queue{
 	}
 	
 	public boolean process(){
-		if(inbound.size() == 0) {
-			//logger.info("inbound queue size is 0, process other queues, may be lazy ?");
-			return false;
+		try{
+			logger.info("Initiating processing for inbound message");
+
+			while(inbound.size() > 0) {		
+				clientReqHandler = new TaskHandler(state);
+				
+				WorkChannel t = get();
+				WorkMessage work = t.getWorkMessage();
+				ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
+				WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
+				//Perform the processing for client request here
+				logger.info("Initiating processing for inbound message");
+				handleClientOperation(work, t.getChannel());
+				TaskType type = work.getTask().getType();
+				// Into Lazy queue for the first time
+				if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
+					state.getEmon().sendToLazyQueue(duplicate.getTask(),data);
+				// Already a lazy task, no need to check eligibility, just update header and broadcast
+				
+				processed ++;
+			}
 		}
-		
-		clientReqHandler = new TaskHandler(state);
-		
-		WorkChannel t = get();
-		WorkMessage work = t.getWorkMessage();
-		ByteString data = work.getTask().getCommandMessage().getReqMsg().getData(); 
-		WorkMessage.Builder duplicate = WorkMessage.newBuilder(work);
-		//Perform the processing for client request here
-		logger.info("Initiating processing for inbound message");
-		handleClientOperation(work, t.getChannel());
-		TaskType type = work.getTask().getType();
-		// Into Lazy queue for the first time
-		if((type == null || type == TaskType.SIMPLETASK) && isEligible(work))
-			state.getEmon().sendToLazyQueue(duplicate.getTask(),data);
-		// Already a lazy task, no need to check eligibility, just update header and broadcast
-		
-		processed ++;
-		return true;
+		catch(Exception e){
+			logger.error("error in inboun queue");
+			logger.error("exception "+e);
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	private boolean isEligible(WorkMessage work) {

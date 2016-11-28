@@ -21,9 +21,9 @@ class PythonMessageClient:
         print("Enter the port of Server: ");
         # port = int(raw_input());
 
-        port = 4668;
-        #host = "169.254.203.33"
-        host = "127.0.0.1"
+        port = 4168;
+        host = "169.254.203.51"
+        #host = "127.0.0.1"
         bc = SimpleClient(host, port)
         bc.startSession()
         # bc.join(name)

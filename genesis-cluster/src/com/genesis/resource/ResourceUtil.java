@@ -571,9 +571,9 @@ public class ResourceUtil {
 			
 				GlobalMessage.Builder responseMsg = GlobalMessage.newBuilder();
 				responseMsg.setGlobalHeader(gh);
-				logger.info("response === " +res.getRequestId());
+				logger.info("response === " +res.build());
 				res.setFile(fb);
-				responseMsg.setResponse(res);
+				responseMsg.setResponse(res.build());
 				//logger.info("response msg "+responseMsg.build());
 				return responseMsg.build();
 		

@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.genesis.helper.GlobalInit;
+import com.genesis.queues.GlobalQueue;
 import com.genesis.router.container.GlobalConf.RoutingEntry;
 import com.genesis.router.server.ServerState;
+import com.google.protobuf.ByteString;
 
 import global.Global.File;
 import global.Global.GlobalHeader;
@@ -57,6 +59,7 @@ public class GlobalEdgeMonitor {
 					
 					ei.setChannel(channel.channel());
 					ei.setActive(channel.channel().isActive());
+					ei.getChannel().writeAndFlush(global);
 				}
 				catch(Exception e){
 					logger.error("Failed connecting to other cluster node "+ei.getRef()+" , i'm clueless");
@@ -65,7 +68,7 @@ public class GlobalEdgeMonitor {
 		}
 	}
 
-	public void forwardRequest(String id, CommandMessage msg) {
+	public void forwardRequest(String id, CommandMessage msg,ByteString data) {
 		GlobalMessage.Builder wm = GlobalMessage.newBuilder();
 		GlobalHeader.Builder header = GlobalHeader.newBuilder();
 		
@@ -86,13 +89,13 @@ public class GlobalEdgeMonitor {
 		switch(msg.getReqMsg().getOperation()){
 			case POST:
 				request.setRequestType(RequestType.WRITE);
-				file.setData(msg.getReqMsg().getData());
+				file.setData(data);
 				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
 				break;
 		
 			case PUT:
 				request.setRequestType(RequestType.UPDATE);
-				file.setData(msg.getReqMsg().getData());
+				file.setData(data);
 				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
 				break;
 				
@@ -109,7 +112,7 @@ public class GlobalEdgeMonitor {
 		
 		for(EdgeInfo ei : globalOutboud.map.values()){
 			if(ei.getChannel() != null && ei.isActive()){
-				ei.getChannel().writeAndFlush(wm.build());
+				state.getGlobalOutboundQueue().put(wm.build(), ei.getChannel());
 			}
 			else{
 				try{
@@ -127,7 +130,7 @@ public class GlobalEdgeMonitor {
 						ei.setChannel(channel.channel());
 						ei.setActive(channel.channel().isActive());
 						Thread.sleep(50);
-						channel.channel().writeAndFlush(wm.build());
+						state.getGlobalOutboundQueue().put(wm.build(), ei.getChannel());
 					}
 				}
 				catch(Exception e){
@@ -169,5 +172,10 @@ public class GlobalEdgeMonitor {
 				}
 			}
 		}
+	}
+
+	public GlobalQueue getQueue() {
+		// TODO Auto-generated method stub
+		return state.getGlobalOutboundQueue();
 	}
 }

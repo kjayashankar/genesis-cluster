@@ -28,14 +28,19 @@ public class Worker extends Thread{
 	@Override
 	public void run() {
 		while(1==1) {
-			if(state != null && state.getQueueMonitor() != null) {
-				Queue queue = state.getQueueMonitor().getQueue();
-				queue.process();
+			try{
+				if(state != null && state.getQueueMonitor() != null) {
+					Queue queue = state.getQueueMonitor().getQueue();
+					queue.process();
+				}
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-			
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
+			catch(Exception e){
 				e.printStackTrace();
 			}
 		}

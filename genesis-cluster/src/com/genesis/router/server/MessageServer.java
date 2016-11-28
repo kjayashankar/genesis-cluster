@@ -30,7 +30,8 @@ import com.genesis.monitors.Flooder;
 import com.genesis.monitors.NetworkMonitor;
 import com.genesis.monitors.QueueMonitor;
 import com.genesis.monitors.StealerThread;
-import com.genesis.queues.workers.GlobalOutWorker;
+import com.genesis.queues.GlobalQueue;
+import com.genesis.queues.workers.GlobalWorker;
 import com.genesis.queues.workers.ThreadPool;
 import com.genesis.router.container.GlobalConf;
 import com.genesis.router.container.RoutingConf;
@@ -102,10 +103,11 @@ public class MessageServer {
 		Thread cthread = new Thread(comm);
 		cthread.start();
 		state.setGlobalConf(globalConf);
+		state.setGlobalOutboundQueue(new GlobalQueue());
 		
-		
-		GlobalOutWorker worker = new GlobalOutWorker(state);
-		worker.start();
+		GlobalWorker worker = new GlobalWorker(state);
+		Thread glob = new Thread(worker);
+		glob.start();
 		
 		StartGlobalCommunication global = new StartGlobalCommunication(globalConf,state);
 		Thread globalThread = new Thread(global);
@@ -113,12 +115,13 @@ public class MessageServer {
 		
 		StartCommandCommunication comm2 = new StartCommandCommunication(conf);
 		logger.info("Command starting");
-		if (background) {
+		if (!background) {
 			Thread cthread2 = new Thread(comm2);
 			cthread2.start();
 		} else {
 			comm2.run();
 		}
+		
 		
 			
 	}
@@ -308,10 +311,6 @@ public class MessageServer {
 		public StartWorkCommunication(RoutingConf conf) {
 			if (conf == null)
 				throw new RuntimeException("missing conf");
-
-			
-			
-			
 			
 			EdgeMonitor emon = new EdgeMonitor(state);
 			Thread t = new Thread(emon);

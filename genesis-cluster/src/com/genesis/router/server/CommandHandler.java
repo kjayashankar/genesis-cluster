@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.genesis.db.handlers.DBUtils;
 import com.genesis.queues.Queue;
 import com.genesis.resource.ResourceUtil;
+import com.google.protobuf.ByteString;
 import com.message.ClientMessage.Operation;
 
 import io.netty.channel.Channel;
@@ -74,6 +75,7 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 		// post/update/del request -> update me and pass it to the cluster
 		if(msg.hasReqMsg() && (msg.getReqMsg().getOperation() == Operation.POST ||
 				msg.getReqMsg().getOperation() == Operation.PUT)){
+			ByteString data = msg.getReqMsg().getData();
 			Task.Builder myTask = Task.newBuilder();
 			myTask.setCommandMessage(msg);
 			myTask.setSeqId(myTask.getSeqId());
@@ -85,7 +87,7 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			// updated mine, lets flood others!		
 			
 			String id = msg.getReqMsg().getKey();
-			state.getgMon().forwardRequest(id,msg);
+			state.getgMon().forwardRequest(id,msg,data);
 			Node origin = msg.getHeader().getOrigin();
 			state.moderator.put(id, channel);
 			state.getEmon().updateMooderator(id,origin);
@@ -95,7 +97,8 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 		// it's a get request -> give if I have it or else pass it in loop
 		else if(msg.hasReqMsg() ){
 			//create a task of it and submit to the inbound along with the channel
-			
+			ByteString data = msg.getReqMsg().getData();
+
 			String fileName = msg.getReqMsg().getKey();
 			if(DBUtils.isfileExist(fileName)){
 				Task.Builder myTask = Task.newBuilder();
@@ -109,12 +112,12 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 				logger.info("Client Message added to the Inbound Queue.");
 				if(msg.getReqMsg().getOperation() == Operation.DEL){
 					String id = msg.getReqMsg().getKey();
-					state.getgMon().forwardRequest(id,msg);
+					state.getgMon().forwardRequest(id,msg,data);
 				}				
 			}
 			else {
 				String id = UUID.randomUUID().toString();
-				state.getgMon().forwardRequest(id,msg);
+				state.getgMon().forwardRequest(id,msg,data);
 				Node origin = msg.getHeader().getOrigin();
 				state.moderator.put(id, channel);
 				state.getEmon().updateMooderator(id,origin);

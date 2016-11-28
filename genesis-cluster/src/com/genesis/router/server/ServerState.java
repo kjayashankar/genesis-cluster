@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.genesis.monitors.NetworkMonitor;
 import com.genesis.monitors.QueueMonitor;
-import com.genesis.queues.GlobalOutboundQueue;
+import com.genesis.queues.GlobalQueue;
 import com.genesis.router.container.GlobalConf;
 import com.genesis.router.container.RoutingConf;
 import com.genesis.router.server.edges.EdgeMonitor;
@@ -23,7 +23,7 @@ public class ServerState {
 	public HashMap<String,Channel> moderator = new HashMap<String,Channel>();
 	private ConcurrentHashMap<String, SocketAddress> keySocketMappings = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<SocketAddress, Channel> addressChannelMappings = new ConcurrentHashMap<>();
-	private GlobalOutboundQueue globalOutboundQueue = new GlobalOutboundQueue();
+	private GlobalQueue globalOutboundQueue ;
 	public STATE state = STATE.ORPHAN;
 	private GlobalEdgeMonitor gMon; 
 	private GlobalConf globalConf;
@@ -102,9 +102,12 @@ public class ServerState {
 		this.gMon = gMon;		
 	}
 
-	public GlobalOutboundQueue getGlobalOutboundQueue() {
+	public GlobalQueue getGlobalOutboundQueue() {
 		// TODO Auto-generated method stub
 		return globalOutboundQueue;
 	}
 
+	public void setGlobalOutboundQueue(GlobalQueue globalQueue) {
+		this.globalOutboundQueue = globalQueue;
+	}
 }

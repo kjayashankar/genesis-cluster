@@ -58,6 +58,8 @@ public class OutboundQueue implements Queue{
 	}
 	
 	public boolean process(){
+		logger.info("Initiating processing for outbound message");
+
 		if(outbound.size() == 0) {
 			//logger.info("outbound queue size is 0, process other queues, may be lazy ?");
 			return false;
