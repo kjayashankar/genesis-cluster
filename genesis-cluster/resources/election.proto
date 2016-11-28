@@ -8,6 +8,7 @@ message LeaderStatus {
    optional string leader_host= 3;
    optional int32 leader_id = 4;
    optional int32 leader_port = 5;
+
    enum LeaderState {
       LEADERUNKNOWN = 1;
       LEADERALIVE = 2;

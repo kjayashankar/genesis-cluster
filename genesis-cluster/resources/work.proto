@@ -8,6 +8,7 @@ import "pipe.proto";
 
 
 message WorkState {
+   required int32 term = 3;
    required int32 enqueued = 1;
    required int32 processed = 2;
 }

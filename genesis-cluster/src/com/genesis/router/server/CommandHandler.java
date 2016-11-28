@@ -73,7 +73,6 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 		 }
 		// post/update/del request -> update me and pass it to the cluster
 		if(msg.hasReqMsg() && (msg.getReqMsg().getOperation() == Operation.POST ||
-				msg.getReqMsg().getOperation() == Operation.DEL ||
 				msg.getReqMsg().getOperation() == Operation.PUT)){
 			Task.Builder myTask = Task.newBuilder();
 			myTask.setCommandMessage(msg);
@@ -94,7 +93,7 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 			return;
 		}
 		// it's a get request -> give if I have it or else pass it in loop
-		else if(msg.hasReqMsg()){
+		else if(msg.hasReqMsg() ){
 			//create a task of it and submit to the inbound along with the channel
 			
 			String fileName = msg.getReqMsg().getKey();
@@ -108,6 +107,10 @@ public class CommandHandler extends SimpleChannelInboundHandler<CommandMessage> 
 				inboundQueue.put(workMessage, channel);
 				
 				logger.info("Client Message added to the Inbound Queue.");
+				if(msg.getReqMsg().getOperation() == Operation.DEL){
+					String id = msg.getReqMsg().getKey();
+					state.getgMon().forwardRequest(id,msg);
+				}				
 			}
 			else {
 				String id = UUID.randomUUID().toString();

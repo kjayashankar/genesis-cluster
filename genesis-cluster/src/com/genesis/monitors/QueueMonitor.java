@@ -36,14 +36,14 @@ public class QueueMonitor {
 		if(state != null && idleStatus() ){
 			return lazyQueue;
 		}
-		if(flag == 0){
-			flag++;
+		else if(load(inboundQueue) > load(outboundQueue))
 			return inboundQueue;
-		}
-		else {
-			flag--;
-			return outboundQueue;
-		}
+		
+		return outboundQueue;
+	}
+
+	private int load(Queue queue){
+		return queue.getSize();
 	}
 	
 	private boolean idleStatus() {

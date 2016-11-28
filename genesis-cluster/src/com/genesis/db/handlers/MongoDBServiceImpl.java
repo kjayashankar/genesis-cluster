@@ -336,4 +336,18 @@ public class MongoDBServiceImpl implements IDBService {
 		return "MongoDB Database";
 	}
 
+
+	@Override
+	public int noOfChunksExisting(String fileName) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public boolean deleteExcess(String key, int count) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

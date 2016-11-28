@@ -95,6 +95,15 @@ public final class Work {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <code>required int32 term = 3;</code>
+     */
+    boolean hasTerm();
+    /**
+     * <code>required int32 term = 3;</code>
+     */
+    int getTerm();
+
+    /**
      * <code>required int32 enqueued = 1;</code>
      */
     boolean hasEnqueued();
@@ -165,13 +174,18 @@ public final class Work {
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+              bitField0_ |= 0x00000002;
               enqueued_ = input.readInt32();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               processed_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000001;
+              term_ = input.readInt32();
               break;
             }
           }
@@ -214,13 +228,28 @@ public final class Work {
     }
 
     private int bitField0_;
+    public static final int TERM_FIELD_NUMBER = 3;
+    private int term_;
+    /**
+     * <code>required int32 term = 3;</code>
+     */
+    public boolean hasTerm() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required int32 term = 3;</code>
+     */
+    public int getTerm() {
+      return term_;
+    }
+
     public static final int ENQUEUED_FIELD_NUMBER = 1;
     private int enqueued_;
     /**
      * <code>required int32 enqueued = 1;</code>
      */
     public boolean hasEnqueued() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required int32 enqueued = 1;</code>
@@ -235,7 +264,7 @@ public final class Work {
      * <code>required int32 processed = 2;</code>
      */
     public boolean hasProcessed() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>required int32 processed = 2;</code>
@@ -245,6 +274,7 @@ public final class Work {
     }
 
     private void initFields() {
+      term_ = 0;
       enqueued_ = 0;
       processed_ = 0;
     }
@@ -254,6 +284,10 @@ public final class Work {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
+      if (!hasTerm()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       if (!hasEnqueued()) {
         memoizedIsInitialized = 0;
         return false;
@@ -269,11 +303,14 @@ public final class Work {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(1, enqueued_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(2, processed_);
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(3, term_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -284,13 +321,17 @@ public final class Work {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, enqueued_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, processed_);
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, term_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -409,10 +450,12 @@ public final class Work {
 
       public Builder clear() {
         super.clear();
-        enqueued_ = 0;
+        term_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        processed_ = 0;
+        enqueued_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
+        processed_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -444,9 +487,13 @@ public final class Work {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.enqueued_ = enqueued_;
+        result.term_ = term_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
+        }
+        result.enqueued_ = enqueued_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
         }
         result.processed_ = processed_;
         result.bitField0_ = to_bitField0_;
@@ -465,6 +512,9 @@ public final class Work {
 
       public Builder mergeFrom(pipe.work.Work.WorkState other) {
         if (other == pipe.work.Work.WorkState.getDefaultInstance()) return this;
+        if (other.hasTerm()) {
+          setTerm(other.getTerm());
+        }
         if (other.hasEnqueued()) {
           setEnqueued(other.getEnqueued());
         }
@@ -476,6 +526,10 @@ public final class Work {
       }
 
       public final boolean isInitialized() {
+        if (!hasTerm()) {
+          
+          return false;
+        }
         if (!hasEnqueued()) {
           
           return false;
@@ -506,12 +560,44 @@ public final class Work {
       }
       private int bitField0_;
 
+      private int term_ ;
+      /**
+       * <code>required int32 term = 3;</code>
+       */
+      public boolean hasTerm() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int32 term = 3;</code>
+       */
+      public int getTerm() {
+        return term_;
+      }
+      /**
+       * <code>required int32 term = 3;</code>
+       */
+      public Builder setTerm(int value) {
+        bitField0_ |= 0x00000001;
+        term_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 term = 3;</code>
+       */
+      public Builder clearTerm() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        term_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int enqueued_ ;
       /**
        * <code>required int32 enqueued = 1;</code>
        */
       public boolean hasEnqueued() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required int32 enqueued = 1;</code>
@@ -523,7 +609,7 @@ public final class Work {
        * <code>required int32 enqueued = 1;</code>
        */
       public Builder setEnqueued(int value) {
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
         enqueued_ = value;
         onChanged();
         return this;
@@ -532,7 +618,7 @@ public final class Work {
        * <code>required int32 enqueued = 1;</code>
        */
       public Builder clearEnqueued() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         enqueued_ = 0;
         onChanged();
         return this;
@@ -543,7 +629,7 @@ public final class Work {
        * <code>required int32 processed = 2;</code>
        */
       public boolean hasProcessed() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required int32 processed = 2;</code>
@@ -555,7 +641,7 @@ public final class Work {
        * <code>required int32 processed = 2;</code>
        */
       public Builder setProcessed(int value) {
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         processed_ = value;
         onChanged();
         return this;
@@ -564,7 +650,7 @@ public final class Work {
        * <code>required int32 processed = 2;</code>
        */
       public Builder clearProcessed() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         processed_ = 0;
         onChanged();
         return this;
@@ -9787,33 +9873,33 @@ public final class Work {
   static {
     java.lang.String[] descriptorData = {
       "\n\nwork.proto\032\014common.proto\032\016election.pro" +
-      "to\032\npipe.proto\"0\n\tWorkState\022\020\n\010enqueued\030" +
-      "\001 \002(\005\022\021\n\tprocessed\030\002 \002(\005\"&\n\tHeartbeat\022\031\n" +
-      "\005state\030\001 \002(\0132\n.WorkState\"K\n\nDragonBeat\022\035" +
-      "\n\tnodelinks\030\001 \003(\0132\n.NodeLinks\022\020\n\010checksu" +
-      "m\030\002 \001(\005\022\014\n\004mode\030\003 \002(\t\"O\n\tNodeLinks\022\026\n\007in" +
-      "bound\030\001 \003(\0132\005.Node\022\021\n\002me\030\002 \002(\0132\005.Node\022\027\n" +
-      "\010outbound\030\003 \003(\0132\005.Node\"\224\001\n\004Task\022\030\n\tproce" +
-      "ssed\030\006 \003(\0132\005.Node\022\027\n\004type\030\005 \001(\0162\t.TaskTy" +
-      "pe\022\021\n\tseries_id\030\001 \002(\003\022\016\n\006seq_id\030\002 \002(\005\022\r\n",
-      "\005token\030\004 \001(\t\022\'\n\016commandMessage\030\003 \001(\0132\017.C" +
-      "ommandMessage\"G\n\004Vote\022\036\n\007verdict\030\001 \002(\0162\r" +
-      ".Vote.Verdict\"\037\n\007Verdict\022\010\n\004VOTE\020\001\022\n\n\006RE" +
-      "JECT\020\002\"H\n\010Register\022\014\n\004mode\030\001 \002(\t\022\027\n\010dest" +
-      "Node\030\002 \001(\0132\005.Node\022\025\n\006leader\030\003 \001(\0132\005.Node" +
-      "\".\n\tModerator\022\n\n\002id\030\001 \002(\t\022\025\n\006origin\030\002 \002(" +
-      "\0132\005.Node\"\376\002\n\013WorkMessage\022\027\n\006header\030\001 \002(\013" +
-      "2\007.Header\022\016\n\006secret\030\002 \002(\003\022\027\n\003err\030\003 \001(\0132\010" +
-      ".FailureH\000\022\016\n\004ping\030\004 \001(\010H\000\022\032\n\004beat\030\005 \001(\013" +
-      "2\n.HeartbeatH\000\022\035\n\006dragon\030\t \001(\0132\013.DragonB",
-      "eatH\000\022\025\n\004task\030\006 \001(\0132\005.TaskH\000\022\033\n\005state\030\007 " +
-      "\001(\0132\n.WorkStateH\000\022\037\n\006leader\030\010 \001(\0132\r.Lead" +
-      "erStatusH\000\022\035\n\010register\030\n \001(\0132\t.RegisterH" +
-      "\000\022\030\n\007verdict\030\013 \001(\0132\005.VoteH\000\022\017\n\005steal\030\014 \001" +
-      "(\010H\000\022\027\n\rstealResponse\030\r \001(\010H\000\022\037\n\tmoderat" +
-      "or\030\024 \001(\0132\n.ModeratorH\000B\t\n\007payload*(\n\010Tas" +
-      "kType\022\016\n\nSIMPLETASK\020\001\022\014\n\010LAZYTASK\020\002B\r\n\tp" +
-      "ipe.workH\001"
+      "to\032\npipe.proto\">\n\tWorkState\022\014\n\004term\030\003 \002(" +
+      "\005\022\020\n\010enqueued\030\001 \002(\005\022\021\n\tprocessed\030\002 \002(\005\"&" +
+      "\n\tHeartbeat\022\031\n\005state\030\001 \002(\0132\n.WorkState\"K" +
+      "\n\nDragonBeat\022\035\n\tnodelinks\030\001 \003(\0132\n.NodeLi" +
+      "nks\022\020\n\010checksum\030\002 \001(\005\022\014\n\004mode\030\003 \002(\t\"O\n\tN" +
+      "odeLinks\022\026\n\007inbound\030\001 \003(\0132\005.Node\022\021\n\002me\030\002" +
+      " \002(\0132\005.Node\022\027\n\010outbound\030\003 \003(\0132\005.Node\"\224\001\n" +
+      "\004Task\022\030\n\tprocessed\030\006 \003(\0132\005.Node\022\027\n\004type\030" +
+      "\005 \001(\0162\t.TaskType\022\021\n\tseries_id\030\001 \002(\003\022\016\n\006s",
+      "eq_id\030\002 \002(\005\022\r\n\005token\030\004 \001(\t\022\'\n\016commandMes" +
+      "sage\030\003 \001(\0132\017.CommandMessage\"G\n\004Vote\022\036\n\007v" +
+      "erdict\030\001 \002(\0162\r.Vote.Verdict\"\037\n\007Verdict\022\010" +
+      "\n\004VOTE\020\001\022\n\n\006REJECT\020\002\"H\n\010Register\022\014\n\004mode" +
+      "\030\001 \002(\t\022\027\n\010destNode\030\002 \001(\0132\005.Node\022\025\n\006leade" +
+      "r\030\003 \001(\0132\005.Node\".\n\tModerator\022\n\n\002id\030\001 \002(\t\022" +
+      "\025\n\006origin\030\002 \002(\0132\005.Node\"\376\002\n\013WorkMessage\022\027" +
+      "\n\006header\030\001 \002(\0132\007.Header\022\016\n\006secret\030\002 \002(\003\022" +
+      "\027\n\003err\030\003 \001(\0132\010.FailureH\000\022\016\n\004ping\030\004 \001(\010H\000" +
+      "\022\032\n\004beat\030\005 \001(\0132\n.HeartbeatH\000\022\035\n\006dragon\030\t",
+      " \001(\0132\013.DragonBeatH\000\022\025\n\004task\030\006 \001(\0132\005.Task" +
+      "H\000\022\033\n\005state\030\007 \001(\0132\n.WorkStateH\000\022\037\n\006leade" +
+      "r\030\010 \001(\0132\r.LeaderStatusH\000\022\035\n\010register\030\n \001" +
+      "(\0132\t.RegisterH\000\022\030\n\007verdict\030\013 \001(\0132\005.VoteH" +
+      "\000\022\017\n\005steal\030\014 \001(\010H\000\022\027\n\rstealResponse\030\r \001(" +
+      "\010H\000\022\037\n\tmoderator\030\024 \001(\0132\n.ModeratorH\000B\t\n\007" +
+      "payload*(\n\010TaskType\022\016\n\nSIMPLETASK\020\001\022\014\n\010L" +
+      "AZYTASK\020\002B\r\n\tpipe.workH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9835,7 +9921,7 @@ public final class Work {
     internal_static_WorkState_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_WorkState_descriptor,
-        new java.lang.String[] { "Enqueued", "Processed", });
+        new java.lang.String[] { "Term", "Enqueued", "Processed", });
     internal_static_Heartbeat_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Heartbeat_fieldAccessorTable = new

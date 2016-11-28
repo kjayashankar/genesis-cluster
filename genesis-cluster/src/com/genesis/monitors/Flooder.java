@@ -22,7 +22,7 @@ public class Flooder implements Runnable{
 	private static Logger logger = LoggerFactory.getLogger("Dragon mon");
 	private ServerState state;
 	private boolean initialized = false;
-
+	private boolean forever = true;
 	public NetworkMonitor nmon = NetworkMonitor.getInstance();
 	int waitCycle = 0;
 	
@@ -48,24 +48,22 @@ public class Flooder implements Runnable{
 	}
 	
 	public void run(){
-		while(1==1){
+		while(forever){
 			if(state != null) {
 				if(!initialized)
 					init();
-				if(state.state == STATE.LEADER && ++waitCycle % 10 == 1){
+				if(state.state == STATE.LEADER && ++waitCycle % 3 == 1){
 					state.getEmon().passMsg(leader);
 				}
-				if(state.state == STATE.LEADER && ++waitCycle % 10 == 3) {
+				else if(state.state == STATE.LEADER && ++waitCycle % 3 == 2) {
 					state.getEmon().initDragonBeat(1);
 
 				}
-				if(state.state == STATE.LEADER && ++waitCycle % 10 == 9){
-					logger.info("initiate dragon beat level 2");
+				else if(state.state == STATE.LEADER && ++waitCycle % 3 == 0){
 					if(nmon.nmap != null && nmon.nmap.size() > 0 ){
 						List<NodeLinks> nmapOut = nmon.nmap;
 						nmon.updateNodes( new ArrayList<NodeLinks>(), 0);
 						List<NodeLinks> nodes = nmapOut;
-						//logger.info("ready to send dragon L2 " + nodes.toString());
 						state.getEmon().passOnDragon("L2", nodes, 0);
 					}
 					else{

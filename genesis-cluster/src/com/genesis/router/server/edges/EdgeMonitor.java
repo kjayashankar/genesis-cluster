@@ -75,6 +75,8 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	private int leaderStatus = 0;
 	private boolean forever = true;
 
+	private int term = 0;
+
 	public EdgeMonitor(ServerState state) {
 		if (state == null)
 			throw new RuntimeException("state is null");
@@ -104,12 +106,16 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 
 	public void updateHeartBeat(Node node,long heartBeat,WorkState wstate){
-		if(state.state == STATE.ORPHAN )
-			state.state = STATE.FOLLOWER;
 		EdgeInfo edge = createInboundIfNew(node.getId(), node.getHost(), node.getPort());
 		edge.setLastHeartbeat(heartBeat);
 		edge.setEnqueue(wstate.getEnqueued());
 		edge.setProcessed(wstate.getProcessed());
+		if(wstate.getTerm() > this.term ){
+			if(state.state == STATE.LEADER){
+				state.state = STATE.FOLLOWER;
+			}
+			this.term = wstate.getTerm();
+		}
 	}
 	
 
@@ -126,11 +132,9 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						//askWhoIsLeader();
 						checkLeaderStatus();
 						if(this.inboundEdges.map != null && this.inboundEdges.map.size() > 0) {
-							logger.info("inbound edge formed, changing status");
 							state.state = STATE.FOLLOWER;
 						}
 						else{
-							logger.info("waiting for inbound edge");
 							registerNode();
 						}
 						break;
@@ -145,6 +149,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						if(leader != null && "DEAD".equalsIgnoreCase(leader.status)){
 							candidateRetry = 0;
 							LeaderStatus lStatus= eMonitor.init(thisNode);
+							term++;
 							prepareAndPassElection(lStatus);
 							state.state = STATE.CANDIDATE;					
 						}
@@ -169,7 +174,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						break;
 					}
 					case VOTED:{
-						//checkLeaderStatus();
 						candidateRetry = 0;
 						checkInbound();
 						pushHeartBeat();
@@ -203,6 +207,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 						if(candidateRetry > 3){
 							candidateRetry = 0;
 							LeaderStatus lStatus= eMonitor.init(thisNode);
+							term++;
 							prepareAndPassElection(lStatus);
 							
 						}
@@ -253,7 +258,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			logger.info("leader is not found , i'm going to wait for 4 more ticks");
 			leaderStatus++;
 		}
-		if(leaderStatus > 2){
+		if(leaderStatus > 4){
 			leaderStatus = 0;
 			candidateRetry = 0;
 			LeaderStatus lStatus= eMonitor.init(thisNode);
@@ -297,9 +302,9 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		logger.info("current state "+state.state);
 		logger.info("current inbounds "+this.inboundEdges.map.keySet());
 		logger.info("current outbounds "+this.outboundEdges.map.keySet());
-		logger.info("inbound queue size " +qMon.getInboundQueue().getSize());
-		logger.info("Outbouond queue size "+qMon.getOutboundQueue().getSize());
-		logger.info("Lazy queue size "+qMon.getLazyQueue().getSize());
+		logger.info("inbound queue size [" +qMon.getInboundQueue().getSize()+"]");
+		logger.info("Outbouond queue size ["+qMon.getOutboundQueue().getSize()+"]");
+		logger.info("Lazy queue size ["+qMon.getLazyQueue().getSize()+"]");
 
 	}
 
@@ -320,7 +325,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 				ei.getChannel().writeAndFlush(wm);
 			} else {
 				try{
-					logger.info("trying to register with node " + ei.getRef());
 					EventLoopGroup group = new NioEventLoopGroup();
 					WorkInit si = new WorkInit(state, false);
 					Bootstrap b = new Bootstrap();
@@ -365,15 +369,12 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 	}
 
 	private void registerNewOutbound(List<Node> outboundList) {
-		// TODO Auto-generated method stub
 		for(Node node : outboundList)
 			if(node.getId() != thisNode.getRef() && node.getId() != 0)
 				this.outboundEdges.createIfNew(node.getId(), node.getHost() , node.getPort());
 	}
 	
 	private void registerNewInbound(List<Node> inboundList) {
-		// TODO Auto-generated method stub
-		logger.info(" --- waiting for the other out bound edges to connect --- ");
 		for(Node node : inboundList)
 			if(this.inboundEdges.map.containsKey(node.getId())){
 				logger.info("Node node "+node.getId()+" connected to node "+thisNode.getRef());
@@ -457,6 +458,7 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 		WorkState.Builder sb = WorkState.newBuilder();
 		sb.setEnqueued(qMon.getInboundQueue().numEnqueued());
 		sb.setProcessed(qMon.getInboundQueue().numProcessed());
+		sb.setTerm(this.term);
 
 		for (EdgeInfo ei : this.outboundEdges.map.values()) {
 			if (ei.getChannel() != null && ei.isActive()) {
@@ -464,7 +466,6 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 				WorkMessage wm = ResourceUtil.createHB(thisNode,sb.build(),ei.getRef());
 				ei.getChannel().writeAndFlush(wm);
 			} else {
-				// TODO create a client to the node
 				try{
 					EventLoopGroup group = new NioEventLoopGroup();
 					WorkInit si = new WorkInit(state, false);
