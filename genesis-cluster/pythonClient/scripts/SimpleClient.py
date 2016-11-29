@@ -76,7 +76,7 @@ class SimpleClient:
         cm.header.origin.port = self.port
         cm.header.time = 10000
         #cm.message = name
-        clmsg2 = clientMessage_pb2.Operation.Value("DELETE")
+        clmsg2 = clientMessage_pb2.Operation.Value("DEL")
         # b = self.chunkFile()
 
         #cm.reqMsg.data = filecontent
@@ -271,6 +271,7 @@ class SimpleClient:
         while iter<noChunk:
             iter+=1
             len_buf = self.receiveMsg(self.sd, 4)
+            #print
             print("SC 255 len_buf")
             print len_buf
             msg_len = struct.unpack('>L', len_buf)[0]
@@ -296,10 +297,10 @@ class SimpleClient:
             print("SC 264 printing the value of r")
             #totalCount -= 1
             #print r
-        #fileDir = os.path.dirname(os.path.realpath('__file__'))
-        #path = os.path.join(fileDir, '../output/nasa2.jpg')
+        fileDir = os.path.dirname(os.path.realpath('__file__'))
+        path = os.path.join(fileDir, '../output/nasa2.jpg')
         for r in my_array:
-            with open(self.path, "a") as outfile:
+            with open(path, "a") as outfile:
                 outfile.write(r)
 
         return my_array
@@ -314,4 +315,5 @@ class SimpleClient:
             data = socket.recv(n)
             buf += data
             n -= len(data)
+            print buf
         return buf

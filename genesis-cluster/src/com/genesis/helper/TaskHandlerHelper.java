@@ -29,10 +29,10 @@ public class TaskHandlerHelper {
 	private ServerState state;
 	//TODO Write to pick it from the Factory, fine for now
 	IDBService redisClient ;
-	static IDBService mongoDBServiceImpl;
+	//IDBService mongoDBServiceImpl;
 	
 	
-	public static IDBService getMongoConnection(){
+	/*public IDBService getMongoConnection(){
 		
 		try{
 			logger.info("Got mongo Object");
@@ -40,7 +40,7 @@ public class TaskHandlerHelper {
 		}
 		catch(Exception e){}
 		return mongoDBServiceImpl;
-	}
+	}*/
 	
 	Queue outboundQueue;
 	private ConcurrentHashMap<String, SocketAddress> keySocketMappings;
@@ -55,6 +55,7 @@ public class TaskHandlerHelper {
 				e.printStackTrace();
 			}
 			this.redisClient= new RedisDBServiceImpl();
+			//this.mongoDBServiceImpl = this.getMongoConnection();
 			
 		}
 	}
@@ -69,20 +70,22 @@ public class TaskHandlerHelper {
 		keySocketMappings = state.getKeySocketMappings();
 		addressChannelMappings = state.getAddressChannelMappings();
 		
-		if(keySocketMappings.containsKey(msg.getReqMsg().getKey())){
-			keySocketMappings.put(msg.getReqMsg().getKey(), channel.remoteAddress());
-			addressChannelMappings.put(channel.remoteAddress(), channel);
+		//if(keySocketMappings.containsKey(msg.getReqMsg().getKey())){
+			//keySocketMappings.put(msg.getReqMsg().getKey(), channel.remoteAddress());
+			//addressChannelMappings.put(channel.remoteAddress(), channel);
+			//channel.closeFuture().addListener(new CloseConnectionListener());
+		//}
+		try {
+		if (!keySocketMappings.containsKey(msg.getReqMsg().getKey())) {
+			//keySocketMappings.put(msg.getReqMsg().getKey(), channel.remoteAddress());
+			//addressChannelMappings.put(channel.remoteAddress(), channel);
 			channel.closeFuture().addListener(new CloseConnectionListener());
 		}
 		
-		/*if (!keySocketMappings.containsKey(msg.getReqMsg().getKey())) {
-			keySocketMappings.put(msg.getReqMsg().getKey(), channel.remoteAddress());
-			addressChannelMappings.put(channel.remoteAddress(), channel);
-			channel.closeFuture().addListener(new CloseConnectionListener());
-		}*/
-		try {
 			handleDBOperations(msg, channel);
 		} catch (Exception e) {
+			System.out.println("Exception in THandler: "+e.getMessage() +"Value : "+ channel);
+			logger.info("Exception in THandler: "+e.getMessage() +"Value : "+ channel);
 			e.printStackTrace();
 		}
 
@@ -97,6 +100,7 @@ public class TaskHandlerHelper {
 			
 			WorkMessage returnWork = ResourceUtil.buildWorkMessageFromCommandMsg(msg, state);
 			
+			logger.info("\nNo. of chunks count sent is "+ msg.getResMsg().getNoOfChunks()+ "");
 			outboundQueue.put(returnWork, channel);
 			
 			Thread.sleep(1000);
@@ -132,6 +136,7 @@ public class TaskHandlerHelper {
 					
 				case GET: 
 					
+					
 					logger.info("----- Getting key from DataBase ----" + requestMessage.getKey());
 					Map<Integer, byte[]> keyMap = redisClient.get(requestMessage.getKey());
 					
@@ -151,6 +156,26 @@ public class TaskHandlerHelper {
 						}
 					}
 					
+					/*
+					logger.info("----- Getting key from MONGODB DataBase ----" + requestMessage.getKey());
+					Map<Integer, byte[]> keyMapMongo = mongoDBServiceImpl.get(requestMessage.getKey());
+					
+					if(keyMapMongo.isEmpty()){
+						CommandMessage failureMsg = ResourceUtil.createResponseFailureMessage(msg, state);
+						logger.info("Sending failure message MONGODB");
+						 doMessageForwardingToClient(failureMsg, channel);
+					} else {
+						
+						logger.info("TaskHandlerHelper: MONGODB handleDBOperations(): GET giving message back to the client-- total count of messages "+ keyMapMongo.size());
+						
+						for(Map.Entry<Integer, byte[]> entry: keyMapMongo.entrySet()){
+							
+							CommandMessage returnMsg = ResourceUtil.createResponseCommandMessage(msg, entry.getValue(), entry.getKey(), state, keyMapMongo.size());
+							doMessageForwardingToClient(returnMsg, channel);
+							
+						}
+					}
+					*/
 					
 					break;
 					
@@ -160,34 +185,47 @@ public class TaskHandlerHelper {
 						redisClient.deleteExcess(requestMessage.getKey(), requestMessage.getNoOfChunks());
 					}
 					
+					/*if(mongoDBServiceImpl.noOfChunksExisting(requestMessage.getKey()) > requestMessage.getNoOfChunks()){
+						mongoDBServiceImpl.deleteExcess(requestMessage.getKey(), requestMessage.getNoOfChunks());
+					}*/
+					
 					logger.info("Key is inside put "+requestMessage.getKey());
-					logger.info("----- Updating key into DataBase ----");
+					logger.info("----- Updating key into Redis DataBase ----");
 					boolean updateKey = redisClient.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					
 					logger.info("---- PUT: key stored" +updateKey+ " for Sequence ----"+ requestMessage.getSeqNo());
-					
-					
-					/*boolean updateKeyMongo = mongoDBServiceImpl.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
-					logger.info("---- Key received  ----"+ updateKeyMongo);*/
-					
+					/*
+					logger.info("----- Updating key into MongoDB DataBase ----");
+					boolean updateKeyMongo = mongoDBServiceImpl.put(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
+					logger.info("---- Key received  ----"+ updateKeyMongo);
+					*/
 					break;
 				case POST:
 					
-					logger.info("----- Storing key into DataBase ----");
+					logger.info("----- Storing key into Redis DataBase  ----");
+					//logger.info("202 requestMessage.getKey() "+requestMessage.getKey());
+					//logger.info("203 requestMessage.getSeqNo() "+requestMessage.getSeqNo());
+					//logger.info("204 requestMessage.getData().toByteArray() "+requestMessage.getData().toByteArray());
 					String keyStored = redisClient.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					
 					logger.info("---- POST: key stored" +keyStored+ " for Sequence ----"+ requestMessage.getSeqNo());
-				
-					/*String keyStoredMongo = mongoDBServiceImpl.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
+						/*
+					logger.info("----- Storing key into MongoDB DataBase  ----");
+					logger.info("210 requestMessage.getKey() "+requestMessage.getKey());
+					logger.info("211 requestMessage.getSeqNo() "+requestMessage.getSeqNo());
+					logger.info("212 requestMessage.getData().toByteArray() "+requestMessage.getData().toByteArray().toString());
+					logger.info("213 Printing mongoDBServiceImpl  "+mongoDBServiceImpl);
+					String keyStoredMongo = mongoDBServiceImpl.post(requestMessage.getKey(), requestMessage.getSeqNo(), requestMessage.getData().toByteArray());
 					logger.info("---- Key stored ----"+ keyStoredMongo);*/
 					break;
 				case DEL:
 					
-					logger.info("----- deleting key from DataBase ----");
+					logger.info("----- deleting key from Redis DataBase ----");
 					boolean deletedKey = redisClient.delete(requestMessage.getKey());
 					logger.info("---- Key deleted ----"+ deletedKey);
 					
-					/*boolean deletedKeyMongo = mongoDBServiceImpl.delete(requestMessage.getKey());
+					/*logger.info("----- deleting key from MongoDB DataBase ----");
+					boolean deletedKeyMongo = mongoDBServiceImpl.delete(requestMessage.getKey());
 					logger.info("---- Key deleted ----"+ deletedKeyMongo);*/
 					
 					break;
