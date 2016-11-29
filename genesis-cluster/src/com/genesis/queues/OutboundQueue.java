@@ -75,13 +75,11 @@ public class OutboundQueue implements Queue{
 			logger.info("channel state : "+ channel.isActive() + ", Channel is open"+ channel.isOpen());
 			if(channel.isActive() && channel.isOpen() && channel.isWritable()){
 				//logger.info("Message Key :: "+work.getTask().getCommandMessage());
-				ChannelFuture future = channel.writeAndFlush(work.getTask().getCommandMessage());
-				future.awaitUninterruptibly();
+				ChannelFuture f = channel.writeAndFlush(work.getTask().getCommandMessage()).syncUninterruptibly();
 				System.out.println("Written to channel");
-				boolean ret = future.isSuccess();
-				if(!ret){
+				if(!f.isSuccess()){
 					logger.error("Error in sending message");
-					logger.error("Reason : "+future.cause() );
+					logger.error("Reason : timeout "+f.cause() );
 					put(work,channel);
 				}
 			}
