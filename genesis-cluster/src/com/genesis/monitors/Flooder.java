@@ -52,14 +52,16 @@ public class Flooder implements Runnable{
 			if(state != null) {
 				if(!initialized)
 					init();
-				if(state.state == STATE.LEADER && ++waitCycle % 4 == 1){
+				if(state.state == STATE.LEADER && waitCycle % 4 == 1){
 					state.getEmon().passMsg(leader);
+					waitCycle++;
 				}
-				else if(state.state == STATE.LEADER && ++waitCycle % 4 == 0) {
+				else if(state.state == STATE.LEADER && waitCycle % 4 == 0) {
 					state.getEmon().initDragonBeat(1);
+					waitCycle++;
 
 				}
-				else if(state.state == STATE.LEADER && ++waitCycle % 4 == 3){
+				else if(state.state == STATE.LEADER && waitCycle % 4 == 3){
 					if(nmon.nmap != null && nmon.nmap.size() > 0 ){
 						logger.info("updating routing tables");
 						List<NodeLinks> nmapOut = nmon.nmap;
@@ -70,6 +72,7 @@ public class Flooder implements Runnable{
 					else{
 						logger.error("invalid nmon size in Dragon Thread");
 					}
+					waitCycle++;
 				}
 			}
 			try{
