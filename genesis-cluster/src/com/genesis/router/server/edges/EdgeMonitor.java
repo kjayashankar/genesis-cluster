@@ -785,9 +785,13 @@ public class EdgeMonitor implements EdgeListener, Runnable {
 			if(search.getId() == me.getId())
 				return;
 		}
-		nodeList.add(me);
+		/*nodeList.add(me);
 		newTask.addAllProcessed(nodeList);
-		
+		*/
+		List<Node> mutableCollection = new ArrayList<Node>();
+		mutableCollection.addAll(nodeList);
+		mutableCollection.add(me);
+		newTask.addAllProcessed(mutableCollection);
 		
 		for(EdgeInfo ei : this.outboundEdges.map.values()) {
 			if(!nodeIds.contains(ei.getRef()) && 
