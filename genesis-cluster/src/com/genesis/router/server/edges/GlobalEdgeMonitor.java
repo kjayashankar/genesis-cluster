@@ -86,11 +86,12 @@ public class GlobalEdgeMonitor {
 		logger.info("file name decoded as "+msg.getReqMsg().getKey());
 		file.setFilename(msg.getReqMsg().getKey());
 		
-		
+		logger.info("In GlobalEdge Monitor ::: operation is "+ msg.getReqMsg().getOperation());
 		switch(msg.getReqMsg().getOperation()){
 			case POST:
 				request.setRequestType(RequestType.WRITE);
 				file.setData(ByteString.copyFrom(data));
+				file.setChunkId(msg.getReqMsg().getSeqNo());
 				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
 				request.setFile(file.build());
 
@@ -99,6 +100,7 @@ public class GlobalEdgeMonitor {
 			case PUT:
 				request.setRequestType(RequestType.UPDATE);
 				file.setData(ByteString.copyFrom(data));
+				file.setChunkId(msg.getReqMsg().getSeqNo());
 				file.setTotalNoOfChunks(msg.getReqMsg().getNoOfChunks());
 				request.setFile(file.build());
 

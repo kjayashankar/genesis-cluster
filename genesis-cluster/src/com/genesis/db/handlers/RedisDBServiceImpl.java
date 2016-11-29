@@ -36,6 +36,7 @@ public class RedisDBServiceImpl implements IDBService {
 		 	config.setMaxTotal(12); 
 		 	config.setMaxIdle(4);
 		 	config.setMinIdle(1);
+		 	config.setTestOnBorrow(true);
 		 	pool = new JedisPool(config, "localhost", 6379); 
 		}
 		return pool.getResource();
@@ -250,7 +251,7 @@ public class RedisDBServiceImpl implements IDBService {
 	
 
 	@Override
-	public String post(String key, int chunkID, byte[] value) {
+	public String post(String key, int chunkID, byte[] value)  {
 		if (key == null || value == null) {
 			return null;
 		}

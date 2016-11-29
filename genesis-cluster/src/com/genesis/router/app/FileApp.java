@@ -157,13 +157,13 @@ public class FileApp implements CommListener {
 					
 					List<ByteString> finalResList = new LinkedList<ByteString>();
 					for (ResponseMessage response : responseList) {
-						System.out.println("Sequencing m printing "+response.getChunkNo());
+						System.out.println("Sequencing m printing "+response.getChunkNo()+ response.getData());
 						finalResList.add(response.getData());
 					}
 					
 						//FileConversion convertUtil = new FileConversion();
 						FileConversion.convertAndWrite(outputFilePath, finalResList);
-						logger.info("File written...");
+						logger.info("File written to..." + outputFilePath);
 					
 					
 					
@@ -182,7 +182,7 @@ public class FileApp implements CommListener {
 		//String host = "169.254.148.24";
 		String host = "127.0.0.1";
 		
-		int port = 4168;
+		int port = 4568;
 		
 		/*if (args.length == 0) {
 			System.out.println("usage: server <config file>");
@@ -246,11 +246,11 @@ public class FileApp implements CommListener {
 			//return;
 		}*/
 
-		String key = "nasa2";
+		String key = paramArr[2];
 		String fileName = paramArr[0];
 		//FileConversion fileUtil = new FileConversion(); No need made it static utility
 		
-		filePath = "src/com/genesis/file/write/nasa2.jpg";
+		filePath = "src/com/genesis/file/write/"+fileName;
 		outputFilePath = "src/com/genesis/file/write/output/"+fileName;
 		
 		File tempFile = new File(filePath);
@@ -259,7 +259,7 @@ public class FileApp implements CommListener {
 		int noOfChunks = FileConversion.noOfChunksToCreate(bufferedInputStream);
 		keyChunkNoMap.put(key, noOfChunks);
 		
-		switch ("POST") {
+		switch (paramArr[1]) {
 		case "GET":
 					logger.info("performing get from client");
 					mc.get(key);
@@ -280,8 +280,9 @@ public class FileApp implements CommListener {
 					
 					
 					List<ByteString> dataList = FileConversion.readAndConvert(filePath);
+				
 		
-					int seqNo = 1;
+					int seqNo = 0;
 						
 					for (ByteString data : dataList) {
 						mc.post(key, seqNo++, data, "POST", noOfChunks);
