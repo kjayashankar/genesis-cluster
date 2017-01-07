@@ -1,6 +1,8 @@
 # genesis-cluster
-The main objective of our project (Fluffy) is to design and implement a cost effective framework for a robust scalable and distributed data store that adapts to the dynamic scheduling needs with efficient work sharing for inter cluster communication and storage operation with heterogeneous systems. The main idea is conceived as cluster of Nodes and then cluster of clusters as the specified in the requirements to design a system which is decentralized, large, and heterogeneous platform. We have kept the system independent of the type of data storage used and file type which is being stored. 
+The main objective of our project is to design and implement a cost effective framework for a robust scalable and distributed data store that adapts to the dynamic scheduling needs with efficient work sharing for inter cluster communication and storage operation with heterogeneous systems. 
+The main idea is conceived as cluster of Nodes and then cluster of clusters as the specified in the requirements to design a system which is decentralized, large, and heterogeneous platform. We have kept the system independent of the type of data storage used and file type which is being stored. 
 One of the core issues to be addressed in this project is Scalability, how to be able to serve an increasing number of client requests, and still minimise the latency in a distributed system keeping in mind the huge load of client requests.
+
 RING Architecuture
 	A ring topology has all the nodes lined up in a ring forming a closed circuit. Every node in the ring has one inbound and one outbound edge. A Node is also known as Edge or Server. 
 
@@ -58,27 +60,12 @@ Message handlers architecture
 		
 	State pattern was followed here with state varying among one of VOTED, FOLLOWER, LEADER, CANDIDATE, ORPHAN. Only calls specific to the state are handled here.
 
-      13. Watcher service monitors changes in the routing.conf for addition and deletion of nodes. It uses the java NIO’s,
-
-WatchService watcher = FileSystems.getDefault().newWatchService();
-	to implement the same. 
- 
  
 Python client
  
 Python client was developed to interact with the Java server. It interacted with the server synchronously. The data is transferred into chunks. The maximum chunk size is 1 Mb.
- 
-Steps followed by the python client are following:
-1.     With the help of socket programming, it connected with the server.
-  	def __init__(self,host,port):
-	   	self.host = host
-	   	self.port = port
-	   	self.sd  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-     	def startSession(self):
-	          	self.sd.connect((self.host, self.port))
-	          	print("Connected to Host:", self.host, "@ Port:", self.port)
- 
-2.     Various operations were performed by the python client:
+
+Various operations were performed by the python client:
 a.     POST
 b.     PUT
 c.     GET
@@ -88,117 +75,20 @@ e.     PING
 a.     Get the file from the local machine to perform POST operation.
 b.     Considering the input file size, its divided into the number of chunk by
 Number of chunks = Total input file size / Maximum size of the chunks
-def chunkFile(self,file):
-	fileChunk = []
-	with open(file, "rb") as fileContent:
-    	data = fileContent.read(1024*1024)
-    	while data:
-        	fileChunk.append(data)
-        	data = fileContent.read(1024*1024)
-	return fileChunk
 c.  As per our proto files, the objects are initialized
-def genChunkedMsg(self,filename,filecontent, noofchunks,chunkid):
-	cm = pipe_pb2.CommandMessage()
-	cm.header.node_id = 5
-	cm.header.origin.id = 5
-	cm.header.origin.host = self.host
-	cm.header.origin.port = self.port
-	cm.header.time = 10000
-	cm.header.destination = 6
-	clmsg2 = clientMessage_pb2.Operation.Value("POST")
-	cm.reqMsg.data = filecontent
-	cm.reqMsg.key = filename
-	cm.reqMsg.seq_no = chunkid
-	cm.reqMsg.operation = clmsg2
-	cm.reqMsg.no_of_chunks = noofchunks
-	var = cm.SerializeToString()
-	return var
 d.  The chunks are then sent to the server individually.
-def sendData(self,data,host,port):
-	msg_len = struct.pack('>L', len(data))
-	self.sd.sendall(msg_len + data)
-	Return
 4.     PUT. An existing file is updated on the server with the new contend from the input file
 a.     Get the file from the local machine to perform PUT operation.
 b.     Considering the input file size, its divided into the number of chunk by
 Number of chunks = Total input file size / Maximum size of the chunks
 c.  As per our proto files, the objects are initialized
-
-def genChunkedPutMsg(self,filename,filecontent, noofchunks,chunkid):
-	cm = pipe_pb2.CommandMessage()
-	cm.header.node_id = 5
-	cm.header.origin.id = 5
-	cm.header.origin.host = self.host
-	cm.header.origin.port = self.port
-	cm.header.time = 10000
-	cm.header.destination = 6
-	clmsg2 = clientMessage_pb2.Operation.Value("PUT")
-	cm.reqMsg.data = filecontnt
-	cm.reqMsg.key = filename
-	cm.reqMsg.seq_no = chunkid
-	cm.reqMsg.operation = clmsg2
-	cm.reqMsg.chunkInfo.no_of_chunks = noofchunks
-	var = cm.SerializeToString()
-	return var
 d.     The chunks are then sent to the server individually
 5.     GET. On the basis of key of file, the file is searched from the database at server.
 a.     Get the key of the file to be obtained from the server.
 b.  Create the object to be send to the server with a GET request
-def getFile(self,name):
-	cm = pipe_pb2.CommandMessage()
-	cm.header.node_id = 5
-	cm.header.origin.id = 5
-	cm.header.origin.host = self.host
-	cm.header.origin.port = self.port
-	cm.header.time = 10000
-	clmsg2 = clientMessage_pb2.Operation.Value("GET")
-	cm.reqMsg.key = name
-	cm.reqMsg.operation = clmsg2
-	print cm
-	var = cm.SerializeToString()
-    return var
 c.  Send the request and wait for the response
-def sendDataGet(self,data,host,port, path):
-	msg_len = struct.pack('>L', len(data))
-	self.sd.sendall(msg_len + data)
-	r = pipe_pb2.CommandMessage();
- 	 my_array = [] * 1000
-	iter = 0
-	noChunk = 2
-	while iter<noChunk:
-    	iter+=1
-    	len_buf = self.receiveMsg(self.sd, 4)
-    	msg_len = struct.unpack('>L', len_buf)[0]
-    	msg_in = self.receiveMsg(self.sd, msg_len)
-    	print len(msg_in)
-    	r.ParseFromString(msg_in)
-    	#self.sd.close
-    	print r.resMsg.no_of_chunks
-    	index = int(r.resMsg.no_of_chunks)
-    	my_array.insert(index, r.resMsg.data)
-    	noChunk = r.resMsg.no_of_chunks
-    	fileDir = os.path.dirname(os.path.realpath('__file__'))
-	path = os.path.join(fileDir, '../output/Team5.vbox-extpack')
-	print path
-	for r in my_array:
-    	with open(path, "a") as outfile:
-        	outfile.write(r)
-	return my_array
 6.     DELETE. Deletes the file at the server on the basis of the key in the server.
-7.     PING. Pings the server
-	def genPing(self):
-	print "Start request_ping() executing"
-	cm = pipe_pb2.CommandMessage()
-	cm.header.node_id = 5
-	cm.header.origin.id = 5
-	cm.header.origin.host = self.host
-	cm.header.origin.port = self.port
-	cm.header.time = 10000
-	cm.header.destination = 6
-	cm.ping = True
-	pingFinal = cm.SerializeToString()
-	return pingFinal;
- 
+7.     PING. Pings the server 
 
 Global API
 
@@ -222,75 +112,7 @@ Moderator map:
 
 
 Data Flow and Message Passing
-We have defined a proto file (clientMessage.proto) for sending and receiving messages of file chunks given by the client. 
-
-Message below defines the Metadata to be kept for chunk and Response Message to be sent back to the client: header {
-  origin {
-    id: 5
-    host: "169.254.244.97"
-    port: 4567
-  }
-  time: 1479777706358
-  destination: 6
-}
-secret: 1001
-dragon {
-  nodelinks {
-    inbound {
-      id: 5
-      host: "169.254.244.97"
-      port: 4567
-    }
-    me {
-      id: 6
-      host: "169.254.203.31"
-      port: 4667
-    }
-    outbound {
-      id: 1
-      host: "169.254.203.31"
-      port: 4167
-    }
-  }
-  nodelinks {
-    inbound {
-      id: 6
-      host: "169.254.203.31"
-      port: 4667
-    }
-    me {
-      id: 1
-      host: "169.254.203.31"
-      port: 4167
-    }
-    outbound {
-      id: 5
-      host: "169.254.244.97"
-      port: 4567
-    }
-  }
-  nodelinks {
-    inbound {
-      id: 1
-      host: "169.254.203.31"
-      port: 4167
-    }
-    me {
-      id: 5
-      host: "169.254.244.97"
-      port: 4567
-    }
-    outbound {
-      id: 6
-      host: "169.254.203.31"
-      port: 4667
-    }
-  }
-  checksum: -1
-  mode: "L2"
-}
-
-
+We have defined a proto file (clientMessage.proto) for sending and receiving messages of file chunks given by the client.
 We have implemented all CRUD operations to be perfomed with the files. The supported operations by the client are defined by the enumeration Operation below: 
 
 
@@ -299,9 +121,7 @@ We have implemented all CRUD operations to be perfomed with the files. The suppo
 Client API
 Using the client API a request can be sent to our server which listens in the command port for any work to be done for external client. Operations supported as shown above can be POST a file on the server, GET, UPDATE, DELETE. It is the responsibility of the client to give the file in a  format which is can be stored directly to our database. When Client has a big file it will chunk that file into 1 MB chunks and and send them to the server along with the sequence no, and the metadata message to be able to assemble them again. 
 
-Below example explains the POST operation from the Client. The File Conversion Utility does the reading of file into bytes and then creating small byte strings for each chunk. Below is how the chunk is created by reading 1024*1024 bytes in a byte array and a Request message created:
-
-
+The File Conversion Utility does the reading of file into bytes and then creating small byte strings for each chunk. A file chunk is created by reading 1024*1024 bytes in a byte array and a Request message created.
 
 
 While Performing GET operation, we have to only send the operation Type (“GET” in this case) and the Key-Name to be retrieved. Then, if the client has the file it will send all the chunks corresponding to that file and the Chunk Info Record. From this, we will retrieve the total no. of messages that a client should wait for. And when it has received all messages, it assembles them in a sequential manner. We have used LinkedHashMap to preserve the sorted sequence for the file, and the comparator keeps all the messages sorted based on the seq number for the chunk. 
